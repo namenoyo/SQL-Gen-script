@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>D-Line Generator with Common</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4faff;
+      padding: 20px;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+    input[type="text"], input[type="date"] {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: 'Segoe UI';
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-family: monospace;
+      margin-top: 10px;
+    }
+    button {
+      padding: 8px 16px;
+      margin: 5px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .row label {
+      width: 120px;
+      font-weight: bold;
+    }
+    .row input, .row select {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📄  Generator Text File - Counter Bank V.1</h2>
+
+<div class="row">
+  <label>Bank Code:</label>
+  <select id="bankCommon">
+    <option value="002">002 BBL</option>
+    <option value="004">004 KBANK</option>
+    <option value="006">006 KTB</option>
+    <option value="011">011 TMB</option>
+	<option value="014">014 SCB</option>
+	<option value="022">022 CIMB</option>
+	<option value="025">025 BAY</option>
+	<option value="030">030 GSB</option>
+	<option value="034">034 BAAC</option>
+	<option value="065">065 TNB</option>
+	<option value="073">073 LH</option>
+
+	
+  </select>
+</div>
+<div class="row">
+  <label>วันที่ทำรายการ:</label>
+  <input type="date" id="txnDate" onchange="syncDates()" />
+</div>
+
+<table id="detailTable">
+  <thead>
+    <tr>
+      <th>Effective Date</th>
+      <th>Payment Date</th>
+      <th>Customer Name 	  
+	<br>
+	<span style="font-size: 11px; color: darkorange;">*บังคับ Eng</span><br>
+	<span style="font-size: 8px; color: darkorange;">(ถ้าเป็นไทยต้อง บันทึกเป็น Format ANSI)</span>
+	</th>
+      <th>Ref1 
+	<br>
+	<span style="font-size: 11px; color: darkorange;">*บังคับ ระบุ</span><br>
+	</th>
+      <th>Ref2</th>
+      <th>Amount</th>
+      <th>Fee1 
+	  <br>
+	<span style="font-size: 11px; color: darkorange;">ไม่ต้องเปลี่ยน</span><br>
+	</th>
+      <th>Fee2
+	  <br>
+	<span style="font-size: 11px; color: darkorange;">ไม่ต้องเปลี่ยน</span><br></th>
+      <th>ลบ</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<button onclick="addRow()">➕ เพิ่มแถว</button>
+<button onclick="setDefault()">🌟 Default</button>
+<button onclick="clearRows()">🧹 Clear</button>
+<button onclick="generateText()">📄 Generate</button>
+<button onclick="copyOutput()">📋 Copy</button>
+<button onclick="downloadTxt()">💾 Export</button>
+
+<h3>📦 Text Output</h3>
+<textarea id="outputArea" readonly></textarea>
+
+<script>
+function pad(str, len) {
+  return (str || "").toString().padEnd(len, ' ').slice(0, len);
+}
+
+function getDDMMYYYY(dateStr) {
+  const d = new Date(dateStr);
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = String(d.getFullYear());
+  return dd + mm + yyyy;
+}
+
+function addRow() {
+  const tbody = document.querySelector("#detailTable tbody");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><input type="text" maxlength="8" class="eff" /></td>
+    <td><input type="text" maxlength="8" class="pay" /></td>
+    <td><input type="text" maxlength="50" value="QA TestFile" /></td>
+    <td><input type="text" maxlength="18" value="5101020120468042275" /></td>
+    <td><input type="text" maxlength="8" value="28032568" /></td>
+    <td><input type="number" step="0.01" maxlength="13" value="500.00" /></td>
+    <td><input type="text" maxlength="2" value="00" /></td>
+    <td><input type="text" maxlength="10" value="0000000000" /></td>
+    <td><button onclick="this.closest('tr').remove()">🗑</button></td>
+  `;
+  tbody.appendChild(tr);
+  syncDates();
+}
+
+function setDefault() {
+  document.querySelectorAll("#detailTable tbody tr").forEach(row => {
+    const date = getDDMMYYYY(document.getElementById("txnDate").value);
+    row.querySelector(".eff").value = date;
+    row.querySelector(".pay").value = date;
+  });
+}
+
+function clearRows() {
+  document.querySelector("#detailTable tbody").innerHTML = "";
+}
+
+function syncDates() {
+  const date = getDDMMYYYY(document.getElementById("txnDate").value);
+  document.querySelectorAll(".eff, .pay").forEach(el => el.value = date);
+}
+
+function generateText() {
+  const bank = document.getElementById("bankCommon").value;
+  const bankText = document.getElementById("bankCommon").selectedOptions[0].text.split(' ')[1];
+  const txnDate = getDDMMYYYY(document.getElementById("txnDate").value);
+  const tbody = document.querySelector("#detailTable tbody");
+  const rows = tbody.querySelectorAll("tr");
+
+  let totalAmount = 0;
+  const lines = Array.from(rows).map((row, i) => {
+    const cells = row.querySelectorAll("input");
+    const eff = pad(cells[0].value, 8);
+    const pay = pad(cells[1].value, 8);
+    const name = pad(cells[2].value, 50);
+    const ref1 = pad(cells[3].value, 20);
+    const ref2 = pad(cells[4].value, 39);
+    const rawAmt = parseFloat(cells[5].value.replace(/[^\d.]/g, ""));
+    const amt = pad(String(Math.round(rawAmt * 100)).padStart(13, '0'), 13);
+    totalAmount += isNaN(rawAmt) ? 0 : rawAmt;
+    const fee2 = pad(cells[7].value, 10);
+    const fixID = "1473129649";
+    const seq = "D" + String(i + 2).padStart(6, '0');
+    const fixedValue = pad("003335", 6);
+    const fixedValue_2 = pad("B0250147CMBD00000000", 20);
+    const fixedValue_3 = pad("0005052020", 13);
+    const fixedValue_4 = pad("00", 56);
+    return seq + bank + fixID + eff + fixedValue + name + ref1 + ref2 + fixedValue_2 + amt + fixedValue_3 + fixedValue_4 + fee2;
+	
+	
+  });
+
+  const headerRaw = "H000001" + bank + "1473129649" + bankText.padEnd(40, ' ').slice(0, 40) + txnDate + "OCLCROSS";
+  const header = headerRaw.padEnd(195, ' ').slice(0, 195);
+
+  const dCount = rows.length;
+  const trailerSeq = "T" + String(dCount + 2).padStart(6, '0');
+  const dCountStr = String(dCount).padStart(6, '0');
+  const TfixedValue_1 = pad("0000000000000000001", 19);
+  const totalAmountStr = String(Math.round(totalAmount * 100)).padStart(13, '0');
+  
+  const trailerRaw = trailerSeq + bank + "1473129649" + TfixedValue_1 + totalAmountStr + dCountStr  ;
+  const trailer = trailerRaw.padEnd(82, ' ').slice(0, 82);
+
+  document.getElementById("outputArea").value = header + "\n" + lines.join("\n") + "\n" + trailer;
+}
+
+function copyOutput() {
+  const txt = document.getElementById("outputArea");
+  txt.select();
+  document.execCommand("copy");
+}
+
+function downloadTxt() {
+  const blob = new Blob([document.getElementById("outputArea").value], {type: "text/plain"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Generated_DLines.txt";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+window.onload = () => {
+  document.getElementById("txnDate").valueAsDate = new Date();
+  addRow();
+};
+</script>
+
+</body>
+</html>
