@@ -149,7 +149,7 @@
     <h2>🧠 QA Micro App ฟังก์ชัน</h2>
     <a href="#" class="tab-link active" onclick="switchTab('sql')">📄 Gen : Query เพื่อเอาไปต่อสัญญา สามัญ  AS400</a>
     <a href="#" class="tab-link" onclick="switchTab('mapping')">🔧 Gen : Ref_1</a>
-    <a href="#" class="tab-link" onclick="switchTab('dline')">📦 Gen : Text File</a>
+    <a href="#" class="tab-link" onclick="switchTab('dline')">📦 Gen : Text File Counter Bank</a>
   </div>
 
   <div class="main-content">
@@ -403,7 +403,8 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
 <button onclick="copyOutput()">📋 Copy</button>
 <button onclick="downloadTxt()">💾 Export</button>
 
-<h3>📦 Text Output</h3>
+<h3>📦 Text Output <span style="font-size: 9px; color: Blue;"> สามารถ Export และเอาไปนำเข้า ใบเสร็จส่วนกลางได้ทันที</span>  </h3>
+
 <textarea id="outputArea" readonly class="large-output"> </textarea>
 
 <script>
