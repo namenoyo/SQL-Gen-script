@@ -203,9 +203,9 @@
 <body>
   <div class="sidebar">
     <h2>🧠 QA Micro App ฟังก์ชัน</h2>
-    <a href="#" class="tab-link active" onclick="switchTab('sql')">📄 Gen : Query เพื่อเอาไปต่อสัญญา สามัญ  AS400</a>
-    <a href="#" class="tab-link" onclick="switchTab('mapping')">🔧 Gen : Ref_1</a>
-	<a href="#" class="tab-link" onclick="switchTab('idcardno')"> 𓁋 Gen : เลขบัตรประชาชน</a>
+    <a href="#" class="tab-link active" onclick="switchTab('sql')">📦 Gen : Query ปีต่อ ORD AS400</a>
+    <a href="#" class="tab-link" onclick="switchTab('mapping')">📦 Gen : Ref_1</a>
+	<a href="#" class="tab-link" onclick="switchTab('idcardno')"> 📦 Gen : เลขบัตรประชาชน</a>
     <a href="#" class="tab-link" onclick="switchTab('dline')">📦 Gen : Text File Counter Bank</a>
   </div>
 
@@ -225,8 +225,8 @@
 		
         <textarea id="sqlOutput"  class="large-output"></textarea>
 		<div class="section">
-        <button onclick="copySQL()">คัดลอก</button>
-        <button onclick="clearSQL()">ล้าง</button>
+        <button onclick="copySQL()">📋 Copy</button>
+        <button onclick="clearSQL()">🧹 Clear</button>
 		</div>
 		<script>
     function pad(n) {
@@ -414,21 +414,24 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
   <label>เลขนำหน้า:</label>
   <select id="prefixSelect" disabled  class="small-select_id_card"></select>
 
-  <label>จำนวนเลขที่ต้องการ:</label>
+  <label>จำนวนชุดที่ต้องการ:</label>
   <select id="count" class="small-select_id_card"> >
     <option value="3">3 เลข</option>
     <option value="5" selected>5 เลข</option>
     <option value="10">10 เลข</option>
   </select>
-
+  
+<p style="font-size: 10px; color: gray; margin-left: 10px;">
+  * หมายเหตุ: คนไทย ขึ้นต้นด้วยเลข 1- 5  และ คนต่างด้าว ขึ้นต้นด้วยเลข 6-9 
+</p>
 
   <div class="btn-group">
-   <button onclick="generateIDCards()">Generate</button>
-    <button onclick="copyOutput()">Copy</button>
-    <button onclick="clearOutput()">Clear</button>
+   <button onclick="generateIDCards()">📄 Generate</button>
+    <button onclick="copyOutput_2()">📋 Copy</button>
+    <button onclick="clearOutput()">🧹 Clear</button>
   </div>
 
-  <textarea id="output_2" readonly></textarea>
+  <textarea id="output_2" readonly class="large-output"></textarea>
 		
   <script>
     function updatePrefixOptions() {
@@ -488,7 +491,7 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
 }
 
 
-    function copyOutput() {
+    function copyOutput_2() {
       const textarea = document.getElementById('output_2');
       textarea.select();
       document.execCommand('copy');
