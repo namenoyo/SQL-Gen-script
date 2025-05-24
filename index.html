@@ -140,6 +140,62 @@
   user-select: none;
 }
 
+ /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+	
+	.small-select_id_card {
+  width: 200px;   /* หรือจะใช้ 150px ก็ได้ */
+  max-width: 100%;
+}
 
 
   </style>
@@ -149,6 +205,7 @@
     <h2>🧠 QA Micro App ฟังก์ชัน</h2>
     <a href="#" class="tab-link active" onclick="switchTab('sql')">📄 Gen : Query เพื่อเอาไปต่อสัญญา สามัญ  AS400</a>
     <a href="#" class="tab-link" onclick="switchTab('mapping')">🔧 Gen : Ref_1</a>
+	<a href="#" class="tab-link" onclick="switchTab('idcardno')"> 𓁋 Gen : เลขบัตรประชาชน</a>
     <a href="#" class="tab-link" onclick="switchTab('dline')">📦 Gen : Text File Counter Bank</a>
   </div>
 
@@ -275,8 +332,8 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
         <input type="text" id="inputID" placeholder="ตัวอย่าง กธ : 1104860, J7647226, E6350304, PAR10430199, ส1234568">
         <br><button onclick="transform()">แปลงค่า</button>
         
-  <label for="output">ผลลัพธ์:</label>
-  <textarea id="output" readonly></textarea>
+  <label for="output_1">ผลลัพธ์:</label>
+  <textarea id="output_1" readonly></textarea>
 		
   <script>
     const specialPrefixes = ['PA', 'PAR'];
@@ -308,7 +365,7 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
     function transform() {
       const input = document.getElementById("inputID").value.trim();
       if (!input) {
-        document.getElementById("output").value = "";
+        document.getElementById("output_1").value = "";
         return;
       }
 
@@ -331,12 +388,124 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
         if (code) transformed = code + rest;
       }
 
-      document.getElementById("output").value = transformed;
+      document.getElementById("output_1").value = transformed;
     }
   </script>
       </div>
     </div>
 	
+<div id="idcardno" class="card-content">
+      <div class="card">
+        <h3>𓁋 Gen : เลขบัตรประชาชน </h3>
+		
+  <div class="radio-group">
+    <label><input type="radio" name="idType" value="thai" checked onchange="updatePrefixOptions()"> คนไทย</label>
+    <label><input type="radio" name="idType" value="alien" onchange="updatePrefixOptions()"> ต่างด้าว</label>
+  </div>
+
+  <div class="toggle-label">
+    <label class="switch">
+      <input type="checkbox" id="customPrefix" onchange="togglePrefixSelect()">
+      <span class="slider"></span>
+    </label>
+    <span>ระบุเลขนำหน้าเอง</span>
+  </div>
+
+  <label>เลขนำหน้า:</label>
+  <select id="prefixSelect" disabled  class="small-select_id_card"></select>
+
+  <label>จำนวนเลขที่ต้องการ:</label>
+  <select id="count" class="small-select_id_card"> >
+    <option value="3">3 เลข</option>
+    <option value="5" selected>5 เลข</option>
+    <option value="10">10 เลข</option>
+  </select>
+
+
+  <div class="btn-group">
+   <button onclick="generateIDCards()">Generate</button>
+    <button onclick="copyOutput()">Copy</button>
+    <button onclick="clearOutput()">Clear</button>
+  </div>
+
+  <textarea id="output_2" readonly></textarea>
+		
+  <script>
+    function updatePrefixOptions() {
+      const type = document.querySelector('input[name="idType"]:checked').value;
+      const prefixSelect = document.getElementById('prefixSelect');
+      prefixSelect.innerHTML = '';
+
+      const start = type === 'thai' ? 1 : 6;
+      const end = type === 'thai' ? 5 : 9;
+
+      for (let i = start; i <= end; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = i;
+        prefixSelect.appendChild(opt);
+      }
+    }
+
+    function togglePrefixSelect() {
+      const isEnabled = document.getElementById('customPrefix').checked;
+      document.getElementById('prefixSelect').disabled = !isEnabled;
+    }
+
+    function generateID(type, customPrefixEnabled, customPrefix) {
+      let id = '';
+      if (customPrefixEnabled) {
+        id += customPrefix;
+      } else {
+        id += (type === 'thai') ? Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 4) + 6;
+      }
+
+      for (let i = 0; i < 11; i++) {
+        id += Math.floor(Math.random() * 10);
+      }
+
+      let sum = 0;
+      for (let i = 0; i < 12; i++) {
+        sum += parseInt(id.charAt(i)) * (13 - i);
+      }
+
+      let checkDigit = (11 - (sum % 11)) % 10;
+      return id + checkDigit;
+    }
+
+    function generateIDCards() {
+  const type = document.querySelector('input[name="idType"]:checked').value;
+  const count = parseInt(document.getElementById('count').value);
+  const customPrefixEnabled = document.getElementById('customPrefix').checked;
+  const prefix = parseInt(document.getElementById('prefixSelect').value);
+  const output_2 = [];
+
+  for (let i = 0; i < count; i++) {
+    output_2.push(generateID(type, customPrefixEnabled, prefix));
+  }
+
+  document.getElementById('output_2').value = output_2.join('\n');
+}
+
+
+    function copyOutput() {
+      const textarea = document.getElementById('output_2');
+      textarea.select();
+      document.execCommand('copy');
+      //alert('คัดลอกแล้ว!');
+    }
+
+    function clearOutput() {
+      document.getElementById('output_2').value = '';
+    }
+
+    // โหลด prefix options ครั้งแรก
+    updatePrefixOptions();
+  </script>
+      </div>
+    </div>
+	
+
 
 <div id="dline" class="card-content">
 <div class="card">
