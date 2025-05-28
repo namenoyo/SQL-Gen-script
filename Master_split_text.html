@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Delimiter Converter Tool</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f7f7;
+      padding: 20px;
+    }
+    textarea, select, input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    label {
+      font-weight: bold;
+    }
+    button {
+      padding: 8px 16px;
+      margin-right: 10px;
+    }
+    #output {
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔁 Delimiter Converter Tool</h2>
+
+  <label>🔹 ข้อมูลต้นทาง (Auto Detect):</label>
+  <textarea id="inputArea_5" placeholder="วางข้อความ เช่น 'aaa','bbb','ccc' หรือ aaa bbb ccc"></textarea>
+
+  <label>🔹 เลือกตัวคั่น Output:</label>
+  <select id="outputSelect_5" onchange="toggleCustom('output')">
+    <option value="\n">เว้นบรรทัด</option>
+	<option value="quoted-comma">สำหรับการ Query ','</option>
+    <option value="custom">ระบุเอง</option>
+  </select>
+  <input type="text" id="outputCustom_5" placeholder="ระบุตัวคั่น Output เอง" style="display:none" />
+
+  <button onclick="convertDelimiter()">📄 แปลง</button>
+  <button onclick="clearAll()">🧹 Clear</button>
+
+  <h3>🔹 ผลลัพธ์:</h3>
+  <textarea id="output_5" class="large-output" readonly></textarea>
+
+   <button onclick="copyOutput_5()">📋 Copy</button>
+   
+  <script>
+   function toggleCustom(type) {
+  const custom = document.getElementById(type + 'Custom_5');
+  const select = document.getElementById(type + 'Select_5');
+  custom.style.display = select.value === 'custom' ? 'block' : 'none';
+}
+
+
+   function getOutputDelimiter() {
+  const select = document.getElementById('outputSelect_5').value.trim();
+  const custom = document.getElementById('outputCustom_5').value;
+
+  if (select === 'custom') return custom;
+  
+  // ✅ แปลง string escape ให้เป็น character จริง
+  if (select === '\\n') return '\n';
+  if (select === '\\t') return '\t';
+
+  // ✅ return delimiter ที่ล้าง ' " หรือเว้นวรรคออกแล้ว
+  if (select === 'quoted-comma') return 'quoted-comma';
+
+  return select.replace(/^['"\s]+|['"\s]+$/g, '');
+}
+
+
+
+   function detectInputDelimiter(text) {
+  const candidates = [
+    { regex: /'\s*,\s*'/, label: 'quoted-comma' },
+    { regex: /\s*,\s*/, label: ',' },
+    { regex: /\n+/, label: 'newline' },
+    { regex: /\t+/, label: 'tab' },
+    { regex: /\s{2,}/, label: 'double space' },
+    { regex: /\s+/, label: 'space' },
+  ];
+
+  let bestMatch = candidates[0];
+  let maxParts = 0;
+
+  candidates.forEach(c => {
+    // เราต้อง replace quote ออกก่อน split
+    const cleanedText = text.replace(/^['"]+|['"]+$/g, '');
+    const parts = cleanedText.split(c.regex).filter(x => x.trim() !== '');
+    if (parts.length > maxParts) {
+      maxParts = parts.length;
+      bestMatch = c;
+    }
+  });
+
+  return bestMatch.regex;
+}
+
+function convertDelimiter() {
+  const inputText = document.getElementById('inputArea_5').value.trim();
+  const outputDelimiter = getOutputDelimiter();
+
+  // ✅ ใช้ match เพื่อดึงคำทั้งหมดแบบ universal
+  const parts = inputText
+    .match(/(['"]?[\wก-๙]+['"]?)/g)  // ดึงคำไทย อังกฤษ เลข หรือที่มี quote
+    .map(x =>
+      x
+        .replace(/^[\s,'"\[\]]+/, '')
+        .replace(/[\s,'"\[\]]+$/, '')
+        .trim()
+    )
+    .filter(Boolean);
+
+  let result = '';
+  if (outputDelimiter === 'quoted-comma') {
+    result = parts.map(x => `'${x}'`).join(',');
+  } else {
+    result = parts.join(outputDelimiter);
+  }
+
+  document.getElementById('output_5').value = result;
+
+}
+
+function copyOutput_5() {
+  const txt = document.getElementById("output_5");
+  txt.select();
+  document.execCommand("copy");
+}
+
+
+    function clearAll() {
+      document.getElementById('inputArea_5').value = '';
+     document.getElementById('output_5').value = '';
+
+    }
+  </script>
+
+</body>
+</html>
