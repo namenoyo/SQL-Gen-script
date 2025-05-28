@@ -198,6 +198,8 @@
 }
 
 
+
+
   </style>
 </head>
 <body>
@@ -207,6 +209,7 @@
     <a href="#" class="tab-link" onclick="switchTab('mapping')">📦 Gen : Ref_1</a>
 	<a href="#" class="tab-link" onclick="switchTab('idcardno')"> 📦 Gen : เลขบัตรประชาชน</a>
     <a href="#" class="tab-link" onclick="switchTab('dline')">📦 Gen : Text File Counter Bank</a>
+	<a href="#" class="tab-link" onclick="switchTab('split_text')">📦 ตัดช่องว่าง หรือ เว้นบรรทัด</a>
   </div>
 
   <div class="main-content">
@@ -695,6 +698,123 @@ window.onload = () => {
 </script>
 </div>
 </div>
+
+<div id="split_text" class="card-content">
+      <div class="card">
+        <h2>🔁 ตัดช่องว่าง หรือ เว้นบรรทัด</h2>
+
+  <label>🔹 ข้อมูลต้นทาง (Auto Detect):</label>
+  <textarea id="inputArea_5" placeholder="วางข้อความ เช่น 'aaa','bbb','ccc' หรือ aaa bbb ccc"></textarea>
+
+  <label>🔹 เลือกตัวคั่น Output:</label>
+  <select id="outputSelect_5" onchange="toggleCustom('output')">
+    <option value="\n">เว้นบรรทัด</option>
+	<option value="quoted-comma">สำหรับการ Query ','</option>
+    <option value="custom">ระบุเอง</option>
+  </select>
+  <input type="text" id="outputCustom_5" placeholder="ระบุตัวคั่น Output เอง" style="display:none" />
+
+  <button onclick="convertDelimiter()">📄 แปลง</button>
+  <button onclick="clearAll()">🧹 Clear</button>
+
+  <h3>🔹 ผลลัพธ์:</h3>
+  <textarea id="output_5" class="large-output" readonly></textarea>
+
+   <button onclick="copyOutput_5()">📋 Copy</button>
+   
+  <script>
+   function toggleCustom(type) {
+  const custom = document.getElementById(type + 'Custom_5');
+  const select = document.getElementById(type + 'Select_5');
+  custom.style.display = select.value === 'custom' ? 'block' : 'none';
+}
+
+
+   function getOutputDelimiter() {
+  const select = document.getElementById('outputSelect_5').value.trim();
+  const custom = document.getElementById('outputCustom_5').value;
+
+  if (select === 'custom') return custom;
+  
+  // ✅ แปลง string escape ให้เป็น character จริง
+  if (select === '\\n') return '\n';
+  if (select === '\\t') return '\t';
+
+  // ✅ return delimiter ที่ล้าง ' " หรือเว้นวรรคออกแล้ว
+  if (select === 'quoted-comma') return 'quoted-comma';
+
+  return select.replace(/^['"\s]+|['"\s]+$/g, '');
+}
+
+
+
+   function detectInputDelimiter(text) {
+  const candidates = [
+    { regex: /'\s*,\s*'/, label: 'quoted-comma' },
+    { regex: /\s*,\s*/, label: ',' },
+    { regex: /\n+/, label: 'newline' },
+    { regex: /\t+/, label: 'tab' },
+    { regex: /\s{2,}/, label: 'double space' },
+    { regex: /\s+/, label: 'space' },
+  ];
+
+  let bestMatch = candidates[0];
+  let maxParts = 0;
+
+  candidates.forEach(c => {
+    // เราต้อง replace quote ออกก่อน split
+    const cleanedText = text.replace(/^['"]+|['"]+$/g, '');
+    const parts = cleanedText.split(c.regex).filter(x => x.trim() !== '');
+    if (parts.length > maxParts) {
+      maxParts = parts.length;
+      bestMatch = c;
+    }
+  });
+
+  return bestMatch.regex;
+}
+
+function convertDelimiter() {
+  const inputText = document.getElementById('inputArea_5').value.trim();
+  const outputDelimiter = getOutputDelimiter();
+
+  // ✅ ใช้ match เพื่อดึงคำทั้งหมดแบบ universal
+  const parts = inputText
+    .match(/(['"]?[\wก-๙]+['"]?)/g)  // ดึงคำไทย อังกฤษ เลข หรือที่มี quote
+    .map(x =>
+      x
+        .replace(/^[\s,'"\[\]]+/, '')
+        .replace(/[\s,'"\[\]]+$/, '')
+        .trim()
+    )
+    .filter(Boolean);
+
+  let result = '';
+  if (outputDelimiter === 'quoted-comma') {
+    result = parts.map(x => `'${x}'`).join(',');
+  } else {
+    result = parts.join(outputDelimiter);
+  }
+
+  document.getElementById('output_5').value = result;
+
+}
+
+function copyOutput_5() {
+  const txt = document.getElementById("output_5");
+  txt.select();
+  document.execCommand("copy");
+}
+
+
+    function clearAll() {
+      document.getElementById('inputArea_5').value = '';
+     document.getElementById('output_5').value = '';
+
+    }
+  </script>
+  </div>
+</div>
   </div>
   <script>
     function switchTab(tabId) {
@@ -704,7 +824,7 @@ window.onload = () => {
       event.target.classList.add('active');
     }
   </script>
-  <div class="noometal-brand">Version Beta 1.0.2 
+  <div class="noometal-brand">Version Beta 1.0.3 
   <br>Power of NooMetal</div>
 </body>
 </html>
