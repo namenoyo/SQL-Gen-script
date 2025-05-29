@@ -1,0 +1,1158 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>QA Smart Panel + D-Line Generator</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f8fb;
+      display: flex;
+      height: 100vh;
+	   font-size: 13px;
+    }
+    .sidebar {
+      width: 220px;
+      background: #2c3e50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 10px;
+    }
+    .sidebar h2 {
+      font-size: 16px;
+      margin-bottom: 20px;
+      padding-left: 10px;
+    }
+    .sidebar a {
+      padding: 8px 15px;
+      margin: 4px 0;
+      text-decoration: none;
+      color: white;
+      border-radius: 6px;
+      display: block;
+	   font-size: 13px;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background-color: #3498db;
+    }
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    textarea, input[type="date"], input[type="text"], select {
+      width: 100%;
+      padding: 6px;
+      margin: 6px 0 10px;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      padding: 6px 12px;
+      margin: 3px;
+      font-size: 13px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    h3 {
+      margin-top: 0;
+      font-size: 16px;
+    }
+    .card-content {
+      display: none;
+    }
+    .card-content.active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+	   font-size: 13px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+	   font-size: 12px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+	  font-size: 13px;
+    }
+    .row label {
+      width: 120px;
+      font-weight: bold;
+    }
+    .row input, .row select {
+      flex: 1;
+    }
+	
+	input.small-date {
+	width: 150px;
+	}
+	textarea.large-output {
+  min-height: 200px;
+  font-family: monospace;
+  white-space: pre;
+	}
+	textarea.medium-output {
+  min-height: 100px;
+  font-family: monospace;
+  white-space: pre;
+	}
+	
+    .small-input {
+  width: 20px;
+  max-width: 15%;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+   .noometal-brand {
+  position: fixed;
+  bottom: 8px;
+  left: 12px;
+  font-size: 11px;
+  font-family: 'Segoe UI', sans-serif;
+  color: rgba(0, 206, 209, 0.3);           /* สีฟ้าทะเลจางๆ */
+  letter-spacing: 1px;
+  text-shadow: 0 0 2px rgba(0, 206, 209, 0.15); /* เงาสีฟ้าทะเล */
+  pointer-events: none;
+  z-index: 999;
+  user-select: none;
+}
+
+ /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+	
+	.small-select_id_card {
+  width: 200px;   /* หรือจะใช้ 150px ก็ได้ */
+  max-width: 100%;
+}
+
+
+
+
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>🧠 QA Micro App ฟังก์ชัน</h2>
+    <a href="#" class="tab-link active" onclick="switchTab('sql')">📦 Gen : Query ปีต่อ ORD AS400</a>
+    <a href="#" class="tab-link" onclick="switchTab('mapping')">📦 Gen : Ref_1</a>
+	<a href="#" class="tab-link" onclick="switchTab('idcardno')"> 📦 Gen : เลขบัตรประชาชน</a>
+    <a href="#" class="tab-link" onclick="switchTab('dline')">📦 Gen : Text File Counter Bank</a>
+	<a href="#" class="tab-link" onclick="switchTab('split_text')">📦 ตัดช่องว่าง หรือ เว้นบรรทัด</a>
+	<a href="#" class="tab-link" onclick="switchTab('json_gen')">📦 Gen : JSON For Test Data</a>
+  </div>
+
+  <div class="main-content">
+<div id="sql" class="card-content active">
+
+      <div class="section">
+        <h3>📄 SQL Query Generator สำหรับใช้ใน AS400</h3>
+       <div style="display: flex; align-items: left ; gap: 15px;">
+	   
+	   
+  <button onclick="useToday()">📅 ใช้วันที่วันนี้ </button> <p>หรือระบุวันที่เอง</p>
+  <input type="date" id="customDate" class="small-date">
+</div>
+<br>
+        <div><strong>📆 วันที่ระบุ:</strong> <span id="displayDate"></span></div>
+		
+        <textarea id="sqlOutput"  class="large-output"></textarea>
+		<div class="section">
+        <button onclick="copySQL()">📋 Copy</button>
+        <button onclick="clearSQL()">🧹 Clear</button>
+		</div>
+		<script>
+    function pad(n) {
+      return n.toString().padStart(2, '0');
+    }
+
+    function toYYMMDD(date) {
+      const d = new Date(date);
+      const year = d.getFullYear() - 543;
+      const yy = (year ).toString().padStart(2, '0');
+      const mm = pad(d.getMonth() + 1);
+      const dd = pad(d.getDate());
+      return { yy, mm, dd };
+    }
+	
+	function toBEYYMMDD(dateObj) {
+  const year = dateObj.getFullYear() + 543 - 2500;
+  return `${pad(year)}${pad(dateObj.getMonth() + 1)}${pad(dateObj.getDate())}`;
+}
+
+
+
+    function formatThaiDate(date) {
+  const d = new Date(date);
+  const year = d.getFullYear() + 543;
+  const month = ('0' + (d.getMonth() + 1)).slice(-2); // ✅ บังคับ 2 หลัก
+  const day = ('0' + d.getDate()).slice(-2);          // ✅ บังคับ 2 หลัก
+  return `${year}/${month}/${day}`;
+}
+
+  function generateSQL(dateInput) {
+  const base = new Date(dateInput);
+
+  function toBEYYMMDD(dateObj) {
+    const year = String(dateObj.getFullYear() + 543 - 2500).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}${month}${day}`;
+  }
+
+  const end = toBEYYMMDD(base);
+
+  const mod1Start = new Date(base.getFullYear(), base.getMonth() - 2, base.getDate() - 1);
+  const mod1End = new Date(base.getFullYear(), base.getMonth() - 1, base.getDate() - 1);
+  const mod1StartStr = toBEYYMMDD(mod1Start);
+  const mod1EndStr = toBEYYMMDD(mod1End);
+
+  const mod3StartStr = toBEYYMMDD(new Date(base.getFullYear(), base.getMonth() - 3, 1));
+  const mod3EndStr = toBEYYMMDD(new Date(base.getFullYear(), base.getMonth() - 3, base.getDate()));
+
+  const mod6StartStr = toBEYYMMDD(new Date(base.getFullYear(), base.getMonth() - 6, 1));
+  const mod6EndStr = toBEYYMMDD(new Date(base.getFullYear(), base.getMonth() - 6, base.getDate()));
+
+  const mod12StartStr = toBEYYMMDD(new Date(base.getFullYear(), base.getMonth() - 12, 1));
+  const mod12EndStr = toBEYYMMDD(new Date(base.getFullYear(), base.getMonth() - 12, base.getDate()));
+
+  const sql = `SELECT a.POLIC#, a.POSMAS, a.POCMDT, a.POFRDT,a.POTODT, a.POMOD#, a.*
+FROM olis.OLPPOLMS AS a
+WHERE a.POSTS@ = 'I' AND NOT EXISTS (
+  SELECT 1 FROM olis.OLPLOAHD b WHERE a."POLIC#" = b."LHPOL#"
+) AND (
+  (a.POMOD# = '1' AND a.POTODT BETWEEN '${mod1StartStr}' AND '${mod1EndStr}') OR
+  (a.POMOD# = '3' AND a.POFRDT BETWEEN '${mod3StartStr}' AND '${mod3EndStr}' AND a.POTODT <= '${end}') OR
+  (a.POMOD# = '6' AND a.POFRDT BETWEEN '${mod6StartStr}' AND '${mod6EndStr}' AND a.POTODT <= '${end}') OR
+  (a.POMOD# = '12' AND a.POFRDT BETWEEN '${mod12StartStr}' AND '${mod12EndStr}' AND a.POTODT <= '${end}')
+);`;
+
+  document.getElementById('sqlOutput').value = sql;
+  document.getElementById('displayDate').textContent = formatThaiDate(dateInput);
+}
+
+
+
+    function useToday() {
+      const today = new Date();
+      const dateStr = today.toISOString().split('T')[0];
+      document.getElementById('customDate').value = dateStr;
+      generateSQL(dateStr);
+    }
+
+    function copySQL() {
+      const textarea = document.getElementById('sqlOutput');
+      textarea.select();
+      document.execCommand('copy');
+    }
+
+    function clearSQL() {
+      document.getElementById('sqlOutput').value = '';
+      document.getElementById('displayDate').textContent = '';
+    }
+
+    document.getElementById('customDate').addEventListener('change', function () {
+      generateSQL(this.value);
+    });
+	</script>
+      </div>
+    </div>
+	
+	
+<div id="mapping" class="card-content">
+      <div class="card">
+        <h3>🔧 เลขกธ Transform เป็น  Ref1  </h3>
+        <input type="text" id="inputID" placeholder="ตัวอย่าง กธ : 1104860, J7647226, E6350304, PAR10430199, ส1234568">
+        <br><button onclick="transform()">แปลงค่า</button>
+        
+  <label for="output_1">ผลลัพธ์:</label>
+  <textarea id="output_1" readonly></textarea>
+		
+  <script>
+    const specialPrefixes = ['PA', 'PAR'];
+    const mappingTable = {
+      "00": "0", "033": "PA", "034": "PAR", "03": "ก", "04": "ข", "05": "ฃ",
+      "06": "ค", "07": "ฅ", "08": "ฆ", "09": "ง", "10": "A", "11": "B", "12": "C",
+      "13": "D", "14": "E", "15": "F", "16": "K", "17": "T", "18": "ส", "19": "H",
+      "20": "I", "21": "J", "22": "1", "23": "2", "24": "3", "25": "4", "26": "5",
+      "27": "6", "28": "7", "29": "8", "30": "9"
+    };
+
+    function buildMaps() {
+      const prefixMap = [];
+      const charMap = {};
+      for (const code in mappingTable) {
+        const desc = mappingTable[code];
+        if (specialPrefixes.includes(desc)) {
+          prefixMap.push({ desc, code: code.padStart(3, '0') });
+        } else if (desc.length >= 2) {
+          prefixMap.push({ desc, code: code.padStart(2, '0') });
+        } else {
+          charMap[desc] = code.padStart(2, '0');
+        }
+      }
+      prefixMap.sort((a, b) => b.desc.length - a.desc.length);
+      return { prefixMap, charMap };
+    }
+
+    function transform() {
+      const input = document.getElementById("inputID").value.trim();
+      if (!input) {
+        document.getElementById("output_1").value = "";
+        return;
+      }
+
+      const { prefixMap, charMap } = buildMaps();
+      let transformed = input;
+      let matchedPrefix = null;
+
+      for (const map of prefixMap) {
+        if (input.startsWith(map.desc)) {
+          transformed = map.code + input.slice(map.desc.length);
+          matchedPrefix = map.desc;
+          break;
+        }
+      }
+
+      if (!matchedPrefix) {
+        const firstChar = input.charAt(0);
+        const rest = input.slice(1);
+        const code = charMap[firstChar];
+        if (code) transformed = code + rest;
+      }
+
+      document.getElementById("output_1").value = transformed;
+    }
+  </script>
+      </div>
+    </div>
+	
+<div id="idcardno" class="card-content">
+      <div class="card">
+        <h3>𓁋 Gen : เลขบัตรประชาชน </h3>
+		
+  <div class="radio-group">
+    <label><input type="radio" name="idType" value="thai" checked onchange="updatePrefixOptions()"> คนไทย</label>
+    <label><input type="radio" name="idType" value="alien" onchange="updatePrefixOptions()"> ต่างด้าว</label>
+  </div>
+
+  <div class="toggle-label">
+    <label class="switch">
+      <input type="checkbox" id="customPrefix" onchange="togglePrefixSelect()">
+      <span class="slider"></span>
+    </label>
+    <span>ระบุเลขนำหน้าเอง</span>
+  </div>
+
+  <label>เลขนำหน้า:</label>
+  <select id="prefixSelect" disabled  class="small-select_id_card"></select>
+
+  <label>จำนวนชุดที่ต้องการ:</label>
+  <select id="count" class="small-select_id_card"> >
+    <option value="3">3 เลข</option>
+    <option value="5" selected>5 เลข</option>
+    <option value="10">10 เลข</option>
+  </select>
+  
+<p style="font-size: 10px; color: gray; margin-left: 10px;">
+  * หมายเหตุ: คนไทย ขึ้นต้นด้วยเลข 1- 5  และ คนต่างด้าว ขึ้นต้นด้วยเลข 6-9 
+</p>
+
+  <div class="btn-group">
+   <button onclick="generateIDCards()">📄 Generate</button>
+    <button onclick="copyOutput_2()">📋 Copy</button>
+    <button onclick="clearOutput()">🧹 Clear</button>
+  </div>
+
+  <textarea id="output_2" readonly class="large-output"></textarea>
+		
+  <script>
+    function updatePrefixOptions() {
+      const type = document.querySelector('input[name="idType"]:checked').value;
+      const prefixSelect = document.getElementById('prefixSelect');
+      prefixSelect.innerHTML = '';
+
+      const start = type === 'thai' ? 1 : 6;
+      const end = type === 'thai' ? 5 : 9;
+
+      for (let i = start; i <= end; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = i;
+        prefixSelect.appendChild(opt);
+      }
+    }
+
+    function togglePrefixSelect() {
+      const isEnabled = document.getElementById('customPrefix').checked;
+      document.getElementById('prefixSelect').disabled = !isEnabled;
+    }
+
+    function generateID(type, customPrefixEnabled, customPrefix) {
+      let id = '';
+      if (customPrefixEnabled) {
+        id += customPrefix;
+      } else {
+        id += (type === 'thai') ? Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 4) + 6;
+      }
+
+      for (let i = 0; i < 11; i++) {
+        id += Math.floor(Math.random() * 10);
+      }
+
+      let sum = 0;
+      for (let i = 0; i < 12; i++) {
+        sum += parseInt(id.charAt(i)) * (13 - i);
+      }
+
+      let checkDigit = (11 - (sum % 11)) % 10;
+      return id + checkDigit;
+    }
+
+    function generateIDCards() {
+  const type = document.querySelector('input[name="idType"]:checked').value;
+  const count = parseInt(document.getElementById('count').value);
+  const customPrefixEnabled = document.getElementById('customPrefix').checked;
+  const prefix = parseInt(document.getElementById('prefixSelect').value);
+  const output_2 = [];
+
+  for (let i = 0; i < count; i++) {
+    output_2.push(generateID(type, customPrefixEnabled, prefix));
+  }
+
+  document.getElementById('output_2').value = output_2.join('\n');
+}
+
+
+    function copyOutput_2() {
+      const textarea = document.getElementById('output_2');
+      textarea.select();
+      document.execCommand('copy');
+      //alert('คัดลอกแล้ว!');
+    }
+
+    function clearOutput() {
+      document.getElementById('output_2').value = '';
+    }
+
+    // โหลด prefix options ครั้งแรก
+    updatePrefixOptions();
+  </script>
+      </div>
+    </div>
+	
+
+
+<div id="dline" class="card-content">
+<div class="card">
+<h2>📄  Generator Text File - Counter Bank V.1</h2>
+
+<div class="row">
+  <label>Bank Code:</label>
+  <select id="bankCommon"  class="small-input">
+    <option value="002">002 BBL</option>
+    <option value="004">004 KBANK</option>
+    <option value="006">006 KTB</option>
+    <option value="011">011 TMB</option>
+	<option value="014">014 SCB</option>
+	<option value="022">022 CIMB</option>
+	<option value="025">025 BAY</option>
+	<option value="030">030 GSB</option>
+	<option value="034">034 BAAC</option>
+	<option value="065">065 TNB</option>
+	<option value="073">073 LH</option>
+
+	
+  </select>
+</div>
+<div class="row">
+  <label>วันที่ทำรายการ:</label>
+  <input type="date" id="txnDate"  class="small-input" onchange="syncDates()" />
+</div>
+
+<table id="detailTable">
+  <thead>
+    <tr>
+      <th>Effective Date</th>
+      <th>Payment Date</th>
+      <th>Customer Name   
+	<br><span style="font-size: 11px; color: Blue;">*บังคับ Eng	</span><br>
+	<span style="font-size: 11px; color: red;">ไม่ต้องเปลี่ยน</span><br>
+	
+	</th>
+	<p style="font-size: 10px; color: gray; margin-left: 10px;">
+  * หมายเหตุ: ถ้าหากระบุ Customer Name เป็นภาษาไทย กรุณาบันทึกไฟล์นี้เป็น <strong>ANSI</strong> เพื่อป้องกันปัญหา Encoding และอาจเกิดปัญหานำเข้าใบเสร็จส่วนกลางไม่สำเร็จ
+</p>
+      <th>Ref1 
+	<br>
+	<span style="font-size: 11px; color: Blue;">*บังคับ ระบุ</span><br>
+	</th>
+      <th>Ref2</th>
+      <th>Amount</th>
+      <th>Fee1 
+	  <br>
+	<span style="font-size: 11px; color: red;">ไม่ต้องเปลี่ยน</span><br>
+	</th>
+      <th>Fee2
+	  <br>
+	<span style="font-size: 11px; color: red;">ไม่ต้องเปลี่ยน</span><br></th>
+      <th>ลบ</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<button onclick="addRow()">➕ เพิ่มแถว</button>
+<button onclick="clearRows()">🧹 Clear</button>
+<button onclick="generateText()">📄 Generate</button>
+<button onclick="copyOutput()">📋 Copy</button>
+<button onclick="downloadTxt()">💾 Export</button>
+
+<h3>📦 Text Output <span style="font-size: 9px; color: Blue;"> สามารถ Export และเอาไปนำเข้า ใบเสร็จส่วนกลางได้ทันที</span>  </h3>
+
+<textarea id="outputArea" readonly class="large-output"> </textarea>
+
+<script>
+function pad(str, len) {
+  return (str || "").toString().padEnd(len, ' ').slice(0, len);
+}
+
+function getDDMMYYYY(dateStr) {
+  const d = new Date(dateStr);
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = String(d.getFullYear());
+  return dd + mm + yyyy;
+}
+
+function addRow() {
+  const tbody = document.querySelector("#detailTable tbody");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><input type="text" maxlength="8" class="eff" /></td>
+    <td><input type="text" maxlength="8" class="pay" /></td>
+    <td><input type="text" maxlength="50" value="QA TestFile" /></td>
+    <td><input type="text" maxlength="19" value="5101020120468042275" /></td>
+    <td><input type="text" maxlength="8" value="28032568" /></td>
+    <td><input type="number" step="0.01" maxlength="13" value="500.00" /></td>
+    <td><input type="text" maxlength="2" value="00" /></td>
+    <td><input type="text" maxlength="10" value="0000000000" /></td>
+    <td><button onclick="this.closest('tr').remove()">🗑</button></td>
+  `;
+  tbody.appendChild(tr);
+  syncDates();
+}
+
+function setDefault() {
+  document.querySelectorAll("#detailTable tbody tr").forEach(row => {
+    const date = getDDMMYYYY(document.getElementById("txnDate").value);
+    row.querySelector(".eff").value = date;
+    row.querySelector(".pay").value = date;
+  });
+}
+
+function clearRows() {
+  document.querySelector("#detailTable tbody").innerHTML = "";
+}
+
+function syncDates() {
+  const date = getDDMMYYYY(document.getElementById("txnDate").value);
+  document.querySelectorAll(".eff, .pay").forEach(el => el.value = date);
+}
+
+function generateText() {
+  const bank = document.getElementById("bankCommon").value;
+  const bankText = document.getElementById("bankCommon").selectedOptions[0].text.split(' ')[1];
+  const txnDate = getDDMMYYYY(document.getElementById("txnDate").value);
+  const tbody = document.querySelector("#detailTable tbody");
+  const rows = tbody.querySelectorAll("tr");
+
+  let totalAmount = 0;
+  const lines = Array.from(rows).map((row, i) => {
+    const cells = row.querySelectorAll("input");
+    const eff = pad(cells[0].value, 8);
+    const pay = pad(cells[1].value, 8);
+    const name = pad(cells[2].value, 50);
+    const ref1 = pad(cells[3].value, 20);
+    const ref2 = pad(cells[4].value, 39);
+    const rawAmt = parseFloat(cells[5].value.replace(/[^\d.]/g, ""));
+    const amt = pad(String(Math.round(rawAmt * 100)).padStart(13, '0'), 13);
+    totalAmount += isNaN(rawAmt) ? 0 : rawAmt;
+    const fee2 = pad(cells[7].value, 10);
+    const fixID = "1473129649";
+    const seq = "D" + String(i + 2).padStart(6, '0');
+    const fixedValue = pad("003335", 6);
+    const fixedValue_2 = pad("B0250147CMBD00000000", 20);
+    const fixedValue_3 = pad("0005052020", 13);
+    const fixedValue_4 = pad("00", 56);
+    return seq + bank + fixID + eff + fixedValue + name + ref1 + ref2 + fixedValue_2 + amt + fixedValue_3 + fixedValue_4 + fee2;
+	
+	
+  });
+
+  const headerRaw = "H000001" + bank + "1473129649" + bankText.padEnd(40, ' ').slice(0, 40) + txnDate + "OCLCROSS";
+  const header = headerRaw.padEnd(195, ' ').slice(0, 195);
+
+  const dCount = rows.length;
+  const trailerSeq = "T" + String(dCount + 2).padStart(6, '0');
+  const dCountStr = String(dCount).padStart(6, '0');
+  const TfixedValue_1 = pad("0000000000000000001", 19);
+  const totalAmountStr = String(Math.round(totalAmount * 100)).padStart(13, '0');
+  
+  const trailerRaw = trailerSeq + bank + "1473129649" + TfixedValue_1 + totalAmountStr + dCountStr  ;
+  const trailer = trailerRaw.padEnd(82, ' ').slice(0, 82);
+
+  document.getElementById("outputArea").value = header + "\n" + lines.join("\n") + "\n" + trailer;
+}
+
+function copyOutput() {
+  const txt = document.getElementById("outputArea");
+  txt.select();
+  document.execCommand("copy");
+}
+
+function downloadTxt() {
+  const blob = new Blob([document.getElementById("outputArea").value], {type: "text/plain"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Generated_DLines.txt";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+window.onload = () => {
+  document.getElementById("txnDate").valueAsDate = new Date();
+  addRow();
+};
+</script>
+</div>
+</div>
+
+<div id="split_text" class="card-content">
+      <div class="card">
+        <h2>🔁 ตัดช่องว่าง หรือ เว้นบรรทัด</h2>
+
+  <label>🔹 ข้อมูลต้นทาง (Auto Detect):</label>
+  <textarea id="inputArea_5" placeholder="วางข้อความ เช่น 'aaa','bbb','ccc' หรือ aaa bbb ccc"></textarea>
+
+  <label>🔹 เลือกตัวคั่น Output:</label>
+  <select id="outputSelect_5" onchange="toggleCustom('output')">
+    <option value="\n">เว้นบรรทัด</option>
+	<option value="quoted-comma">สำหรับการ Query ','</option>
+    <option value="custom">ระบุเอง</option>
+  </select>
+  <input type="text" id="outputCustom_5" placeholder="ระบุตัวคั่น Output เอง" style="display:none" />
+
+  <button onclick="convertDelimiter()">📄 แปลง</button>
+  <button onclick="clearAll()">🧹 Clear</button>
+
+  <h3>🔹 ผลลัพธ์:</h3>
+  <textarea id="output_5" class="large-output" readonly></textarea>
+
+   <button onclick="copyOutput_5()">📋 Copy</button>
+   
+  <script>
+   function toggleCustom(type) {
+  const custom = document.getElementById(type + 'Custom_5');
+  const select = document.getElementById(type + 'Select_5');
+  custom.style.display = select.value === 'custom' ? 'block' : 'none';
+}
+
+
+   function getOutputDelimiter() {
+  const select = document.getElementById('outputSelect_5').value.trim();
+  const custom = document.getElementById('outputCustom_5').value;
+
+  if (select === 'custom') return custom;
+  
+  // ✅ แปลง string escape ให้เป็น character จริง
+  if (select === '\\n') return '\n';
+  if (select === '\\t') return '\t';
+
+  // ✅ return delimiter ที่ล้าง ' " หรือเว้นวรรคออกแล้ว
+  if (select === 'quoted-comma') return 'quoted-comma';
+
+  return select.replace(/^['"\s]+|['"\s]+$/g, '');
+}
+
+
+
+   function detectInputDelimiter(text) {
+  const candidates = [
+    { regex: /'\s*,\s*'/, label: 'quoted-comma' },
+    { regex: /\s*,\s*/, label: ',' },
+    { regex: /\n+/, label: 'newline' },
+    { regex: /\t+/, label: 'tab' },
+    { regex: /\s{2,}/, label: 'double space' },
+    { regex: /\s+/, label: 'space' },
+  ];
+
+  let bestMatch = candidates[0];
+  let maxParts = 0;
+
+  candidates.forEach(c => {
+    // เราต้อง replace quote ออกก่อน split
+    const cleanedText = text.replace(/^['"]+|['"]+$/g, '');
+    const parts = cleanedText.split(c.regex).filter(x => x.trim() !== '');
+    if (parts.length > maxParts) {
+      maxParts = parts.length;
+      bestMatch = c;
+    }
+  });
+
+  return bestMatch.regex;
+}
+
+function convertDelimiter() {
+  const inputText = document.getElementById('inputArea_5').value.trim();
+  const outputDelimiter = getOutputDelimiter();
+
+  // ✅ ใช้ match เพื่อดึงคำทั้งหมดแบบ universal
+  const parts = inputText
+    .match(/(['"]?[\wก-๙]+['"]?)/g)  // ดึงคำไทย อังกฤษ เลข หรือที่มี quote
+    .map(x =>
+      x
+        .replace(/^[\s,'"\[\]]+/, '')
+        .replace(/[\s,'"\[\]]+$/, '')
+        .trim()
+    )
+    .filter(Boolean);
+
+  let result = '';
+  if (outputDelimiter === 'quoted-comma') {
+    result = parts.map(x => `'${x}'`).join(',');
+  } else {
+    result = parts.join(outputDelimiter);
+  }
+
+  document.getElementById('output_5').value = result;
+
+}
+
+function copyOutput_5() {
+  const txt = document.getElementById("output_5");
+  txt.select();
+  document.execCommand("copy");
+}
+
+
+    function clearAll() {
+      document.getElementById('inputArea_5').value = '';
+     document.getElementById('output_5').value = '';
+
+    }
+  </script>
+  </div>
+</div>
+
+<div id="json_gen" class="card-content">
+      <div class="card">
+        <h2>📦 Gen : JSON For Test Data</h2>
+		
+		
+<div>
+  <label>เพิ่มคอลัมน์: <input id="new-column-name_6" placeholder="เช่น Column_1" /></label>
+  <button onclick="addColumn_6()">➕ เพิ่มคอลัมน์ แนวตั้ง</button>
+  <button onclick="addRow_6()">➕ เพิ่มแถว แนวนอน</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<table id="data-table">
+  <thead>
+    <tr id="header-row">
+      <!-- หัวตาราง -->
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    <!-- แถวข้อมูล -->
+  </tbody>
+</table>
+<label class="switch">
+  <input type="checkbox" id="toggle-running_6" onchange="renderHeader_6(); renderRunningNo_6();" checked />
+  <span class="slider"></span></label>
+<span> แสดง Running No.</span>
+ <button onclick="generateJSON_6()">🔁 Generate JSON</button>
+</label>
+<div style="margin-top: 10px;">
+
+<div style="margin-top: 10px;">
+<h3>📄 JSON Output</h3>
+<textarea id="json-output_6" readonly class="medium-output"></textarea><br>
+<button onclick="copyJSONToClipboard_6()">📋 Copy JSON</button>
+
+  <label>ชื่อไฟล์: <input id="file-name_6" value="test-data" /></label>
+  <label style="margin-left: 10px;">
+    รูปแบบ:
+    <select id="file-type_6" class="small-select_id_card">
+      <option value="json">.json</option>
+      <option value="csv">.csv</option>
+      <option value="xlsx">.xlsx</option>
+    </select>
+  </label>
+  <button onclick="exportData_6()">📤 Export</button>
+</div>
+
+</div>
+
+<h3>📥 นำเข้า JSON</h3>
+<textarea id="json-input_6" placeholder="วาง JSON ที่นี่ แล้วคลิกนำเข้า" class="medium-output"></textarea><br/>
+<button onclick="importJSON_6()">📥 Import จาก Text Area นี้</button>
+
+
+
+<h3>📂 นำเข้าไฟล์ JSON / CSV / XLSX</h3>
+<input type="file" id="file-import_6" accept=".csv,.xlsx,.json" />
+<button onclick="handleFileImport_6()">📥 Import File</button>
+
+
+
+<script>
+  const headerRow = document.getElementById('header-row');
+  const tableBody = document.getElementById('table-body');
+  const jsonOutput = document.getElementById('json-output_6');
+  let columns = ['Value_1', 'Value_2', 'Value_3'];
+
+  function addColumn_6() {
+    const input = document.getElementById('new-column-name_6');
+    const newCol = input.value.trim();
+    if (!newCol) return alert('🛑 กรุณาระบุชื่อคอลัมน์');
+    if (columns.includes(newCol)) return alert('⚠️ คอลัมน์นี้มีอยู่แล้ว');
+    columns.push(newCol);
+    renderHeader_6();
+    [...tableBody.children].forEach(row => {
+      const td = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.oninput = exportJSON_6;
+      td.appendChild(input);
+      row.insertBefore(td, row.lastChild);
+    });
+    input.value = '';
+    exportJSON_6();
+  }
+
+  function renderHeader_6() {
+    headerRow.innerHTML = '';
+    const showRunning = document.getElementById('toggle-running_6').checked;
+    if (showRunning) {
+      const thNo = document.createElement('th');
+      thNo.textContent = '#';
+      headerRow.appendChild(thNo);
+    }
+    columns.forEach((col, index) => {
+      const th = document.createElement('th');
+      const span = document.createElement('span');
+      span.textContent = col;
+      th.appendChild(span);
+      const editBtn = document.createElement('button');
+      editBtn.textContent = '✏️';
+      editBtn.style.marginLeft = '6px';
+      editBtn.onclick = () => editColumn_6(index);
+      th.appendChild(editBtn);
+      headerRow.appendChild(th);
+    });
+    const thDelete = document.createElement('th');
+    thDelete.textContent = '🗑️';
+    headerRow.appendChild(thDelete);
+    renderRunningNo_6();
+  }
+
+  function editColumn_6(index) {
+    const oldName = columns[index];
+    const newName = prompt(`🔧 เปลี่ยนชื่อคอลัมน์ "${oldName}" เป็น:`, oldName);
+    if (!newName || newName.trim() === '') return alert('⚠️ ชื่อใหม่ต้องไม่ว่าง');
+    if (columns.includes(newName) && newName !== oldName) return alert('⚠️ มีชื่อคอลัมน์นี้อยู่แล้ว');
+    columns[index] = newName.trim();
+    renderHeader_6();
+    exportJSON_6();
+  }
+
+  function renderRunningNo_6() {
+    const showRunning = document.getElementById('toggle-running_6').checked;
+    [...tableBody.children].forEach((row, index) => {
+      const exist = row.querySelector('.cell-running');
+      if (showRunning && !exist) {
+        const td = document.createElement('td');
+        td.className = 'cell-running';
+        td.textContent = index + 1;
+        row.insertBefore(td, row.firstChild);
+      } else if (!showRunning && exist) {
+        exist.remove();
+      } else if (exist) {
+        exist.textContent = index + 1;
+      }
+    });
+  }
+
+  function addRow_6(data = {}) {
+    const tr = document.createElement('tr');
+    const showRunning = document.getElementById('toggle-running_6').checked;
+    if (showRunning) {
+      const tdNo = document.createElement('td');
+      tdNo.className = 'cell-running';
+      tdNo.textContent = tableBody.children.length + 1;
+      tr.appendChild(tdNo);
+    }
+    columns.forEach(col => {
+      const td = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = data[col] || '';
+      input.oninput = exportJSON_6;
+      td.appendChild(input);
+      tr.appendChild(td);
+    });
+    const tdDel = document.createElement('td');
+    const btn = document.createElement('button');
+    btn.textContent = 'ลบ';
+    btn.onclick = () => {
+      tr.remove();
+      exportJSON_6();
+      renderRunningNo_6();
+    };
+    tdDel.appendChild(btn);
+    tr.appendChild(tdDel);
+    tableBody.appendChild(tr);
+    exportJSON_6();
+  }
+
+  function generateJSON_6() {
+    const result = [];
+    const showRunning = document.getElementById('toggle-running_6').checked;
+    [...tableBody.children].forEach((row, index) => {
+      const inputs = row.querySelectorAll('input');
+      const item = {};
+      if (showRunning) item.no = index + 1;
+      columns.forEach((col, idx) => {
+        item[col] = inputs[idx].value;
+      });
+      result.push(item);
+    });
+    jsonOutput.value = JSON.stringify(result, null, 2);
+  }
+
+  function exportJSON_6() {
+    generateJSON_6();
+  }
+
+  function exportData_6() {
+    generateJSON_6();
+    const data = JSON.parse(jsonOutput.value);
+    const fileName = document.getElementById('file-name_6').value.trim() || 'data';
+    const fileType = document.getElementById('file-type_6').value;
+    if (fileType === 'json') {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      downloadBlob(blob, fileName + '.json');
+    } else if (fileType === 'csv') {
+      const csv = jsonToCSV(data);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      downloadBlob(blob, fileName + '.csv');
+    } else if (fileType === 'xlsx') {
+      exportToXLSX(data, fileName + '.xlsx');
+    }
+  }
+
+  function downloadBlob(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportToXLSX(jsonData, fileName) {
+    const worksheet = XLSX.utils.json_to_sheet(jsonData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, fileName);
+  }
+
+  function jsonToCSV(jsonArray) {
+    if (!jsonArray.length) return '';
+    const keys = Object.keys(jsonArray[0]);
+    const lines = jsonArray.map(obj => keys.map(k => `"${(obj[k] ?? '').toString().replace(/"/g, '""')}"`).join(','));
+    return keys.join(',') + '\n' + lines.join('\n');
+  }
+
+  function handleFileImport_6() {
+    const fileInput = document.getElementById('file-import_6');
+    const file = fileInput.files[0];
+    if (!file) return alert('📂 กรุณาเลือกไฟล์ก่อน');
+    const reader = new FileReader();
+    const fileExt = file.name.split('.').pop().toLowerCase();
+    reader.onload = function (e) {
+      const content = e.target.result;
+      if (fileExt === 'csv') {
+        const data = CSVToJSON(content);
+        processImportedData_6(data);
+      } else if (fileExt === 'xlsx') {
+        const workbook = XLSX.read(content, { type: 'binary' });
+        const sheetName = workbook.SheetNames[0];
+        const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+        processImportedData_6(jsonData);
+      } else if (fileExt === 'json') {
+        try {
+          const jsonData = JSON.parse(content);
+          processImportedData_6(jsonData);
+        } catch (err) {
+          alert('❌ ไฟล์ JSON ไม่ถูกต้อง');
+        }
+      } else {
+        alert('❌ รองรับเฉพาะไฟล์ .csv, .xlsx และ .json');
+      }
+    };
+    if (fileExt === 'xlsx') {
+      reader.readAsBinaryString(file);
+    } else {
+      reader.readAsText(file);
+    }
+  }
+
+  function CSVToJSON(csv) {
+    const parsed = Papa.parse(csv, {
+      header: true,
+      skipEmptyLines: true,
+      dynamicTyping: false,
+    });
+    return parsed.data;
+  }
+
+  function copyJSONToClipboard_6() {
+    const textarea = document.getElementById('json-output_6');
+    textarea.select();
+    textarea.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+  }
+
+  function processImportedData_6(data) {
+    if (!Array.isArray(data)) {
+      alert('❌ ข้อมูลไม่ถูกต้อง ต้องเป็น Array');
+      return;
+    }
+    columns = [...new Set(data.flatMap(obj => Object.keys(obj)).filter(k => k !== 'no'))];
+    renderHeader_6();
+    tableBody.innerHTML = '';
+    data.forEach(item => addRow_6(item));
+    generateJSON_6();
+  }
+
+  function importJSON_6() {
+    const input = document.getElementById('json-input_6').value.trim();
+    try {
+      const parsed = JSON.parse(input);
+      if (!Array.isArray(parsed)) throw 'ไม่ใช่ array';
+      processImportedData_6(parsed);
+    } catch {
+      const csvLike = input.includes('\t') ? input.replace(/\t/g, ',') : input;
+      const lines = csvLike.split('\n').map(l => l.trim()).filter(Boolean);
+      const headers = lines[0].split(',').map(h => h.trim());
+      const data = lines.slice(1).map(line => {
+        const values = line.split(',');
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = values[i] || '');
+        return obj;
+      });
+      processImportedData_6(data);
+    }
+  }
+
+  // โหลดเริ่มต้น
+  renderHeader_6();
+  addRow_6();
+</script>
+
+ </div>
+</div>
+
+  </div>
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.card-content').forEach(e => e.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      document.querySelectorAll('.tab-link').forEach(e => e.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  </script>
+  <div class="noometal-brand">Version Beta 1.0.3 
+  <br>Power of NooMetal</div>
+</body>
+</html>
