@@ -216,6 +216,7 @@
     <a href="#" class="tab-link" onclick="switchTab('dline')">📦 Gen : Text File Counter Bank</a>
 	<a href="#" class="tab-link" onclick="switchTab('split_text')">📦 ตัดช่องว่าง หรือ เว้นบรรทัด</a>
 	<a href="#" class="tab-link" onclick="switchTab('json_gen')">📦 Gen : JSON For Test Data</a>
+	<a href="#" class="tab-link" onclick="switchTab('google_gen')">📦 Google Sheets : Formula Generator</a>
   </div>
 
   <div class="main-content">
@@ -1143,6 +1144,164 @@ function copyOutput_5() {
  </div>
 </div>
 
+
+<div id="google_gen" class="card-content">
+  <div class="card">
+    <h3>📝 Google Sheets : Formula Generator</h3>
+
+
+    <div class="row">
+        <label>เลือกประเภทสูตร:</label>
+        <select id="formulaType_select_column" style="width: 100px;">
+          <option value="xlookup_latest">XLOOKUP ล่าสุด (FILTER+SORT)</option>
+          <option value="iferror">IFERROR รอบสูตร</option>
+          <option value="vlookup">VLOOKUP ปกติ</option>
+        </select>
+</div>
+<div class="row">
+        <label>ชื่อ Tab ปลายทาง:</label>
+        <input type="text" id="targetSheet_select_column" style="width: 100px;" placeholder="เช่น TEST_SUITE">
+</div>
+ <div class="row">
+        <label>Cell ที่มี Key (target):</label>
+        <input type="text" id="targetKeyCell_select_column" style="width: 150px;" placeholder="เช่น C8">
+</div>
+ <div class="row">
+        <label>ชื่อ Tab ต้นทาง (source):</label>
+        <input type="text" id="sourceSheet_select_column" style="width: 150px;" placeholder="เช่น upload_to_sheet">
+</div>
+ <div class="row">
+        <label>ช่วงข้อมูล (columns):</label>
+        <input type="text" id="sourceCols_select_column" style="width: 150px;" placeholder="เช่น A:E หรือ A-E หรือ 1-5">
+</div>
+ <div class="row">
+        <label>คอลัมน์ Key (source):</label>
+        <input type="text" id="sourceKeyCol_select_column" style="width: 150px;" placeholder="เช่น C">
+</div>
+ <div class="row">
+        <label>คอลัมน์ที่ต้องการดึงข้อมูล:</label>
+        <input type="text" id="resultColInput_select_column" style="width: 150px;" placeholder="เช่น E หรือ 5">
+</div>
+      </div>
+    
+
+    <div class="section">
+      <h4><label>🔹สูตรที่ได้:</label></h4>
+      <textarea id="generatedFormula_select_column" readonly class="medium-output"></textarea><br>
+      <button class="btn" onclick="copyFormula_select_column()">📋 Copy สูตร</button>
+      <button class="btn btn-clear" onclick="clearInputs_select_column()">🧹 Clear</button>
+    </div>
+  
+
+  <script>
+    document.getElementById("formulaType_select_column").addEventListener("change", generateFormula_select_column);
+    document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", generateFormula_select_column));
+
+    function columnLetterToNumber(col) {
+      col = col.toUpperCase();
+      let num = 0;
+      for (let i = 0; i < col.length; i++) {
+        num = num * 26 + (col.charCodeAt(i) - 64);
+      }
+      return num;
+    }
+
+    function numberToColumnLetter(n) {
+      let result = "";
+      while (n > 0) {
+        const rem = (n - 1) % 26;
+        result = String.fromCharCode(65 + rem) + result;
+        n = Math.floor((n - 1) / 26);
+      }
+      return result;
+    }
+
+    function normalizeRangeInput(rangeInput) {
+      if (/^[A-Z]-[A-Z]$/i.test(rangeInput)) {
+        const parts = rangeInput.toUpperCase().split("-");
+        return `${parts[0]}:${parts[1]}`;
+      } else if (/^\d+-\d+$/.test(rangeInput)) {
+        const parts = rangeInput.split("-").map(Number);
+        return `${numberToColumnLetter(parts[0])}:${numberToColumnLetter(parts[1])}`;
+      }
+      return rangeInput;
+    }
+
+    function expandRangeIfNeeded(range, targetColLetter) {
+      const match = range.match(/^([A-Z]+):([A-Z]+)$/);
+      if (!match) return range;
+
+      const startCol = match[1];
+      let endCol = match[2];
+      const startNum = columnLetterToNumber(startCol);
+      let endNum = columnLetterToNumber(endCol);
+      const targetNum = columnLetterToNumber(targetColLetter);
+
+      if (targetNum > endNum) {
+        endNum = targetNum;
+        endCol = numberToColumnLetter(endNum);
+        return `${startCol}:${endCol}`;
+      }
+      return range;
+    }
+
+    function generateFormula_select_column() {
+  const type = document.getElementById("formulaType_select_column").value;
+  const src = document.getElementById("sourceSheet_select_column").value.trim();
+  let range = document.getElementById("sourceCols_select_column").value.trim();
+  const keyCol = document.getElementById("sourceKeyCol_select_column").value.trim();
+  const tgt = document.getElementById("targetSheet_select_column").value.trim();
+  const keyCell = document.getElementById("targetKeyCell_select_column").value.trim();
+  const resultInput = document.getElementById("resultColInput_select_column").value.trim();
+
+  if (!(src && range && keyCol && tgt && keyCell && resultInput)) {
+    document.getElementById("generatedFormula_select_column").value = "❌ กรุณากรอกข้อมูลให้ครบ";
+    return;
+  }
+
+  range = normalizeRangeInput(range);
+  const colLetter = isNaN(resultInput) ? resultInput : numberToColumnLetter(parseInt(resultInput));
+  range = expandRangeIfNeeded(range, colLetter);
+  const colIndex = isNaN(resultInput) ? columnLetterToNumber(resultInput) : parseInt(resultInput);
+
+  let formula = "";
+  if (type === "xlookup_latest") {
+    formula = `=IFERROR(\n  INDEX(\n    SORT(\n      FILTER('${src}'!${range}, TRIM('${src}'!${keyCol}:${keyCol}) = TRIM(${keyCell})),\n      1, FALSE\n    ),\n    1, ${colIndex}\n  ),\n  "❌ ไม่พบข้อมูล"\n)`;
+  } else if (type === "iferror") {
+    formula = `=IFERROR(...สูตรของคุณ...)`;
+  } else if (type === "vlookup") {
+    formula = `=VLOOKUP(${keyCell}, '${src}'!${range}, ${colIndex}, FALSE)`;
+  }
+
+  document.getElementById("generatedFormula_select_column").value = formula;
+}
+
+
+    function copyFormula_select_column() {
+  const formula = document.getElementById("generatedFormula_select_column");
+  formula.select(); // 
+  document.execCommand("copy"); // 
+ 
+}
+    
+
+    function clearInputs_select_column() {
+      const ids = [
+        "targetSheet_select_column",
+        "targetKeyCell_select_column",
+        "sourceSheet_select_column",
+        "sourceCols_select_column",
+        "sourceKeyCol_select_column",
+        "resultColInput_select_column"
+      ];
+      ids.forEach(id => document.getElementById(id).value = "");
+      document.getElementById("formulaType_select_column").selectedIndex = 0;
+      document.getElementById("generatedFormula_select_column").value = "";
+    }
+  </script>
+ </div>
+ </div>
+ 
   </div>
   <script>
     function switchTab(tabId) {
@@ -1152,7 +1311,7 @@ function copyOutput_5() {
       event.target.classList.add('active');
     }
   </script>
-  <div class="noometal-brand">Version Beta 1.0.4 
+  <div class="noometal-brand">Version Beta 1.0.5 
   <br>Power of NooMetal</div>
 </body>
 </html>
