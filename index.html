@@ -12,29 +12,39 @@
       display: flex;
       height: 100vh;
 	   font-size: 13px;
+
     }
     .sidebar {
-      width: 220px;
-      background: #2c3e50;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      padding: 20px 10px;
-    }
+  width: 220px;
+  min-width: 220px;     
+  max-width: 220px;     
+  background: #2c3e50;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+  overflow-y: auto;      
+  overflow-x: hidden;    
+  flex-shrink: 0;        
+}
+	
     .sidebar h2 {
       font-size: 16px;
       margin-bottom: 20px;
       padding-left: 10px;
     }
     .sidebar a {
-      padding: 8px 15px;
-      margin: 4px 0;
-      text-decoration: none;
-      color: white;
-      border-radius: 6px;
-      display: block;
-	   font-size: 13px;
-    }
+  padding: 8px 15px;
+  margin: 4px 0;
+  text-decoration: none;
+  color: white;
+  border-radius: 6px;
+  display: block;
+  font-size: 13px;
+  white-space: nowrap;       
+  overflow: hidden;           
+  text-overflow: ellipsis;    
+}
     .sidebar a:hover, .sidebar a.active {
       background-color: #3498db;
     }
@@ -202,6 +212,41 @@
   max-width: 100%;
 }
 
+#scrollx_ClaimpayWHT {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+#wht-table_ClaimpayWHT {
+  min-width: 2400px; /* ขยายความกว้างขั้นต่ำของตาราง */
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#wht-table_ClaimpayWHT th,
+#wht-table_ClaimpayWHT td {
+  font-size: 13px;
+  min-width: 120px;     /* ขยายความกว้างของช่อง */
+  padding: 10px 8px;    /* เพิ่ม padding ให้กว้างขึ้น */
+  text-align: center;
+}
+
+#wht-table_ClaimpayWHT input[type="text"] {
+  width: 100%;
+  min-width: 90px;
+  max-width: 180px;  /* ขยายช่อง input */
+  padding: 7px 11px;
+  font-size: 14px;
+  border-radius: 7px;
+  border: 1px solid #b3d2ee;
+  background: #fcfcfc;
+  margin: 2px 0;
+  box-sizing: border-box;
+}
+
+#wht-table_ClaimpayWHT tr:hover td {
+  background: #eaf5fc;
+}
 
 
 
@@ -217,6 +262,7 @@
 	<a href="#" class="tab-link" onclick="switchTab('split_text')">📦 ตัดช่องว่าง หรือ เว้นบรรทัด</a>
 	<a href="#" class="tab-link" onclick="switchTab('json_gen')">📦 Gen : JSON For Test Data</a>
 	<a href="#" class="tab-link" onclick="switchTab('google_gen')">📦 Google Sheets : Formula Generator</a>
+	<a href="#" class="tab-link" onclick="switchTab('claimpay_wht')">📦 Claim-payment : WHT Export</a>
   </div>
 
   <div class="main-content">
@@ -1302,7 +1348,327 @@ function copyOutput_5() {
  </div>
  </div>
  
+  
+  <div id="claimpay_wht" class="card-content">
+  <div class="card">
+    <h2>📝 claimpay : WHT Export</h2>
+  <div class="flex" id="flex_ClaimpayWHT">
+    <input type="file" id="importFile_ClaimpayWHT" accept=".txt">
+    <button class="btn" id="btnImport_ClaimpayWHT" onclick="importTxt_ClaimpayWHT()">Import</button>
+    <button class="btn" id="btnClear_ClaimpayWHT" onclick="clearTable_ClaimpayWHT()">Clear</button>
+    <button class="btn" id="btnCopyPipe_ClaimpayWHT" onclick="copyPipe_ClaimpayWHT()">Copy | (Pipe)</button>
+    <button class="btn" id="btnCopyConcat_ClaimpayWHT" onclick="copyConcat_ClaimpayWHT()">Copy (Concat)</button>
   </div>
+
+  <div class="scrollx" id="scrollx_ClaimpayWHT">
+    <table id="wht-table_ClaimpayWHT">
+      <thead>
+        <tr>
+        <th>Seq</th>
+        <th>~Batch Ref No</th>
+        <th>~Sub Batch Ref No</th>
+        <th>~Cust Ref No</th>
+        <th>~Payment Ref No</th>
+        <th>~Customer Code</th>
+        <th>~Debit Account No</th>
+        <th>~Product Code</th>
+        <th>~Payee Code</th>
+        <th>~Payee Name</th>
+        <th>~Payee Account No</th>
+        <th>~Credit Bank Code</th>
+        <th>~Bank Branch Code</th>
+        <th>~Payee Charge Code</th>
+        <th>~Swift Code</th>
+        <th>~Processing Date</th>
+        <th>~Value Date</th>
+        <th>~Payment Amount</th>
+        <th>~Payment Currency</th>
+        <th>~Buying Rate</th>
+        <th>~Selling Rate</th>
+        <th>~Fix Amount Mode</th>
+        <th>~Instrument No.</th>
+        <th>~Status</th>
+        <th>~Reason of Status</th>
+        <th>~WHT</th>
+        <th>~Internal ref</th>
+        <th>~WHT Running No.</th>
+        <th>~WHT Inc Type</th>
+        <th>~WHT Rate</th>
+        <th>~Inc Type Amt.</th>
+        <th>~WHT Amt.</th>
+        <th>~INV</th>
+        <th>~Internal ref</th>
+        <th>~Invoice Description</th>
+        <th>~Inv Amt</th>
+        <th>~VAT Amount</th>
+        <th>~Invoice No.</th>
+        <th>~PO No</th>
+        <th>~Inv. Date</th>
+      </tr>
+      </thead>
+      <tbody id="tbody-table_ClaimpayWHT">
+        <tr>
+        <!-- ช่อง input ต้องตรงกับจำนวนช่องใน FIELD_CONFIG -->
+        <td><input type="text"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td><input type="text"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td><input type="text"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td><input type="text"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td><input type="text"></td>
+        <td><input type="text"></td>
+        <td><input type="text"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td><input type="text"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td><input type="text"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td><input type="text"></td>
+        <td><input type="text"></td>
+        <td><input type="text"></td>
+        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
+        <td><input type="text"></td>
+        <td><input type="text"></td> <!-- ~Invoice Description -->
+        <td><input type="text"></td> <!-- ~Inv Amt -->
+        <td><input type="text"></td> <!-- ~VAT Amount -->
+        <td><input type="text"></td>  <!-- ~Invoice No. -->
+		<td><input type="text"></td>  <!-- ~PO No -->
+		<td class="fix-cell"><input type="text" readonly class="readonly"></td>  <!-- ~Inv. Date -->
+
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="result_ClaimpayWHT" class="hidden"></div>
+</div>
+<script>
+const FIELD_CONFIG_ClaimpayWHT = [
+ 
+  // 0: Seq
+  { type: "from_line",  startWith: "003~", fieldIdx: 2 },
+  // 1: ~Batch Ref No
+  { type: "fixed", value: "~OCEANIN008048" },
+  // 2: ~Sub Batch Ref No
+  { type: "fixed", value: "~1719" },
+  // 3: ~Cust Ref No 
+  { type: "from_line", startWith: "003~", fieldIdx: 8, prefix: "~" },
+  // 4: ~Payment Ref No
+  { type: "fixed", value: "~00BOCEANIN1011570" },
+  // 5: ~Customer Code
+  { type: "from_line", startWith: "003~", fieldIdx: 1, prefix: "~" },
+  // 6: ~Debit Account No
+  { type: "fixed", value: "~9250025955" },
+  // 7: ~Product Code
+  { type: "from_line", startWith: "003~", fieldIdx: 3, prefix: "~" },
+  // 8: ~Payee Code	
+  { type: "fixed", value: "~" }, // ตัวอย่าง fix ค่าว่าง
+  // 9: ~Payee Name
+  { type: "from_line", startWith: "003~", fieldIdx: 43, prefix: "~" },
+  // 10: ~Payee Account No
+  { type: "from_line", startWith: "003~", fieldIdx: 4, prefix: "~" },
+  // 11: ~Credit Bank Code
+  { type: "from_line", startWith: "003~", fieldIdx: 37, prefix: "~" },
+  // 12: ~Bank Branch Code
+  { type: "fixed", value: "~0895844" },
+  // 13: ~Payee Charge Code
+  { type: "fixed", value: "~BEN" },
+  // 14: ~Swift Code
+  { type: "fixed", value: "~014" },
+  // 15: ~Processing Date
+  { type: "from_line", startWith: "003~", fieldIdx: 5, prefix: "~" , dateFormat: true },
+  // 16: ~Value Date
+  { type: "from_line", startWith: "003~", fieldIdx: 5, prefix: "~" , dateFormat: true },
+  // 17: ~Payment Amount
+  { type: "from_line", startWith: "003~", fieldIdx: 30, prefix: "~" , decimal: 2 },
+  // 18: ~Payment Currency
+  { type: "fixed", value: "~THB" },
+  // 19: ~Buying Rate
+  { type: "fixed", value: "~" },
+  // 20: ~Selling Rate
+  { type: "fixed", value: "~" },
+  // 21: ~Fix Amount Mode
+  { type: "fixed", value: "~C" },
+  // 22: ~Instrument No.
+  { type: "fixed", value: "~" },
+  // 23: ~Status
+  { type: "fixed", value: "~Paid" },
+  // 24: ~Reason of Status
+  { type: "fixed", value: "~" },
+  // 25: ~WHT
+  { type: "fixed", value: "~WHT1" },
+  // 26: ~Internal ref
+  { type: "from_line", startWith: "003~", fieldIdx: 8, prefix: "~" },
+  // 27: ~WHT Running No.
+  { type: "fixed", value: "~1" },
+  // 28: ~WHT Inc Type
+  { type: "fixed", value: "~21" },
+  // 29: ~WHT Rate
+  { type: "from_line", startWith: "003~", fieldIdx: 34, prefix: "~" , decimal: 2, noDivide: true },
+  // 30: ~Inc Type Amt.
+  { type: "from_line", startWith: "003~", fieldIdx: 30, prefix: "~" , decimal: 2 },
+  // 31: ~WHT Amt.
+  { type: "from_line", startWith: "003~", fieldIdx: 28, prefix: "~" , decimal: 2 },
+  // 32: ~INV
+  { type: "fixed", value: "~INV" },
+  // 33: ~Internal ref
+  { type: "from_line", startWith: "003~", fieldIdx: 8, prefix: "~" },
+  // 34: ~Invoice Description
+  { type: "from_line", startWith: "001~", fieldIdx: 4, prefix: "~" },
+  // 35: ~Inv Amt
+  { type: "from_line", startWith: "003~", fieldIdx: 30, prefix: "~" , decimal: 2 },
+  // 36: ~VAT Amount
+  { type: "from_line", startWith: "003~", fieldIdx: 28, prefix: "~" , decimal: 2 },
+  // 37: ~Invoice No.
+  { type: "from_line", startWith: "009~", fieldIdx: 1, prefix: "~" },
+  // 38: ~PO No
+   { type: "from_line", startWith: "003~", fieldIdx: 8, prefix: "~" },
+  // 38: ~Inv. Date
+  { type: "fixed", value: "~" },
+];
+
+// =========== All functions with _ClaimpayWHT suffix =============
+
+function importTxt_ClaimpayWHT() {
+  const fileInput = document.getElementById('importFile_ClaimpayWHT');
+  if (!fileInput.files[0]) return alert('กรุณาเลือกไฟล์');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    let text = e.target.result.replace(/\r/g, '');
+    const lines = text.split('\n').filter(x => x.trim() !== "");
+
+    // 1. แยก Header/Detail/Footer
+    const headerLine = lines.find(line => line.startsWith("001~")) || "";
+    const detailLines = lines.filter(line => /^(003|005|009)~/.test(line));
+
+    // 2. Split blocks ตาม 003~
+    let blocks = [];
+    let curr = [];
+    detailLines.forEach(line => {
+      if (line.startsWith('003~') && curr.length) {
+        blocks.push(curr);
+        curr = [];
+      }
+      curr.push(line);
+    });
+    if (curr.length) blocks.push(curr);
+
+    // 3. Map Data
+    const tbody = document.getElementById('tbody-table_ClaimpayWHT');
+    tbody.innerHTML = "";
+
+    blocks.forEach((block, rowIdx) => {
+      const tr = document.createElement('tr');
+      FIELD_CONFIG_ClaimpayWHT.forEach((conf, idx) => {
+        const td = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = "text";
+        let val = "";
+        if (conf.type === "fixed") {
+          val = conf.value;
+          if (td.classList) td.classList.add("fix-cell");
+          input.classList.add("readonly");
+          input.readOnly = true;
+        } else if (conf.type === "from_line") {
+          let line = null;
+          if (conf.startWith === "001~") {
+            line = headerLine;
+          } else {
+            line = block.find(line => line.startsWith(conf.startWith));
+          }
+          if (line) {
+            const fields = line.split('~');
+            val = fields[conf.fieldIdx] !== undefined ? fields[conf.fieldIdx].trim() : "";
+            if (conf.prefix && !val.startsWith(conf.prefix)) val = conf.prefix + val;
+            if (conf.dateFormat) val = conf.prefix + formatThaiDate_ClaimpayWHT(val);
+            if (conf.decimal && !isNaN(Number(val.replace(conf.prefix, "")))) {
+              let num = Number(val.replace(conf.prefix, ""));
+              if (!conf.noDivide) num = num / 100;
+              val = conf.prefix + num.toFixed(conf.decimal);
+            }
+          }
+        }
+        input.value = val;
+        td.appendChild(input);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  };
+  reader.readAsText(fileInput.files[0]);
+}
+
+function formatThaiDate_ClaimpayWHT(str) {
+  str = str.replace(/^~/, "");
+  if (str.length !== 8) return str;
+  const day = str.substring(0,2);
+  const month = str.substring(2,4);
+  const year = str.substring(6,8);
+  const monthNames = [
+    '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+  let mIdx = parseInt(month, 10);
+  if (!mIdx || mIdx > 12) return str;
+  return day + '-' + monthNames[mIdx] + '-' + year;
+}
+
+
+function clearTable_ClaimpayWHT() {
+  document.getElementById('tbody-table_ClaimpayWHT').innerHTML = '';
+  document.getElementById('result_ClaimpayWHT').classList.add('hidden');
+  document.getElementById('result_ClaimpayWHT').innerText = '';
+}
+
+function copyPipe_ClaimpayWHT() {
+  const rows = document.querySelectorAll('#tbody-table_ClaimpayWHT tr');
+  let txt = Array.from(rows).map(tr =>
+    Array.from(tr.querySelectorAll('td input')).map(inp => inp.value).join('|')
+  ).join('\n');
+  copyToClipboard_ClaimpayWHT(txt, "คัดลอกแบบ Pipe (|) เรียบร้อยแล้ว!");
+}
+
+function copyConcat_ClaimpayWHT() {
+  const rows = document.querySelectorAll('#tbody-table_ClaimpayWHT tr');
+  let txt = Array.from(rows).map(tr =>
+    Array.from(tr.querySelectorAll('td input')).map(inp => inp.value).join('')
+  ).join('\n');
+  copyToClipboard_ClaimpayWHT(txt, "คัดลอกแบบ Concat เรียบร้อยแล้ว!");
+}
+
+function copyToClipboard_ClaimpayWHT(txt, msg) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt).then(() => {
+      alert(msg);
+    });
+  } else {
+    let textarea = document.createElement("textarea");
+    textarea.value = txt;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+    alert(msg);
+  }
+}
+</script>
+   </div>
+    </div>
+	
   <script>
     function switchTab(tabId) {
       document.querySelectorAll('.card-content').forEach(e => e.classList.remove('active'));
@@ -1311,7 +1677,7 @@ function copyOutput_5() {
       event.target.classList.add('active');
     }
   </script>
-  <div class="noometal-brand">Version Beta 1.0.5 
+  <div class="noometal-brand">Version Beta 1.0.6 
   <br>Power of NooMetal</div>
 </body>
 </html>
