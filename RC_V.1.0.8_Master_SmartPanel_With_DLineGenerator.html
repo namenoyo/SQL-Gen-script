@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Deploy Bot → Google Chat</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f5f5f5; }
+    #Chat_Deploy_Chatbox { width: 100%; max-width: 600px; margin: auto; background: #fff; border-radius: 10px; padding: 1rem; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    #Chat_Deploy_Messages { height: 300px; overflow-y: auto; margin-bottom: 1rem; border: 1px solid #ccc; padding: 0.5rem; border-radius: 5px; background: #fafafa; }
+    .msg { margin: 0.25rem 0; }
+    .user { color: #2c7be5; }
+    .bot { color: #28a745; }
+    input, button, select { padding: 0.5rem; font-size: 1rem; }
+    input, select { width: 100%; margin-bottom: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+    button { width: 100%; background: #2c7be5; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div id="Chat_Deploy_Chatbox">
+    <h2>🚀 Deploy Bot → Google Chat</h2>
+    <div id="Chat_Deploy_Messages"></div>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+      <input id="Chat_Deploy_Input"
+             placeholder="พิมพ์ข้อความ... เช่น #ขอ Deploy msa-emailnoti"
+             style="flex: 1 1 60%; min-width: 250px;">
+      <button onclick="send()">ส่งข้อความเอง</button>
+      <button onclick="sendQuick('#Check Server Jira')">✅ Check Server</button>
+    </div>
+
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <input id="Chat_Deploy_SystemInput"
+             list="Chat_Deploy_SystemList"
+             placeholder="🔍 ค้นหาหรือเลือกระบบ"
+             style="flex: 1 1 60%; min-width: 250px;">
+      <datalist id="Chat_Deploy_SystemList"></datalist>
+      <button onclick="deploy()">🚀 Deploy ระบบ</button>
+    </div>
+
+  
+<script>
+  const webhookURL = "https://ed6e290e1c47.ngrok-free.app/webhook-test/3d7cd446-3e99-4525-aaae-e42c4c717a31";
+
+  const systemOptions = [
+    { label: 'msa-uwer', data: 'msa-uwer' },
+    { label: 'hydraapp', data: 'hydraapp' },
+    { label: 'gluejobsonly', data: 'dataplatform-gluejobsonly' },
+    { label: 'liquibase', data: 'dataplatform-liquibase' },
+    { label: 'msa-iservice', data: 'msa-iservice' },
+    { label: 'msa-nbentry', data: 'msa-nbentry' },
+    { label: 'agentmgmtapp', data: 'agentmgmtapp' },
+    { label: 'agentmgmtapi', data: 'msa-agentmgmtappapi' },
+    { label: 'msa-agentoss', data: 'msa-agentoss' },
+    { label: 'reinsure', data: 'msa-reinsurance' },
+    { label: 'msa-claimui', data: 'msa-claimui' },
+    { label: 'msa-psuite', data: 'msa-psuite' },
+    { label: 'epirusapp', data: 'epirusapp' },
+    { label: 'philotesapp', data: 'msa-philotesappapi' },
+    { label: 'easyloanapp', data: 'easyloanapp' },
+    { label: 'msa-lineoa', data: 'msa-lineoa' },
+    { label: 'pcertappapi', data: 'msa-pcertappapi' },
+    { label: 'msa-adw', data: 'msa-adw' },
+    { label: 'dwconsol', data: 'msa-dwconsol' },
+    { label: 'msa-claimtx', data: 'msa-claimtx' },
+    { label: 'msa-adwetl', data: 'msa-adwetl' },
+    { label: 'msa-emailnoti', data: 'msa-emailnoti' },
+    { label: 'msa-welcomecall', data: 'msa-welcomecall' },
+    { label: 'depositpay', data: 'msa-depositpay' }
+  ];
+
+  const datalist = document.getElementById("Chat_Deploy_SystemList");
+  systemOptions.forEach(opt => {
+    const option = document.createElement("option");
+    option.value = opt.label;
+    datalist.appendChild(option);
+  });
+
+  function addMessage(sender, text) {
+    const div = document.createElement("div");
+    div.classList.add("msg", sender);
+    div.textContent = (sender === "user" ? "👤 " : "🤖 ") + text;
+    document.getElementById("Chat_Deploy_Messages").appendChild(div);
+    document.getElementById("Chat_Deploy_Messages").scrollTop = 9999;
+  }
+
+  async function send() {
+    const input = document.getElementById("Chat_Deploy_Input");
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage("user", text);
+    input.value = "";
+
+    const payload = { text };
+
+    try {
+      const res = await fetch(webhookURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        addMessage("bot", "✅ ส่งข้อความไปยัง Service แล้ว");
+      } else {
+        addMessage("bot", "❌ ส่งไม่สำเร็จ: " + res.status);
+      }
+    } catch (err) {
+      addMessage("bot", "❌ error: " + err.message);
+    }
+  }
+
+  function sendQuick(text) {
+    document.getElementById("Chat_Deploy_Input").value = text;
+    send();
+  }
+
+  async function deploy() {
+  const input = document.getElementById("Chat_Deploy_SystemInput");
+  const inputValue = input.value.trim();
+  const selected = systemOptions.find(s => s.label === inputValue)?.data;
+
+  if (!selected) {
+    alert("ไม่พบระบบที่คุณพิมพ์ กรุณาเลือกจากรายการที่แสดง");
+    return;
+  }
+
+  const message = `#ขอ Deploy ${inputValue}`;
+  addMessage("user", message);
+
+  const payload = { text: message };
+  input.value = ""; // เคลียร์เสมอ
+
+  try {
+    const res = await fetch(webhookURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      addMessage("bot", "✅ แจ้งเตือน Google Chat สำเร็จ");
+     
+    } else {
+      addMessage("bot", "❌ แจ้งเตือนล้มเหลว: " + res.status);
+    }
+  } catch (err) {
+    addMessage("bot", "❌ error: " + err.message);
+  }
+}
+
+</script>
+</body>
+</html>
