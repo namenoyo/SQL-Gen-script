@@ -1,12 +1,14 @@
 /**************** CONFIG ****************/
 const scenarios = [
-   { title:'นาย', dob: '01/01/2548', sum: 50000, coverage: 1,expected: 143 },
- { title:'นาย', dob: '01/01/2548', sum: 50000, coverage: 4,expected: 493 },
- { title:'นาย', dob: '01/01/2548', sum: 50000, coverage: 40,expected: 493 },
- { title:'นาย', dob: '01/01/2544', sum: 527096, coverage: 9,expected: 12107 },
- { title:'นาย', dob: '01/01/2544', sum: 349379, coverage: 10,expected: 8990 },
- { title:'นาย', dob: '01/01/2523', sum: 871393, coverage: 8,expected: 42968 },
- { title:'นาย', dob: '01/01/2523', sum: 838457, coverage: 9,expected: 47683 },
+       { title:'คุณ', dob: '01/01/2548', sum: 100000, coverage: 1,expected: 286 },
+ { title:'คุณ', dob: '01/01/2521', sum: 218361, coverage: 1,expected: 2057 },
+ { title:'คุณ', dob: '01/01/2520', sum: 86483, coverage: 13,expected: 11309 },
+ { title:'คุณ', dob: '01/01/2520', sum: 176611, coverage: 22,expected: 48617 },
+ { title:'คุณ', dob: '01/01/2505', sum: 335841268, coverage: 1,expected: 6280232 },
+ { title:'คุณ', dob: '01/01/2503', sum: 999999999, coverage: 5,expected: 87380000 },
+  { title:'นาย', dob: '01/01/2548', sum: 50000, coverage: 1,expected: 143 },
+ { title:'นาย', dob: '01/01/2521', sum: 218361, coverage: 1,expected: 2057 },
+ { title:'นาย', dob: '01/01/2520', sum: 86483, coverage: 13,expected: 11309 },
  
 ];
 
@@ -15,8 +17,9 @@ const ACTUAL_SELECTOR =
   '#tab\\/quotation > div > div > div:nth-child(1) > div > main > div:nth-child(5) > div > div.MuiCollapse-root.MuiCollapse-vertical.MuiCollapse-entered.css-pwcg7p-MuiCollapse-root > div > div > div > div > div:nth-child(1) > div.MuiBox-root.MuiBox-root-130 > div.MuiBox-root.MuiBox-root-132 > p:nth-child(2)';
 
 const EXPORT_COLUMNS = [
-  "TC No","กรณี","อายุ","วันเกิด","ทุนประกัน","ระยะคุ้มครอง","Expected","Actual","Popup Msg","ผลทดสอบ"
+  "TC No","เพศ","อายุ","วันเกิด","ทุนประกัน","ระยะคุ้มครอง","Expected","Actual","Popup Msg","ผลทดสอบ"
 ];
+
 
 const EPS = 0.5;
 
@@ -100,6 +103,20 @@ async function ensureValue(input, value,{retries=3,pause=90}={}){
     if(got===String(value)) return true;
   }
   return false;
+}
+
+function getGenderFromForm(){
+  const checked = document.querySelector('input[name="insureGenderCode"]:checked');
+  if (checked) {
+    // ตามที่ให้มา: value M/F และ label “ชาย/หญิง”
+    return checked.value === 'M' ? 'เพศชาย' : 'เพศหญิง';
+  }
+  // เผื่อไม่มีการติ๊ก ให้เดาจากคำนำหน้า (fallback)
+  const titleEl = document.querySelector('[name="insureTitleCode"]');
+  const t = (titleEl?.value || '').trim();
+  if (t === 'นาย') return 'เพศชาย';
+  if (t === 'นาง' || t === 'นางสาว') return 'เพศหญิง';
+  return '';
 }
 
 /* พิมพ์คำนำหน้าแบบทีละตัวอักษร */
@@ -403,17 +420,17 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
     }
 
     const result = {
-      "TC No": `TC-${String(i+1).padStart(3,'0')}`,
-      "กรณี": sc.title==='นาย'?'เพศชาย':'เพศหญิง',
-      "อายุ": ageFromThaiDob(sc.dob),
-      "วันเกิด": sc.dob,
-      "ทุนประกัน": Number(sc.sum).toLocaleString(),
-      "ระยะคุ้มครอง": sc.coverage,
-      "Expected": formatMoney(expectedNum),
-      "Actual": formatMoney(actualNum),
-      "Popup Msg": popupMsg,
-      "ผลทดสอบ": status
-    };
+  "TC No": `TC-${String(i+1).padStart(3,'0')}`,
+  "เพศ": getGenderFromForm(),                 // ← ใช้ค่าจาก radio group
+  "อายุ": ageFromThaiDob(sc.dob),
+  "วันเกิด": sc.dob,
+  "ทุนประกัน": Number(sc.sum).toLocaleString(),
+  "ระยะคุ้มครอง": sc.coverage,
+  "Expected": formatMoney(expectedNum),
+  "Actual": formatMoney(actualNum),
+  "Popup Msg": popupMsg,
+  "ผลทดสอบ": status
+};
 
     results.push(result);
     window.LAST_RESULTS = results.slice();
