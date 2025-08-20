@@ -1,11 +1,13 @@
 /**************** CONFIG ****************/
 const scenarios = [
-  { title:'นาง', dob: '01/01/2534', sum: 716448401, coverage: 4,expected: 4047933 },
-  { title:'นาง', dob: '01/01/2534', sum: 716448401, coverage: 40,expected: 4047933 },
- { title:'นาง', dob: '01/01/2534', sum: 685002211, coverage: 5,expected: 4966266 },
- { title:'นาง', dob: '01/01/2532', sum: 475740214, coverage: 21,expected: 22764169 },
- { title:'นาง', dob: '01/01/2531', sum: 960473572, coverage: 28,expected: 84137485 },
- { title:'นาง', dob: '01/01/2530', sum: 76175782, coverage: 23,expected: 4341258 },
+   { title:'นาย', dob: '01/01/2548', sum: 50000, coverage: 1,expected: 143 },
+ { title:'นาย', dob: '01/01/2548', sum: 50000, coverage: 4,expected: 493 },
+ { title:'นาย', dob: '01/01/2548', sum: 50000, coverage: 40,expected: 493 },
+ { title:'นาย', dob: '01/01/2544', sum: 527096, coverage: 9,expected: 12107 },
+ { title:'นาย', dob: '01/01/2544', sum: 349379, coverage: 10,expected: 8990 },
+ { title:'นาย', dob: '01/01/2523', sum: 871393, coverage: 8,expected: 42968 },
+ { title:'นาย', dob: '01/01/2523', sum: 838457, coverage: 9,expected: 47683 },
+ 
 ];
 
 // อ่าน Actual จาก selector นี้ “เท่านั้น” (พยายามใช้ก่อน ถ้าไม่เจอค่อย fallback)
@@ -19,9 +21,9 @@ const EXPORT_COLUMNS = [
 const EPS = 0.5;
 
 /******** Slowdown config (หน่วงให้เนียน) ********/
-const DELAY_BETWEEN_FIELDS = 300;   // หน่วงหลังกรอกแต่ละฟิลด์
-const TITLE_TYPE_PAUSE     = 120;   // หน่วง/ตัวอักษร ตอนพิมพ์คำนำหน้า
-const DOB_TYPE_PAUSE       = 80;    // หน่วง/ตัวอักษร ตอนพิมพ์วันเกิด
+const DELAY_BETWEEN_FIELDS = 150;   // หน่วงหลังกรอกแต่ละฟิลด์
+const TITLE_TYPE_PAUSE     = 60;   // หน่วง/ตัวอักษร ตอนพิมพ์คำนำหน้า
+const DOB_TYPE_PAUSE       = 40;    // หน่วง/ตัวอักษร ตอนพิมพ์วันเกิด
 
 /**************** GLOBAL (for UI buttons) ****************/
 window.LAST_RESULTS = [];
@@ -88,7 +90,7 @@ function setValue(el, v){
   el.dispatchEvent(new Event('change',{bubbles:true}));
 }
 
-async function ensureValue(input, value,{retries=3,pause=120}={}){
+async function ensureValue(input, value,{retries=3,pause=90}={}){
   if(!input) return false;
   for(let i=0;i<retries;i++){
     if (window.STOP_TEST) return false;
@@ -103,24 +105,24 @@ async function ensureValue(input, value,{retries=3,pause=120}={}){
 /* พิมพ์คำนำหน้าแบบทีละตัวอักษร */
 async function selectMuiByText(inputEl, text){
   if(!inputEl) return false;
-  inputEl.focus(); inputEl.click(); await sleep(120);
-  setValue(inputEl,''); await sleep(80);
+  inputEl.focus(); inputEl.click(); await sleep(80);
+  setValue(inputEl,''); await sleep(50);
   for (const ch of String(text)) {
     setValue(inputEl, (inputEl.value || '') + ch);
     await sleep(TITLE_TYPE_PAUSE);
   }
-  await sleep(150);
+  await sleep(100);
   const findOption = () => [...document.querySelectorAll('[role="option"],.MuiAutocomplete-option,li')]
     .find(n => (n.textContent||'').trim() === text);
   let opt=findOption(), t0=Date.now();
-  while(!opt && Date.now()-t0<1500){ if (window.STOP_TEST) return false; await sleep(100); opt=findOption(); }
+  while(!opt && Date.now()-t0<1000){ if (window.STOP_TEST) return false; await sleep(100); opt=findOption(); }
   if(opt) opt.click();
-  await sleep(120);
+  await sleep(80);
   return !!opt;
 }
 
 /* พิมพ์วันเกิดแบบทีละตัวอักษร */
-async function typeDobSlow(input, dobStr, {perChar=DOB_TYPE_PAUSE, verifyPause=160, retries=2} = {}){
+async function typeDobSlow(input, dobStr, {perChar=DOB_TYPE_PAUSE, verifyPause=120, retries=2} = {}){
   if (!input) return false;
   for (let r=0; r<=retries; r++){
     input.focus(); await sleep(80);
@@ -223,7 +225,7 @@ function findActualElementFallback(){
 }
 
 /*************** ACTUAL (NUMBER or POPUP) ***************/
-async function getActualNumberOnce(timeout=6000){
+async function getActualNumberOnce(timeout=3500){
   // (1) ใช้ selector ที่กำหนดก่อน
   const t0 = Date.now();
   while (Date.now() - t0 < timeout){
@@ -232,7 +234,7 @@ async function getActualNumberOnce(timeout=6000){
       const num = parseMoney((el.innerText || el.textContent || '').trim());
       if (Number.isFinite(num)) return num;
     }
-    await sleep(150);
+    await sleep(100);
   }
   // (2) ไม่เจอ/ไม่ใช่ตัวเลข → fallback
   const fb = findActualElementFallback();
@@ -259,7 +261,7 @@ function getPopupMessageNow(){
   }
   return null;
 }
-async function waitPopupOr(selector, {timeout=6000, poll=150} = {}){
+async function waitPopupOr(selector, {timeout=4000, poll=100} = {}){
   const t0 = Date.now();
   while (Date.now() - t0 < timeout) {
     if (window.STOP_TEST) return { type:'stopped' };
@@ -304,11 +306,11 @@ async function closePopup({timeout=2000}={}) {
 }
 
 async function getActualOrPopup(){
-  const res = await waitPopupOr(ACTUAL_SELECTOR, { timeout: 6000, poll: 150 });
+  const res = await waitPopupOr(ACTUAL_SELECTOR, { timeout: 4000, poll: 100 });
   if (res.type === 'popup') {
     return { mode:'popup', popup: res.popupText, num: NaN };
   }
-  const num = await getActualNumberOnce(6000);
+  const num = await getActualNumberOnce(3500);
   if (Number.isFinite(num)) return { mode:'number', num };
   return { mode:'none', num: NaN };
 }
@@ -366,7 +368,7 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
     console.log('✅ กรอกฟอร์มเรียบร้อย');
 
     // กดคำนวณ
-    await clickCalcButton({retries:2, waitAfter:1000});
+    await clickCalcButton({retries:1, waitAfter:600});
 
     // อ่านผล / popup
     let popupMsg = '';
@@ -377,16 +379,16 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
       popupMsg = first.popup;
       await closePopup();
       await sleep(250);
-      actualNum = await getActualNumberOnce(3000);
+      actualNum = await getActualNumberOnce(1500);
       if (!Number.isFinite(actualNum)) {
-        await clickCalcButton({retries:1, waitAfter:800});
-        actualNum = await getActualNumberOnce(3000);
+        await clickCalcButton({retries:1, waitAfter:600});
+        actualNum = await getActualNumberOnce(1500);
       }
     } else if (first.mode === 'number') {
       actualNum = first.num;
     } else {
-      await clickCalcButton({retries:1, waitAfter:800});
-      actualNum = await getActualNumberOnce(3000);
+      await clickCalcButton({retries:1, waitAfter:600});
+      actualNum = await getActualNumberOnce(1500);
     }
 
     // คำนวณสถานะ
@@ -417,7 +419,7 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
     window.LAST_RESULTS = results.slice();
     console.log('📊 ผลลัพธ์:', result);
 
-    await sleep(600);
+    await sleep(300);
   }
 
   console.log('\n🎯 สรุปผลการทดสอบ:');
