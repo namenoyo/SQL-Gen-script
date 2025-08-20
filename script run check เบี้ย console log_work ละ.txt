@@ -1,14 +1,14 @@
 /**************** CONFIG ****************/
 const scenarios = [
-  { title:'นาย', dob:'01/01/2548', sum:50000, coverage:1,  expected:143  },
-  { title:'นาย', dob:'01/01/2548', sum:50000, coverage:2,  expected:289  },
-  { title:'นาง', dob:'01/01/2511', sum:50000, coverage:12, expected:6962 },
-  { title:'นาง', dob:'01/01/2511', sum:50000, coverage:13, expected:7109 },
-  { title:'นาง', dob:'01/01/2510', sum:50000, coverage:2,  expected:1127 },
-  { title:'นาง', dob:'01/01/2509', sum:50000, coverage:8,  expected:4213 },
+  { title:'นาง', dob: '01/01/2534', sum: 716448401, coverage: 4,expected: 4047933 },
+  { title:'นาง', dob: '01/01/2534', sum: 716448401, coverage: 40,expected: 4047933 },
+ { title:'นาง', dob: '01/01/2534', sum: 685002211, coverage: 5,expected: 4966266 },
+ { title:'นาง', dob: '01/01/2532', sum: 475740214, coverage: 21,expected: 22764169 },
+ { title:'นาง', dob: '01/01/2531', sum: 960473572, coverage: 28,expected: 84137485 },
+ { title:'นาง', dob: '01/01/2530', sum: 76175782, coverage: 23,expected: 4341258 },
 ];
 
-// อ่าน Actual จาก selector นี้ “เท่านั้น”
+// อ่าน Actual จาก selector นี้ “เท่านั้น” (พยายามใช้ก่อน ถ้าไม่เจอค่อย fallback)
 const ACTUAL_SELECTOR =
   '#tab\\/quotation > div > div > div:nth-child(1) > div > main > div:nth-child(5) > div > div.MuiCollapse-root.MuiCollapse-vertical.MuiCollapse-entered.css-pwcg7p-MuiCollapse-root > div > div > div > div > div:nth-child(1) > div.MuiBox-root.MuiBox-root-130 > div.MuiBox-root.MuiBox-root-132 > p:nth-child(2)';
 
@@ -24,7 +24,7 @@ const TITLE_TYPE_PAUSE     = 120;   // หน่วง/ตัวอักษร 
 const DOB_TYPE_PAUSE       = 80;    // หน่วง/ตัวอักษร ตอนพิมพ์วันเกิด
 
 /**************** GLOBAL (for UI buttons) ****************/
-window.LAST_RESULTS = [];           // เก็บผลล่าสุดให้ปุ่ม Copy ใช้
+window.LAST_RESULTS = [];
 window.EXPORT_COLUMNS = EXPORT_COLUMNS;
 
 /**************** CONTROLS (STOP + COPY) ****************/
@@ -104,22 +104,16 @@ async function ensureValue(input, value,{retries=3,pause=120}={}){
 async function selectMuiByText(inputEl, text){
   if(!inputEl) return false;
   inputEl.focus(); inputEl.click(); await sleep(120);
-
-  // ล้างก่อน
   setValue(inputEl,''); await sleep(80);
-
-  // พิมพ์ทีละตัวให้เนียนขึ้น
   for (const ch of String(text)) {
     setValue(inputEl, (inputEl.value || '') + ch);
     await sleep(TITLE_TYPE_PAUSE);
   }
   await sleep(150);
-
   const findOption = () => [...document.querySelectorAll('[role="option"],.MuiAutocomplete-option,li')]
     .find(n => (n.textContent||'').trim() === text);
-
-  let opt = findOption(), t0 = Date.now();
-  while(!opt && Date.now()-t0<1500){ if (window.STOP_TEST) return false; await sleep(100); opt = findOption(); }
+  let opt=findOption(), t0=Date.now();
+  while(!opt && Date.now()-t0<1500){ if (window.STOP_TEST) return false; await sleep(100); opt=findOption(); }
   if(opt) opt.click();
   await sleep(120);
   return !!opt;
@@ -131,14 +125,12 @@ async function typeDobSlow(input, dobStr, {perChar=DOB_TYPE_PAUSE, verifyPause=1
   for (let r=0; r<=retries; r++){
     input.focus(); await sleep(80);
     setValue(input, ''); await sleep(100);
-
     for (const ch of String(dobStr)) {
       setValue(input, (input.value || '') + ch);
       await sleep(perChar);
     }
-    input.blur?.(); 
+    input.blur?.();
     await sleep(verifyPause);
-
     const got = (input.value ?? input.getAttribute('value') ?? '').replace(/\s/g,'');
     if (got === String(dobStr).replace(/\s/g,'')) return true;
   }
@@ -150,12 +142,11 @@ function ageFromThaiDob(dobStr){
   if(!d||!m||!be) return '';
   const y=be-543, dob=new Date(y,m-1,d), t=new Date();
   let a=t.getFullYear()-dob.getFullYear();
-  const md=t.getMonth()-dob.getMonth();                 // ← แก้บั๊กลบเดือนจากวันเกิด
+  const md=t.getMonth()-dob.getMonth();
   if(md<0 || (md===0 && t.getDate()<dob.getDate())) a--;
   return a;
 }
 
-// ใช้ Number.isFinite กันพัง (เช่น null, undefined)
 function formatMoney(n){
   return Number.isFinite(n)
     ? n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})
@@ -178,8 +169,81 @@ async function copyText(text){
   catch{ console.log(text); }
 }
 
+/*************** MONEY & FALLBACK HELPERS ***************/
+function parseMoney(text){
+  if (!text) return NaN;
+  const cleaned = String(text).replace(/[฿,\s]/g,'').replace(/บาท/g,'');
+  const m = cleaned.match(/-?\d+(?:\.\d+)?/);
+  return m ? Number(m[0]) : NaN;
+}
+function isVisible(el){
+  if (!el) return false;
+  const st = getComputedStyle(el);
+  return st && st.display!=='none' && st.visibility!=='hidden' && el.offsetParent !== null;
+}
+function scoreCandidate(el){
+  const txt = (el.innerText || el.textContent || '').trim();
+  if (!/[\d,]+\.\d{2}/.test(txt)) return -1;
+  const st = getComputedStyle(el);
+  let score = 0;
+  const fs = parseFloat(st.fontSize) || 0;
+  const fw = parseInt(st.fontWeight,10) || 400;
+  if (fs >= 40) score += 3;       // ตัวใหญ่
+  if (fw >= 700) score += 2;       // หนา
+  if (st.color && st.color.includes('255, 177, 74')) score += 3; // สีส้มตัวอย่าง
+  if (!isVisible(el)) score -= 3;
+  return score;
+}
+function findHeadingContainer(){
+  const all = document.querySelectorAll('#tab\\/quotation *');
+  for (const el of all){
+    const txt = (el.innerText || el.textContent || '').trim();
+    if (txt && txt.includes('ผลการคำนวณเบี้ยประกันภัย')){
+      return el.closest('div') || el.parentElement || el;
+    }
+  }
+  return document.querySelector('#tab\\/quotation') || document.body;
+}
+function findActualElementFallback(){
+  const container = findHeadingContainer();
+  if (!container) return null;
+  const cands = [...container.querySelectorAll('p, span, h1, h2, div')];
+  let best = null, bestScore = -1;
+  for (const el of cands){
+    const txt = (el.innerText || el.textContent || '').trim();
+    if (!txt) continue;
+    if (!/[\d,]+\.\d{2}/.test(txt)) continue;
+    const sc = scoreCandidate(el);
+    if (sc > bestScore){ bestScore = sc; best = el; }
+  }
+  if (best){
+    console.log('🔎 Fallback found element:', best, 'text=', (best.innerText||best.textContent||'').trim());
+  }
+  return best;
+}
+
+/*************** ACTUAL (NUMBER or POPUP) ***************/
+async function getActualNumberOnce(timeout=6000){
+  // (1) ใช้ selector ที่กำหนดก่อน
+  const t0 = Date.now();
+  while (Date.now() - t0 < timeout){
+    const el = document.querySelector(ACTUAL_SELECTOR);
+    if (el){
+      const num = parseMoney((el.innerText || el.textContent || '').trim());
+      if (Number.isFinite(num)) return num;
+    }
+    await sleep(150);
+  }
+  // (2) ไม่เจอ/ไม่ใช่ตัวเลข → fallback
+  const fb = findActualElementFallback();
+  if (fb){
+    const num = parseMoney((fb.innerText || fb.textContent || '').trim());
+    if (Number.isFinite(num)) return num;
+  }
+  return NaN;
+}
+
 /*************** POPUP HANDLING ***************/
-// อ่านข้อความจาก popup (รองรับ MUI Dialog/Modal ทั่วไป)
 function getPopupMessageNow(){
   const containers = [
     ...document.querySelectorAll('[role="dialog"] .MuiDialogContent-root'),
@@ -195,31 +259,23 @@ function getPopupMessageNow(){
   }
   return null;
 }
-
-// รอ: ถ้ามี popup โผล่ → ส่ง popup; ไม่งั้นรอ element ตาม selector
-async function waitPopupOr(selector, {timeout=5000, poll=150} = {}){
+async function waitPopupOr(selector, {timeout=6000, poll=150} = {}){
   const t0 = Date.now();
   while (Date.now() - t0 < timeout) {
     if (window.STOP_TEST) return { type:'stopped' };
     const popupText = getPopupMessageNow();
     if (popupText) return { type:'popup', popupText };
-
     const el = document.querySelector(selector);
     if (el) return { type:'selector', el };
-
     await sleep(poll);
   }
   const popupText = getPopupMessageNow();
   if (popupText) return { type:'popup', popupText };
   return { type:'timeout' };
 }
-
-// ปิด popup ให้เรียบร้อยก่อนรันต่อ
 async function closePopup({timeout=2000}={}) {
   const root = document.querySelector('[role="dialog"], .MuiDialog-root, .MuiModal-root');
   if (!root) return false;
-
-  // ปุ่มปิด/ยืนยันที่พบบ่อย
   const buttonCandidates = [
     'button[aria-label="Close"]',
     '.MuiDialogTitle-root button',
@@ -235,7 +291,6 @@ async function closePopup({timeout=2000}={}) {
     document.dispatchEvent(new KeyboardEvent('keydown', {key:'Escape', keyCode:27, which:27, bubbles:true}));
     await sleep(200);
   }
-
   const t0 = Date.now();
   while (Date.now() - t0 < timeout) {
     const still = document.querySelector('[role="dialog"], .MuiDialog-root, .MuiModal-root');
@@ -248,27 +303,13 @@ async function closePopup({timeout=2000}={}) {
   return true;
 }
 
-/*************** ACTUAL (NUMBER or POPUP) ***************/
-function extractNumberFromElement(el){
-  const txt = (el?.innerText || el?.textContent || '').trim();
-  const m = txt.match(/[\d,]+(?:\.\d{2})?/);
-  return m ? Number(m[0].replace(/,/g,'')) : NaN;
-}
-
-async function getActualNumberOnce(timeout=3000){
-  const el = await waitFor(ACTUAL_SELECTOR, { timeout });
-  if (!el) return NaN;
-  return extractNumberFromElement(el);
-}
-
 async function getActualOrPopup(){
-  const res = await waitPopupOr(ACTUAL_SELECTOR, { timeout: 5000, poll: 150 });
+  const res = await waitPopupOr(ACTUAL_SELECTOR, { timeout: 6000, poll: 150 });
   if (res.type === 'popup') {
     return { mode:'popup', popup: res.popupText, num: NaN };
   }
-  if (res.type === 'selector' && res.el) {
-    return { mode:'number', num: extractNumberFromElement(res.el) };
-  }
+  const num = await getActualNumberOnce(6000);
+  if (Number.isFinite(num)) return { mode:'number', num };
   return { mode:'none', num: NaN };
 }
 
@@ -288,22 +329,16 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
     if (window.STOP_TEST) return false;
     const btn = getCalcButtonByMuiLabel() || getCalcButtonFallback();
     if(!btn){ await sleep(150); continue; }
-
-    // commit ค่า coverage ก่อน
     const cov = document.querySelector('[name="coverageYear"]');
     cov?.blur?.();
     await sleep(200);
-
     btn.scrollIntoView({block:'center',inline:'center'});
     if (btn.disabled){ await sleep(200); continue; }
-
     try{ btn.click(); }catch{}
-    // กัน overlay
     btn.dispatchEvent(new MouseEvent('pointerdown',{bubbles:true}));
     btn.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));
     btn.dispatchEvent(new MouseEvent('mouseup',{bubbles:true}));
     btn.dispatchEvent(new MouseEvent('click',{bubbles:true}));
-
     await sleep(waitAfter);
     return true;
   }
@@ -312,25 +347,21 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
 
 /**************** RUNNER ****************/
 (async()=>{
-  console.log('🚀 เริ่มทดสอบ Premium Calculator (หน่วงคำนำหน้า/วันเกิด, รองรับป็อปอัพ, ปิดป็อปอัพ, STOP & Copy TSV)');
+  console.log('🚀 เริ่มทดสอบ Premium Calculator (fallback DOM, ปิดป๊อปอัพ, หน่วงฟิลด์, STOP & Copy TSV)');
   const results=[];
 
   for(let i=0;i<scenarios.length;i++){
     if (window.STOP_TEST) { console.warn('🛑 Stopped'); break; }
-
     const sc=scenarios[i];
     console.log(`\n📋 TC-${String(i+1).padStart(3,'0')}:`, sc);
 
     // กรอกฟอร์ม (มีหน่วง)
     await selectMuiByText(document.querySelector('[name="insureTitleCode"]'), sc.title);
     await sleep(DELAY_BETWEEN_FIELDS);
-
     await typeDobSlow(document.querySelector('#insureBirthdate'), sc.dob);
     await sleep(DELAY_BETWEEN_FIELDS);
-
     await ensureValue(document.querySelector('[name="sumInsure"]'), sc.sum);
     await sleep(120);
-
     await ensureValue(document.querySelector('[name="coverageYear"]'), sc.coverage);
     console.log('✅ กรอกฟอร์มเรียบร้อย');
 
@@ -342,16 +373,11 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
     let actualNum = NaN;
 
     const first = await getActualOrPopup();
-
     if (first.mode === 'popup') {
       popupMsg = first.popup;
       await closePopup();
       await sleep(250);
-
-      // ลองอ่านตัวเลขอีกครั้งหลังปิดป๊อปอัพ
       actualNum = await getActualNumberOnce(3000);
-
-      // ถ้ายังไม่ได้ ลองกดคำนวณซ้ำ 1 รอบ แล้วรออีกนิด
       if (!Number.isFinite(actualNum)) {
         await clickCalcButton({retries:1, waitAfter:800});
         actualNum = await getActualNumberOnce(3000);
@@ -359,7 +385,6 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
     } else if (first.mode === 'number') {
       actualNum = first.num;
     } else {
-      // none/timeout → ลองกดซ้ำเผื่อ render ช้า
       await clickCalcButton({retries:1, waitAfter:800});
       actualNum = await getActualNumberOnce(3000);
     }
@@ -383,13 +408,13 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
       "ทุนประกัน": Number(sc.sum).toLocaleString(),
       "ระยะคุ้มครอง": sc.coverage,
       "Expected": formatMoney(expectedNum),
-      "Actual": formatMoney(actualNum),   // ตัวเลขผลลัพธ์ (ถ้ามี)
-      "Popup Msg": popupMsg,              // ข้อความป็อปอัพ (ถ้าเกิด)
+      "Actual": formatMoney(actualNum),
+      "Popup Msg": popupMsg,
       "ผลทดสอบ": status
     };
 
     results.push(result);
-    window.LAST_RESULTS = results.slice();   // อัปเดตให้ปุ่ม Copy ใช้ได้ทันที
+    window.LAST_RESULTS = results.slice();
     console.log('📊 ผลลัพธ์:', result);
 
     await sleep(600);
@@ -398,15 +423,12 @@ async function clickCalcButton({retries=3,waitAfter=500}={}){
   console.log('\n🎯 สรุปผลการทดสอบ:');
   console.table(results);
 
-  // export เป็น TSV ไปคลิปบอร์ด (รอบสุดท้าย)
   const finalTSV = buildTSV(results, EXPORT_COLUMNS);
   await copyText(finalTSV);
   console.log('📋 คัดลอกผลลัพธ์แล้ว');
 
-  // อัปเดต global อีกครั้งเผื่อกด Copy เพิ่ม
   window.LAST_RESULTS = results.slice();
 
-  // สถิติ
   const passed   = results.filter(r => r["ผลทดสอบ"] === "✅Passed").length;
   const failed   = results.filter(r => r["ผลทดสอบ"] === "❌Failed").length;
   const popups   = results.filter(r => r["ผลทดสอบ"] === "⚠️Popup").length;
