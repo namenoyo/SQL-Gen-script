@@ -1,0 +1,415 @@
+/**************** CONFIG ****************/
+const scenarios = [
+  { title:'นาย', dob:'01/01/2548', sum:50000, coverage:1,  expected:143  },
+  { title:'นาย', dob:'01/01/2548', sum:50000, coverage:2,  expected:289  },
+  { title:'นาง', dob:'01/01/2511', sum:50000, coverage:12, expected:6962 },
+  { title:'นาง', dob:'01/01/2511', sum:50000, coverage:13, expected:7109 },
+  { title:'นาง', dob:'01/01/2510', sum:50000, coverage:2,  expected:1127 },
+  { title:'นาง', dob:'01/01/2509', sum:50000, coverage:8,  expected:4213 },
+];
+
+// อ่าน Actual จาก selector นี้ “เท่านั้น”
+const ACTUAL_SELECTOR =
+  '#tab\\/quotation > div > div > div:nth-child(1) > div > main > div:nth-child(5) > div > div.MuiCollapse-root.MuiCollapse-vertical.MuiCollapse-entered.css-pwcg7p-MuiCollapse-root > div > div > div > div > div:nth-child(1) > div.MuiBox-root.MuiBox-root-130 > div.MuiBox-root.MuiBox-root-132 > p:nth-child(2)';
+
+const EXPORT_COLUMNS = [
+  "TC No","กรณี","อายุ","วันเกิด","ทุนประกัน","ระยะคุ้มครอง","Expected","Actual","Popup Msg","ผลทดสอบ"
+];
+
+const EPS = 0.5;
+
+/******** Slowdown config (หน่วงให้เนียน) ********/
+const DELAY_BETWEEN_FIELDS = 300;   // หน่วงหลังกรอกแต่ละฟิลด์
+const TITLE_TYPE_PAUSE     = 120;   // หน่วง/ตัวอักษร ตอนพิมพ์คำนำหน้า
+const DOB_TYPE_PAUSE       = 80;    // หน่วง/ตัวอักษร ตอนพิมพ์วันเกิด
+
+/**************** GLOBAL (for UI buttons) ****************/
+window.LAST_RESULTS = [];           // เก็บผลล่าสุดให้ปุ่ม Copy ใช้
+window.EXPORT_COLUMNS = EXPORT_COLUMNS;
+
+/**************** CONTROLS (STOP + COPY) ****************/
+(function ensureControls(){
+  if (document.getElementById('qa-control-box')) return;
+
+  const box = document.createElement('div');
+  box.id = 'qa-control-box';
+  Object.assign(box.style, {
+    position:'fixed', top:'20px', right:'20px', zIndex: 2147483647,
+    display:'flex', gap:'8px', alignItems:'center', fontFamily:'sans-serif'
+  });
+
+  const stopBtn = document.createElement('button');
+  stopBtn.id = 'stop-btn';
+  stopBtn.textContent = '🛑 STOP';
+  Object.assign(stopBtn.style, {
+    padding:'8px 14px', fontSize:'14px',
+    background:'red', color:'#fff', border:'none', borderRadius:'6px',
+    cursor:'pointer', boxShadow:'0 2px 8px rgba(0,0,0,.2)'
+  });
+  stopBtn.onclick = ()=>{ window.STOP_TEST = true; console.warn('🛑 STOP pressed'); };
+
+  const copyBtn = document.createElement('button');
+  copyBtn.id = 'copy-tsv-btn';
+  copyBtn.textContent = '📋 Copy TSV';
+  Object.assign(copyBtn.style, {
+    padding:'8px 14px', fontSize:'14px',
+    background:'#16a34a', color:'#fff', border:'none', borderRadius:'6px',
+    cursor:'pointer', boxShadow:'0 2px 8px rgba(0,0,0,.2)'
+  });
+  copyBtn.title = 'คัดลอกผลลัพธ์ปัจจุบันเป็นตาราง TSV';
+  copyBtn.onclick = async ()=>{
+    const tsv = buildTSV(window.LAST_RESULTS, window.EXPORT_COLUMNS);
+    await copyText(tsv);
+    console.log('📋 คัดลอกผลลัพธ์ (TSV) แล้ว');
+  };
+
+  box.appendChild(stopBtn);
+  box.appendChild(copyBtn);
+  document.body.appendChild(box);
+})();
+
+/**************** HELPERS ****************/
+const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
+
+function buildTSV(rows, cols){
+  let t = (cols||EXPORT_COLUMNS).join('\t')+'\n';
+  (rows||[]).forEach(r=>{
+    t += (cols||EXPORT_COLUMNS).map(k => (r?.[k] ?? '')).join('\t') + '\n';
+  });
+  return t;
+}
+
+function setValue(el, v){
+  if (!el) return;
+  const proto = el.__proto__ || Object.getPrototypeOf(el);
+  const desc = Object.getOwnPropertyDescriptor(proto, 'value');
+  if (desc?.set) desc.set.call(el, v); else el.value = v;
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+}
+
+async function ensureValue(input, value,{retries=3,pause=120}={}){
+  if(!input) return false;
+  for(let i=0;i<retries;i++){
+    if (window.STOP_TEST) return false;
+    input.focus(); setValue(input,String(value)); input.blur?.();
+    await sleep(pause);
+    const got=(input.value??input.getAttribute('value')??'').replace(/[, ]/g,'');
+    if(got===String(value)) return true;
+  }
+  return false;
+}
+
+/* พิมพ์คำนำหน้าแบบทีละตัวอักษร */
+async function selectMuiByText(inputEl, text){
+  if(!inputEl) return false;
+  inputEl.focus(); inputEl.click(); await sleep(120);
+
+  // ล้างก่อน
+  setValue(inputEl,''); await sleep(80);
+
+  // พิมพ์ทีละตัวให้เนียนขึ้น
+  for (const ch of String(text)) {
+    setValue(inputEl, (inputEl.value || '') + ch);
+    await sleep(TITLE_TYPE_PAUSE);
+  }
+  await sleep(150);
+
+  const findOption = () => [...document.querySelectorAll('[role="option"],.MuiAutocomplete-option,li')]
+    .find(n => (n.textContent||'').trim() === text);
+
+  let opt = findOption(), t0 = Date.now();
+  while(!opt && Date.now()-t0<1500){ if (window.STOP_TEST) return false; await sleep(100); opt = findOption(); }
+  if(opt) opt.click();
+  await sleep(120);
+  return !!opt;
+}
+
+/* พิมพ์วันเกิดแบบทีละตัวอักษร */
+async function typeDobSlow(input, dobStr, {perChar=DOB_TYPE_PAUSE, verifyPause=160, retries=2} = {}){
+  if (!input) return false;
+  for (let r=0; r<=retries; r++){
+    input.focus(); await sleep(80);
+    setValue(input, ''); await sleep(100);
+
+    for (const ch of String(dobStr)) {
+      setValue(input, (input.value || '') + ch);
+      await sleep(perChar);
+    }
+    input.blur?.(); 
+    await sleep(verifyPause);
+
+    const got = (input.value ?? input.getAttribute('value') ?? '').replace(/\s/g,'');
+    if (got === String(dobStr).replace(/\s/g,'')) return true;
+  }
+  return false;
+}
+
+function ageFromThaiDob(dobStr){
+  const [d,m,be]=dobStr.split('/').map(x=>parseInt(x,10));
+  if(!d||!m||!be) return '';
+  const y=be-543, dob=new Date(y,m-1,d), t=new Date();
+  let a=t.getFullYear()-dob.getFullYear();
+  const md=t.getMonth()-dob.getMonth();                 // ← แก้บั๊กลบเดือนจากวันเกิด
+  if(md<0 || (md===0 && t.getDate()<dob.getDate())) a--;
+  return a;
+}
+
+// ใช้ Number.isFinite กันพัง (เช่น null, undefined)
+function formatMoney(n){
+  return Number.isFinite(n)
+    ? n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})
+    : '';
+}
+
+async function waitFor(sel, {timeout=8000, interval=120} = {}){
+  const t0 = Date.now();
+  while (Date.now() - t0 < timeout) {
+    if (window.STOP_TEST) return null;
+    const el = document.querySelector(sel);
+    if (el) return el;
+    await sleep(interval);
+  }
+  return null;
+}
+
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); }
+  catch{ console.log(text); }
+}
+
+/*************** POPUP HANDLING ***************/
+// อ่านข้อความจาก popup (รองรับ MUI Dialog/Modal ทั่วไป)
+function getPopupMessageNow(){
+  const containers = [
+    ...document.querySelectorAll('[role="dialog"] .MuiDialogContent-root'),
+    ...document.querySelectorAll('.MuiDialogContent-root'),
+    ...document.querySelectorAll('[role="dialog"], .MuiDialog-paper, .MuiModal-root')
+  ];
+  for (const el of containers) {
+    const txt = (el.innerText || el.textContent || '').trim();
+    if (txt && txt.length <= 500) {
+      const cleaned = txt.replace(/\s{2,}/g,' ').trim();
+      if (cleaned) return cleaned;
+    }
+  }
+  return null;
+}
+
+// รอ: ถ้ามี popup โผล่ → ส่ง popup; ไม่งั้นรอ element ตาม selector
+async function waitPopupOr(selector, {timeout=5000, poll=150} = {}){
+  const t0 = Date.now();
+  while (Date.now() - t0 < timeout) {
+    if (window.STOP_TEST) return { type:'stopped' };
+    const popupText = getPopupMessageNow();
+    if (popupText) return { type:'popup', popupText };
+
+    const el = document.querySelector(selector);
+    if (el) return { type:'selector', el };
+
+    await sleep(poll);
+  }
+  const popupText = getPopupMessageNow();
+  if (popupText) return { type:'popup', popupText };
+  return { type:'timeout' };
+}
+
+// ปิด popup ให้เรียบร้อยก่อนรันต่อ
+async function closePopup({timeout=2000}={}) {
+  const root = document.querySelector('[role="dialog"], .MuiDialog-root, .MuiModal-root');
+  if (!root) return false;
+
+  // ปุ่มปิด/ยืนยันที่พบบ่อย
+  const buttonCandidates = [
+    'button[aria-label="Close"]',
+    '.MuiDialogTitle-root button',
+    '.MuiDialogActions-root button',
+    'button'
+  ];
+  let clicked = false;
+  for (const sel of buttonCandidates) {
+    const btn = root.querySelector(sel);
+    if (btn) { btn.click(); clicked = true; await sleep(200); break; }
+  }
+  if (!clicked) {
+    document.dispatchEvent(new KeyboardEvent('keydown', {key:'Escape', keyCode:27, which:27, bubbles:true}));
+    await sleep(200);
+  }
+
+  const t0 = Date.now();
+  while (Date.now() - t0 < timeout) {
+    const still = document.querySelector('[role="dialog"], .MuiDialog-root, .MuiModal-root');
+    if (!still) return true;
+    await sleep(100);
+  }
+  const still = document.querySelector('[role="dialog"], .MuiDialog-root, .MuiModal-root');
+  if (still) still.remove();
+  await sleep(150);
+  return true;
+}
+
+/*************** ACTUAL (NUMBER or POPUP) ***************/
+function extractNumberFromElement(el){
+  const txt = (el?.innerText || el?.textContent || '').trim();
+  const m = txt.match(/[\d,]+(?:\.\d{2})?/);
+  return m ? Number(m[0].replace(/,/g,'')) : NaN;
+}
+
+async function getActualNumberOnce(timeout=3000){
+  const el = await waitFor(ACTUAL_SELECTOR, { timeout });
+  if (!el) return NaN;
+  return extractNumberFromElement(el);
+}
+
+async function getActualOrPopup(){
+  const res = await waitPopupOr(ACTUAL_SELECTOR, { timeout: 5000, poll: 150 });
+  if (res.type === 'popup') {
+    return { mode:'popup', popup: res.popupText, num: NaN };
+  }
+  if (res.type === 'selector' && res.el) {
+    return { mode:'number', num: extractNumberFromElement(res.el) };
+  }
+  return { mode:'none', num: NaN };
+}
+
+/**************** UI ACTIONS ****************/
+function getCalcButtonByMuiLabel(){
+  const span = [...document.querySelectorAll('span.MuiButton-label, span')]
+    .find(s => (s.textContent||'').trim() === 'คำนวณเบี้ย');
+  return span?.closest('button') || null;
+}
+function getCalcButtonFallback(){
+  return [...document.querySelectorAll('button,[role="button"]')]
+    .find(b => (b.textContent||'').includes('คำนวณเบี้ย'))
+    || document.querySelector('button.MuiButton-containedPrimary, button.MuiButton-contained');
+}
+async function clickCalcButton({retries=3,waitAfter=500}={}){
+  for(let i=0;i<retries;i++){
+    if (window.STOP_TEST) return false;
+    const btn = getCalcButtonByMuiLabel() || getCalcButtonFallback();
+    if(!btn){ await sleep(150); continue; }
+
+    // commit ค่า coverage ก่อน
+    const cov = document.querySelector('[name="coverageYear"]');
+    cov?.blur?.();
+    await sleep(200);
+
+    btn.scrollIntoView({block:'center',inline:'center'});
+    if (btn.disabled){ await sleep(200); continue; }
+
+    try{ btn.click(); }catch{}
+    // กัน overlay
+    btn.dispatchEvent(new MouseEvent('pointerdown',{bubbles:true}));
+    btn.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));
+    btn.dispatchEvent(new MouseEvent('mouseup',{bubbles:true}));
+    btn.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+
+    await sleep(waitAfter);
+    return true;
+  }
+  return false;
+}
+
+/**************** RUNNER ****************/
+(async()=>{
+  console.log('🚀 เริ่มทดสอบ Premium Calculator (หน่วงคำนำหน้า/วันเกิด, รองรับป็อปอัพ, ปิดป็อปอัพ, STOP & Copy TSV)');
+  const results=[];
+
+  for(let i=0;i<scenarios.length;i++){
+    if (window.STOP_TEST) { console.warn('🛑 Stopped'); break; }
+
+    const sc=scenarios[i];
+    console.log(`\n📋 TC-${String(i+1).padStart(3,'0')}:`, sc);
+
+    // กรอกฟอร์ม (มีหน่วง)
+    await selectMuiByText(document.querySelector('[name="insureTitleCode"]'), sc.title);
+    await sleep(DELAY_BETWEEN_FIELDS);
+
+    await typeDobSlow(document.querySelector('#insureBirthdate'), sc.dob);
+    await sleep(DELAY_BETWEEN_FIELDS);
+
+    await ensureValue(document.querySelector('[name="sumInsure"]'), sc.sum);
+    await sleep(120);
+
+    await ensureValue(document.querySelector('[name="coverageYear"]'), sc.coverage);
+    console.log('✅ กรอกฟอร์มเรียบร้อย');
+
+    // กดคำนวณ
+    await clickCalcButton({retries:2, waitAfter:1000});
+
+    // อ่านผล / popup
+    let popupMsg = '';
+    let actualNum = NaN;
+
+    const first = await getActualOrPopup();
+
+    if (first.mode === 'popup') {
+      popupMsg = first.popup;
+      await closePopup();
+      await sleep(250);
+
+      // ลองอ่านตัวเลขอีกครั้งหลังปิดป๊อปอัพ
+      actualNum = await getActualNumberOnce(3000);
+
+      // ถ้ายังไม่ได้ ลองกดคำนวณซ้ำ 1 รอบ แล้วรออีกนิด
+      if (!Number.isFinite(actualNum)) {
+        await clickCalcButton({retries:1, waitAfter:800});
+        actualNum = await getActualNumberOnce(3000);
+      }
+    } else if (first.mode === 'number') {
+      actualNum = first.num;
+    } else {
+      // none/timeout → ลองกดซ้ำเผื่อ render ช้า
+      await clickCalcButton({retries:1, waitAfter:800});
+      actualNum = await getActualNumberOnce(3000);
+    }
+
+    // คำนวณสถานะ
+    const expectedNum = Number(sc.expected);
+    let status;
+    if (Number.isFinite(actualNum)) {
+      status = Math.abs(actualNum - expectedNum) <= EPS ? "✅Passed" : "❌Failed";
+    } else if (popupMsg) {
+      status = "⚠️Popup";
+    } else {
+      status = "❓No Result";
+    }
+
+    const result = {
+      "TC No": `TC-${String(i+1).padStart(3,'0')}`,
+      "กรณี": sc.title==='นาย'?'เพศชาย':'เพศหญิง',
+      "อายุ": ageFromThaiDob(sc.dob),
+      "วันเกิด": sc.dob,
+      "ทุนประกัน": Number(sc.sum).toLocaleString(),
+      "ระยะคุ้มครอง": sc.coverage,
+      "Expected": formatMoney(expectedNum),
+      "Actual": formatMoney(actualNum),   // ตัวเลขผลลัพธ์ (ถ้ามี)
+      "Popup Msg": popupMsg,              // ข้อความป็อปอัพ (ถ้าเกิด)
+      "ผลทดสอบ": status
+    };
+
+    results.push(result);
+    window.LAST_RESULTS = results.slice();   // อัปเดตให้ปุ่ม Copy ใช้ได้ทันที
+    console.log('📊 ผลลัพธ์:', result);
+
+    await sleep(600);
+  }
+
+  console.log('\n🎯 สรุปผลการทดสอบ:');
+  console.table(results);
+
+  // export เป็น TSV ไปคลิปบอร์ด (รอบสุดท้าย)
+  const finalTSV = buildTSV(results, EXPORT_COLUMNS);
+  await copyText(finalTSV);
+  console.log('📋 คัดลอกผลลัพธ์แล้ว');
+
+  // อัปเดต global อีกครั้งเผื่อกด Copy เพิ่ม
+  window.LAST_RESULTS = results.slice();
+
+  // สถิติ
+  const passed   = results.filter(r => r["ผลทดสอบ"] === "✅Passed").length;
+  const failed   = results.filter(r => r["ผลทดสอบ"] === "❌Failed").length;
+  const popups   = results.filter(r => r["ผลทดสอบ"] === "⚠️Popup").length;
+  const noResult = results.filter(r => r["ผลทดสอบ"] === "❓No Result").length;
+  console.log(`\n📈 สถิติ: Passed: ${passed}, Failed: ${failed}, Popup: ${popups}, No Result: ${noResult}`);
+})().catch(e=>console.error(e));
