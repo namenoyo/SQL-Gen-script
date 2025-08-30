@@ -258,10 +258,13 @@
     <a href="#" class="tab-link" onclick="switchTab('mapping')">📦 Gen : Ref_1</a>
 	<a href="#" class="tab-link" onclick="switchTab('idcardno')"> 📦 Gen : เลขบัตรประชาชน</a>
     <a href="#" class="tab-link" onclick="switchTab('dline')">📦 Gen : Text File Counter Bank</a>
+	<a href="#" class="tab-link" onclick="switchTab('SPLife_Gen_TextFile')">📦 Gen : Text File SP Life</a>
 	<a href="#" class="tab-link" onclick="switchTab('split_text')">📦 ตัดช่องว่าง หรือ เว้นบรรทัด</a>
 	<a href="#" class="tab-link" onclick="switchTab('json_gen')">📦 Gen : JSON For Test Data</a>
 	<a href="#" class="tab-link" onclick="switchTab('google_gen')">📦 Google Sheets : Formula Generator</a>
-	<a href="#" class="tab-link" onclick="switchTab('claimpay_wht')">📦 Claim-payment : WHT Export</a>
+	<a href="#" class="tab-link" onclick="switchTab('claimpay_wht')">📦 Claim-payment : All Type</a>
+	
+	
   </div>
 
   <div class="main-content">
@@ -1628,326 +1631,2821 @@ function copyOutput_5() {
  </div>
  
   
-  <div id="claimpay_wht" class="card-content">
-  <div class="card">
-    <h2>📝 claimpay : WHT Export</h2>
-  <div class="flex" id="flex_ClaimpayWHT">
-    <input type="file" id="importFile_ClaimpayWHT" accept=".txt">
-    <button class="btn" id="btnImport_ClaimpayWHT" onclick="importTxt_ClaimpayWHT()">Import</button>
-    <button class="btn" id="btnClear_ClaimpayWHT" onclick="clearTable_ClaimpayWHT()">Clear</button>
-    <button class="btn" id="btnCopyPipe_ClaimpayWHT" onclick="copyPipe_ClaimpayWHT()">Copy | (Pipe)</button>
-    <button class="btn" id="btnCopyConcat_ClaimpayWHT" onclick="copyConcat_ClaimpayWHT()">Copy (Concat)</button>
-  </div>
+ <div id="claimpay_wht" class="card-content">
+  <style>
+    
+    /* --- FIX: เลิกดันเทียบ viewport และล็อกความกว้าง/ตำแหน่งให้เสถียร --- */
+#claimpay_wht{
+  position: static !important;
+  left: auto !important;
+  width: 100% !important;     /* กว้างเท่าคอนเทนต์แม่ ไม่ล้นขอบ */
+  max-width: none;
+}
 
-  <div class="scrollx" id="scrollx_ClaimpayWHT">
-    <table id="wht-table_ClaimpayWHT">
-      <thead>
-        <tr>
-        <th>Seq</th>
-        <th>~Batch Ref No</th>
-        <th>~Sub Batch Ref No</th>
-        <th>~Cust Ref No</th>
-        <th>~Payment Ref No</th>
-        <th>~Customer Code</th>
-        <th>~Debit Account No</th>
-        <th>~Product Code</th>
-        <th>~Payee Code</th>
-        <th>~Payee Name</th>
-        <th>~Payee Account No</th>
-        <th>~Credit Bank Code</th>
-        <th>~Bank Branch Code</th>
-        <th>~Payee Charge Code</th>
-        <th>~Swift Code</th>
-        <th>~Processing Date</th>
-        <th>~Value Date</th>
-        <th>~Payment Amount</th>
-        <th>~Payment Currency</th>
-        <th>~Buying Rate</th>
-        <th>~Selling Rate</th>
-        <th>~Fix Amount Mode</th>
-        <th>~Instrument No.</th>
-        <th>~Status</th>
-        <th>~Reason of Status</th>
-        <th>~WHT</th>
-        <th>~Internal ref</th>
-        <th>~WHT Running No.</th>
-        <th>~WHT Inc Type</th>
-        <th>~WHT Rate</th>
-        <th>~Inc Type Amt.</th>
-        <th>~WHT Amt.</th>
-        <th>~INV</th>
-        <th>~Internal ref</th>
-        <th>~Invoice Description</th>
-        <th>~Inv Amt</th>
-        <th>~VAT Amount</th>
-        <th>~Invoice No.</th>
-        <th>~PO No</th>
-        <th>~Inv. Date</th>
-      </tr>
-      </thead>
-      <tbody id="tbody-table_ClaimpayWHT">
-        <tr>
-        <!-- ช่อง input ต้องตรงกับจำนวนช่องใน FIELD_CONFIG -->
-        <td><input type="text"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td><input type="text"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td><input type="text"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td><input type="text"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td><input type="text"></td>
-        <td><input type="text"></td>
-        <td><input type="text"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td><input type="text"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td><input type="text"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td><input type="text"></td>
-        <td><input type="text"></td>
-        <td><input type="text"></td>
-        <td class="fix-cell"><input type="text" readonly class="readonly"></td>
-        <td><input type="text"></td>
-        <td><input type="text"></td> <!-- ~Invoice Description -->
-        <td><input type="text"></td> <!-- ~Inv Amt -->
-        <td><input type="text"></td> <!-- ~VAT Amount -->
-        <td><input type="text"></td>  <!-- ~Invoice No. -->
-		<td><input type="text"></td>  <!-- ~PO No -->
-		<td class="fix-cell"><input type="text" readonly class="readonly"></td>  <!-- ~Inv. Date -->
+/* กล่องหลักในโซนนี้ให้กว้างขึ้นและอยู่กลาง */
+#claimpay_wht .card{
+  max-width: 1280px;          /* ปลอดภัยไม่ชน sidebar ซ้าย */
+  margin: 0 auto;             /* จัดกึ่งกลาง */
+  padding-inline: 10px;       /* กันชนขอบ */
+}
 
-      </tr>
-      </tbody>
-    </table>
-  </div>
+/* ทูลบาร์: จัดเว้นระยะให้เรียบร้อย */
+#claimpay_wht .controls,
+#claimpay_wht .toolbar{
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  justify-content: space-between;  /* label/เลือกอยู่ซ้าย ปุ่มอยู่ขวา */
+  margin: .25rem 0 .5rem;
+}
+#claimpay_wht select{ min-width: 320px; }
 
-  <div id="result_ClaimpayWHT" class="hidden"></div>
+/* iframe ให้เต็มความกว้าง คงที่ ไม่ทำให้เลย์เอาต์เด้ง */
+#claimpay_wht iframe{
+  display: block;
+  width: 100%;
+  height: clamp(760px, 100vh - 220px, 1100px);
+  min-height: 760px;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+
+/* ป้องกันหน้าเด้งเพราะสกอลบาร์โผล่/หาย */
+html{ scrollbar-gutter: stable; }          /* Chrome/Edge สมัยใหม่รองรับ */
+body{ overflow-y: scroll; }                /* สำรอง: ล็อกให้มีสกอลบาร์เสมอ */
+
+/* nudge ซ้ายเล็กน้อยแบบปลอดภัย */
+:root{ --claimpay-left-nudge: -16px; }   /* ปรับได้ตามใจ: -2 ถึง -16px */
+#claimpay_wht .card{ transform: translateX(var(--claimpay-left-nudge)); }
+
+/* กันหน้าจอแคบแล้วล้นซ้าย */
+@media (max-width: 992px){
+  #claimpay_wht .card{ transform: none; }
+}
+  </style>
+  
+   <div class="wrap">
+    <div class="card">
+    <h1>🧰 Claim payment Tools (All-in-One)</h1>
+    <p class="desc">รวม 4 เครื่องมือในหน้าเดียว • ใช้ dropdown เลือกเครื่องมือ • แยกกันด้วย iframe </p>
+
+    <div class="toolbar" style="display:flex;align-items:center;gap:.5rem;justify-content:flex-start;">
+  <label for="wht-picker">เลือกเครื่องมือ:</label>
+  <select id="wht-picker"
+    style="width: 320px; height: 36px; padding: 4px 10px; border-radius: 8px; margin-right:.5rem;">
+    <option value="wht-tool-1" selected>BBL e-WHT</option>
+    <option value="wht-tool-2">BBL Transfer / PromptPay</option>
+    <option value="wht-tool-3">SCB Smart Credit DCP</option>
+    <option value="wht-tool-4">SCB Smart Credit ORFT</option>
+  </select>
+  <button class="brand" id="wht-open">เปิดแบบแท็บใหม่</button>
+  <button id="wht-reset">Reset</button>
 </div>
-<script>
-const FIELD_CONFIG_ClaimpayWHT = [
- 
-  // 0: Seq
-  { type: "from_line",  startWith: "003~", fieldIdx: 2 },
-  // 1: ~Batch Ref No
-  { type: "fixed", value: "~OCEANIN008048" },
-  // 2: ~Sub Batch Ref No
-  { type: "fixed", value: "~1719" },
-  // 3: ~Cust Ref No 
-  { type: "from_line", startWith: "003~", fieldIdx: 8, prefix: "~" },
-  // 4: ~Payment Ref No
-  { type: "fixed", value: "~00BOCEANIN1011570" },
-  // 5: ~Customer Code
-  { type: "from_line", startWith: "003~", fieldIdx: 1, prefix: "~" },
-  // 6: ~Debit Account No
-  { type: "fixed", value: "~9250025955" },
-  // 7: ~Product Code
-  { type: "from_line", startWith: "003~", fieldIdx: 3, prefix: "~" },
-  // 8: ~Payee Code	
-  { type: "fixed", value: "~" }, // ตัวอย่าง fix ค่าว่าง
-  // 9: ~Payee Name
-  { type: "from_line", startWith: "003~", fieldIdx: 43, prefix: "~" },
-  // 10: ~Payee Account No
-  { type: "from_line", startWith: "003~", fieldIdx: 4, prefix: "~" },
-  // 11: ~Credit Bank Code
-  { type: "from_line", startWith: "003~", fieldIdx: 37, prefix: "~" },
-  // 12: ~Bank Branch Code
-  { type: "fixed", value: "~0895844" },
-  // 13: ~Payee Charge Code
-  { type: "fixed", value: "~BEN" },
-  // 14: ~Swift Code
-  { type: "fixed", value: "~014" },
-  // 15: ~Processing Date
-  { type: "from_line", startWith: "003~", fieldIdx: 5, prefix: "~" , dateFormat: true },
-  // 16: ~Value Date
-  { type: "from_line", startWith: "003~", fieldIdx: 5, prefix: "~" , dateFormat: true },
-  // 17: ~Payment Amount
-  { type: "from_line", startWith: "003~", fieldIdx: 30, prefix: "~" , decimal: 2 },
-  // 18: ~Payment Currency
-  { type: "fixed", value: "~THB" },
-  // 19: ~Buying Rate
-  { type: "fixed", value: "~" },
-  // 20: ~Selling Rate
-  { type: "fixed", value: "~" },
-  // 21: ~Fix Amount Mode
-  { type: "fixed", value: "~C" },
-  // 22: ~Instrument No.
-  { type: "fixed", value: "~" },
-  // 23: ~Status
-  { type: "fixed", value: "~Paid" },
-  // 24: ~Reason of Status
-  { type: "fixed", value: "~" },
-  // 25: ~WHT
-  { type: "fixed", value: "~WHT1" },
-  // 26: ~Internal ref
-  { type: "from_line", startWith: "003~", fieldIdx: 8, prefix: "~" },
-  // 27: ~WHT Running No.
-  { type: "fixed", value: "~1" },
-  // 28: ~WHT Inc Type
-  { type: "fixed", value: "~21" },
-  // 29: ~WHT Rate
-  { type: "from_line", startWith: "003~", fieldIdx: 34, prefix: "~" , decimal: 2, noDivide: true },
-  // 30: ~Inc Type Amt.
-  { type: "from_line", startWith: "003~", fieldIdx: 30, prefix: "~" , decimal: 2 },
-  // 31: ~WHT Amt.
-  { type: "from_line", startWith: "003~", fieldIdx: 28, prefix: "~" , decimal: 2 },
-  // 32: ~INV
-  { type: "fixed", value: "~INV" },
-  // 33: ~Internal ref
-  { type: "from_line", startWith: "003~", fieldIdx: 8, prefix: "~" },
-  // 34: ~Invoice Description
-  { type: "from_line", startWith: "001~", fieldIdx: 4, prefix: "~" },
-  // 35: ~Inv Amt
-  { type: "from_line", startWith: "003~", fieldIdx: 30, prefix: "~" , decimal: 2 },
-  // 36: ~VAT Amount
-  { type: "from_line", startWith: "003~", fieldIdx: 28, prefix: "~" , decimal: 2 },
-  // 37: ~Invoice No.
-  { type: "from_line", startWith: "009~", fieldIdx: 1, prefix: "~" },
-  // 38: ~PO No
-   { type: "from_line", startWith: "003~", fieldIdx: 8, prefix: "~" },
-  // 38: ~Inv. Date
-  { type: "fixed", value: "~" },
+
+
+    <div class="tool-host">
+
+  <!-- คงโครงสร้างเดิมของ tool-1 .. tool-4 ไว้ได้เลย -->
+      <!-- ตัวอย่าง: -->
+     <div id="wht-tool-1" class="tool-frame">
+        <iframe title="BBL e-WHT"
+          sandbox="allow-scripts allow-downloads allow-forms allow-modals allow-same-origin"
+          srcdoc="<!DOCTYPE html><html><head><base target=&quot;_blank&quot;></head><!DOCTYPE html>
+<html lang=&quot;th&quot;>
+<head>
+  <meta charset=&quot;UTF-8&quot;>
+  <title>Claim Payment BBL e-WHT</title>
+  <style>
+    body { font-family: 'Sarabun', Arial, sans-serif; background: #f7f9fa; }
+    .container { padding: 10px 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 14px; }
+    th, td { border: 1px solid #c2c2c2; padding: 5px 6px; text-align: center; min-width: 110px; }
+    th { background: #d3e6fd; color: #222; font-size: 1rem;}
+    input[type=&quot;text&quot;] { width: 100px; padding: 3px 7px; border-radius: 4px; border: 1px solid #bbb;}
+    .fix-cell input { background: #eaffea !important; }
+    .readonly { background: #eaffea !important; color: #888; }
+    .flex { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+    .btn { padding: 5px 16px; background: #7da7e8; border: none; color: #fff; border-radius: 4px; margin: 0 7px 10px 0; cursor: pointer; font-size: 1rem; }
+    .btn:hover { background: #4a81c3;}
+    .hidden { display: none; }
+    #result { margin-top: 18px; font-size: 1.05em; background: #f9f9f9; border: 1px solid #eee; padding: 10px;}
+    .scrollx { overflow-x: auto; }
+  </style>
+</head>
+<body>
+<div class=&quot;container&quot;>
+  <h2>🏦 BBL e-WHT Export File</h2>
+
+    &lt;!-- ✅ ข้อความแนะนำ --&gt;
+  &lt;div style=&quot;background: #fff7d6; border: 1px solid #f2d76c; padding: 10px 14px; border-radius: 6px; color: #333; font-size: 1rem; margin-bottom: 15px;&quot;&gt;
+  📄 กรุณาเลือกไฟล์ Format(.txt) แล้วกดปุ่ม &lt;strong&gt;“Import”&lt;/strong&gt; เพื่อประมวลผล และกดปุ่ม &lt;strong&gt;“Export File”&lt;/strong&gt; เพื่อบันทึกไฟล์ผลลัพธ์
+    &lt;p&gt;📌  เลือกผลการโอนเงิน ที่ช่อง ~Status (~Paid จ่ายสำเร็จ ✅/ ~Return จ่ายไม่สำเร็จ❌)&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ✅ กลุ่มปุ่ม --&gt;
+  &lt;div class=&quot;flex&quot;&gt;
+    &lt;input type=&quot;file&quot; id=&quot;importFile&quot; accept=&quot;.txt&quot;&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;importTxt()&quot;&gt;📥Import&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;saveTable()&quot;&gt;💾Save&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;clearTable()&quot;&gt;🧹Clear&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;copyPipe()&quot;&gt;📋Copy | (Pipe)&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;copyConcat()&quot;&gt;📋Copy (Concat)&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;exportTxt()&quot;&gt;🗂️Export&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+
+  &lt;div class=&quot;scrollx&quot;&gt;
+    &lt;table id=&quot;wht-table&quot;&gt;
+	  &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Seq&lt;/th&gt;
+        &lt;th&gt;~Batch Ref No&lt;/th&gt;
+        &lt;th&gt;~Sub Batch Ref No&lt;/th&gt;
+        &lt;th&gt;~Cust Ref No&lt;/th&gt;
+        &lt;th&gt;~Payment Ref No&lt;/th&gt;
+        &lt;th&gt;~Customer Code&lt;/th&gt;
+        &lt;th&gt;~Debit Account No&lt;/th&gt;
+        &lt;th&gt;~Product Code&lt;/th&gt;
+        &lt;th&gt;~Payee Code&lt;/th&gt;
+        &lt;th&gt;~Payee Name&lt;/th&gt;
+        &lt;th&gt;~Payee Account No&lt;/th&gt;
+        &lt;th&gt;~Credit Bank Code&lt;/th&gt;
+        &lt;th&gt;~Bank Branch Code&lt;/th&gt;
+        &lt;th&gt;~Payee Charge Code&lt;/th&gt;
+        &lt;th&gt;~Swift Code&lt;/th&gt;
+        &lt;th&gt;~Processing Date&lt;/th&gt;
+        &lt;th&gt;~Value Date&lt;/th&gt;
+        &lt;th&gt;~Payment Amount&lt;/th&gt;
+        &lt;th&gt;~Payment Currency&lt;/th&gt;
+        &lt;th&gt;~Buying Rate&lt;/th&gt;
+        &lt;th&gt;~Selling Rate&lt;/th&gt;
+        &lt;th&gt;~Fix Amount Mode&lt;/th&gt;
+        &lt;th&gt;~Instrument No.&lt;/th&gt;
+        &lt;th&gt;~Status&lt;/th&gt;
+        &lt;th&gt;~Reason of Status&lt;/th&gt;
+        &lt;th&gt;~WHT&lt;/th&gt;
+        &lt;th&gt;~Internal ref&lt;/th&gt;
+        &lt;th&gt;~WHT Running No.&lt;/th&gt;
+        &lt;th&gt;~WHT Inc Type&lt;/th&gt;
+        &lt;th&gt;~WHT Rate&lt;/th&gt;
+        &lt;th&gt;~Inc Type Amt.&lt;/th&gt;
+        &lt;th&gt;~WHT Amt.&lt;/th&gt;
+        &lt;th&gt;~INV&lt;/th&gt;
+        &lt;th&gt;~Internal ref&lt;/th&gt;
+        &lt;th&gt;~Invoice Description&lt;/th&gt;
+        &lt;th&gt;~Inv Amt&lt;/th&gt;
+        &lt;th&gt;~VAT Amount&lt;/th&gt;
+        &lt;th&gt;~Invoice No.&lt;/th&gt;
+        &lt;th&gt;~PO No&lt;/th&gt;
+        &lt;th&gt;~Inv. Date&lt;/th&gt;
+      &lt;/tr&gt;
+	 &lt;/thead&gt;
+	  &lt;tbody id=&quot;tbody-table&quot;&gt;
+      &lt;tr&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt; &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt; &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt; &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;  &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;  &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;  &lt;/tr&gt;
+	   &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+
+  &lt;div id=&quot;result&quot; class=&quot;hidden&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;script&gt;
+// Declare a global variable to store the Invoice Description
+let globalInvoiceDescription = &#x27;&#x27;;
+
+// ---------------- CONFIG ยืดหยุ่น ------------------
+const FIELD_CONFIG = [
+  // (ตัวอย่าง 8 ช่องแรก, เพิ่ม/ลดได้เอง)
+  // 0: Seq
+  { type: &quot;from_line&quot;,  startWith: &quot;003~&quot;, fieldIdx: 2 },
+  // 1: ~Batch Ref No
+  { type: &quot;fixed&quot;, value: &quot;~OCEANIN008048&quot; },
+  // 2: ~Sub Batch Ref No
+  { type: &quot;fixed&quot;, value: &quot;~1719&quot; },
+  // 3: ~Cust Ref No 
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 8, prefix: &quot;~&quot; },
+  // 4: ~Payment Ref No
+  { type: &quot;fixed&quot;, value: &quot;~00BOCEANIN1011570&quot; },
+  // 5: ~Customer Code
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 1, prefix: &quot;~&quot; },
+  // 6: ~Debit Account No
+  { type: &quot;fixed&quot;, value: &quot;~9250025955&quot; },
+  // 7: ~Product Code
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 3, prefix: &quot;~&quot; },
+  // 8: ~Payee Code	
+  { type: &quot;fixed&quot;, value: &quot;~&quot; }, // ตัวอย่าง fix ค่าว่าง
+  // 9: ~Payee Name
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 43, prefix: &quot;~&quot; },
+  // 10: ~Payee Account No
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 4, prefix: &quot;~&quot; },
+  // 11: ~Credit Bank Code
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 37, prefix: &quot;~&quot; },
+  // 12: ~Bank Branch Code
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 38, prefix: &quot;~&quot; },
+  // 13: ~Payee Charge Code
+  { type: &quot;fixed&quot;, value: &quot;~BEN&quot; },
+  // 14: ~Swift Code
+  { type: &quot;fixed&quot;, value: &quot;~014&quot; },
+  // 15: ~Processing Date
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 5, prefix: &quot;~&quot; , dateFormat: true },
+  // 16: ~Value Date
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 5, prefix: &quot;~&quot; , dateFormat: true },
+  // 17: ~Payment Amount
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 33, prefix: &quot;~&quot; , decimal: 2 },
+  // 18: ~Payment Currency
+  { type: &quot;fixed&quot;, value: &quot;~THB&quot; },
+  // 19: ~Buying Rate
+  { type: &quot;fixed&quot;, value: &quot;~&quot; },
+  // 20: ~Selling Rate
+  { type: &quot;fixed&quot;, value: &quot;~&quot; },
+  // 21: ~Fix Amount Mode
+  { type: &quot;fixed&quot;, value: &quot;~C&quot; },
+  // 22: ~Instrument No.
+  { type: &quot;fixed&quot;, value: &quot;~&quot; },
+  // 23: ~Status
+  { type: &quot;dropdown&quot;, options: [&quot;~Paid&quot;, &quot;~Return&quot;], defaultValue: &quot;~Paid&quot; },
+  // 24: ~Reason of Status
+  { type: &quot;fixed&quot;, value: &quot;~&quot; },
+  // 25: ~WHT
+  { type: &quot;fixed&quot;, value: &quot;~WHT1&quot; },
+  // 26: ~Internal ref
+  { type: &quot;from_line&quot;, startWith: &quot;005~&quot;, fieldIdx: 1, prefix: &quot;~&quot; },
+  // 27: ~WHT Running No.
+  { type: &quot;fixed&quot;, value: &quot;~1&quot; },
+  // 28: ~WHT Inc Type
+  { type: &quot;fixed&quot;, value: &quot;~21&quot; },
+  // 29: ~WHT Rate
+  { type: &quot;from_line&quot;, startWith: &quot;005~&quot;, fieldIdx: 5, prefix: &quot;~&quot; , decimal: 2 },
+  // 30: ~Inc Type Amt.
+  { type: &quot;from_line&quot;, startWith: &quot;005~&quot;, fieldIdx: 6, prefix: &quot;~&quot; , decimal: 2 },
+  // 31: ~WHT Amt.
+  { type: &quot;from_line&quot;, startWith: &quot;005~&quot;, fieldIdx: 3, prefix: &quot;~&quot; , decimal: 2 },
+  // 32: ~INV
+  { type: &quot;fixed&quot;, value: &quot;~INV&quot; },
+  // 33: ~Internal ref
+  { type: &quot;from_line&quot;, startWith: &quot;009~&quot;, fieldIdx: 5, prefix: &quot;~&quot; },
+  // 34: ~Invoice Description
+  { type: &quot;from_line&quot;, startWith: &quot;001~&quot;, fieldIdx: 4, prefix: &quot;~&quot; },
+  // 35: ~Inv Amt
+  { type: &quot;from_line&quot;, startWith: &quot;009~&quot;, fieldIdx: 2, prefix: &quot;~&quot; , decimal: 2 },
+  // 36: ~VAT Amount
+  { type: &quot;from_line&quot;, startWith: &quot;009~&quot;, fieldIdx: 4, prefix: &quot;~&quot; , decimal: 2 },
+  // 37: ~Invoice No.
+  { type: &quot;from_line&quot;, startWith: &quot;009~&quot;, fieldIdx: 1, prefix: &quot;~&quot; },
+  // 38: ~PO No
+  { type: &quot;from_line&quot;, startWith: &quot;009~&quot;, fieldIdx: 1, prefix: &quot;~&quot; },
+  // 38: ~Inv. Date
+  { type: &quot;fixed&quot;, value: &quot;~&quot; },
+
+
+];
+// ---------- END CONFIG ----------------------------
+
+function importTxt() {
+  const fileInput = document.getElementById(&#x27;importFile&#x27;);
+  if (!fileInput.files[0]) return alert(&#x27;กรุณาเลือกไฟล์&#x27;);
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    let text = e.target.result.replace(/\r/g, &#x27;&#x27;);
+    const lines = text.split(&#x27;\n&#x27;).filter(x =&gt; x.trim() !== &quot;&quot;);
+
+    // 1. แยก Header/Detail/Footer
+    const headerLine = lines.find(line =&gt; line.startsWith(&quot;001~&quot;)) || &quot;&quot;;
+    const detailLines = lines.filter(line =&gt; /^(003|005|009)~/.test(line));
+
+    // Capture the Invoice Description from the 001 line
+    if (headerLine) {
+        const headerFields = headerLine.split(&#x27;~&#x27;);
+        if (headerFields[4] !== undefined) {
+            globalInvoiceDescription = headerFields[4].trim();
+        } else {
+            globalInvoiceDescription = &#x27;&#x27;; // Clear if not found
+        }
+    } else {
+        globalInvoiceDescription = &#x27;&#x27;; // Clear if no header line
+    }
+
+    // 2. Split blocks ตาม 003~
+    let blocks = [];
+    let curr = [];
+    detailLines.forEach(line =&gt; {
+      if (line.startsWith(&#x27;003~&#x27;) &amp;&amp; curr.length) {
+        blocks.push(curr);
+        curr = [];
+      }
+      curr.push(line);
+    });
+    if (curr.length) blocks.push(curr);
+
+    // 3. Map Data
+    const tbody = document.getElementById(&#x27;tbody-table&#x27;);
+    tbody.innerHTML = &quot;&quot;;
+
+    blocks.forEach((block, rowIdx) =&gt; {
+      const tr = document.createElement(&#x27;tr&#x27;);
+      FIELD_CONFIG.forEach((conf, idx) =&gt; {
+        const td = document.createElement(&#x27;td&#x27;);
+
+        if (conf.type === &quot;dropdown&quot;) { // Handle dropdown type
+          const select = document.createElement(&#x27;select&#x27;);
+          conf.options.forEach(optionText =&gt; {
+            const option = document.createElement(&#x27;option&#x27;);
+            option.value = optionText;
+            option.textContent = optionText;
+            select.appendChild(option);
+          });
+          select.value = conf.defaultValue; // Set default value
+
+          td.appendChild(select);
+        } else { // Existing logic for input text fields
+          const input = document.createElement(&#x27;input&#x27;);
+          input.type = &quot;text&quot;;
+          let val = &quot;&quot;;
+          if (conf.type === &quot;fixed&quot;) {
+            val = conf.value;
+            td.classList.add(&quot;fix-cell&quot;);
+            input.classList.add(&quot;readonly&quot;);
+            input.readOnly = true;
+          } else if (conf.type === &quot;from_line&quot;) {
+            let line = null;
+            if (conf.startWith === &quot;001~&quot;) {
+              line = headerLine;
+            } else {
+              line = block.find(line =&gt; line.startsWith(conf.startWith));
+            }
+            if (line) {
+              const fields = line.split(&#x27;~&#x27;);
+              val = fields[conf.fieldIdx] !== undefined ? fields[conf.fieldIdx].trim() : &quot;&quot;;
+              if (conf.prefix &amp;&amp; !val.startsWith(conf.prefix)) val = conf.prefix + val;
+              if (conf.dateFormat) val = conf.prefix + formatThaiDate(val);
+              if (conf.decimal &amp;&amp; !isNaN(Number(val.replace(conf.prefix, &quot;&quot;)))) {
+                let num = Number(val.replace(conf.prefix, &quot;&quot;));
+                if (!conf.noDivide) num = num / 100;
+                val = conf.prefix + num.toFixed(conf.decimal);
+              }
+            }
+          }
+          input.value = val;
+          td.appendChild(input);
+        }
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  };
+  reader.readAsText(fileInput.files[0]);
+}
+
+function formatThaiDate(str) {
+  // รับค่าแบบ 27052025 หรือ ~27052025
+  str = str.replace(/^~/, &quot;&quot;); // เอา ~ ออก
+  if (str.length !== 8) return str; // ถ้า format ไม่ตรง 8 หลัก return เดิม
+  const day = str.substring(0,2);
+  const month = str.substring(2,4);
+  const year = str.substring(6,8);
+  const monthNames = [
+    &#x27;&#x27;, &#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;May&#x27;, &#x27;Jun&#x27;, &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;
+  ];
+  let mIdx = parseInt(month, 10);
+  if (!mIdx || mIdx &gt; 12) return str;
+  return day + &#x27;-&#x27; + monthNames[mIdx] + &#x27;-&#x27; + year;
+}
+
+
+function saveTable() {
+  const rows = document.querySelectorAll(&#x27;#tbody-table tr&#x27;);
+  let arr = [];
+  rows.forEach(tr =&gt; {
+    let rowData = [];
+    // Use getCellValue for saving as well
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; rowData.push(getCellValue(td)));
+    arr.push(rowData);
+  });
+  document.getElementById(&#x27;result&#x27;).classList.remove(&#x27;hidden&#x27;);
+  document.getElementById(&#x27;result&#x27;).innerText = JSON.stringify(arr, null, 2);
+}
+
+function clearTable() {
+  const tbody = document.getElementById('tbody-table');
+  if (tbody) {
+    // ล้างเฉพาะค่าที่แก้ได้ (เว้น readonly)
+    tbody.querySelectorAll('input:not([readonly])').forEach(i => {
+      if (i.type === 'checkbox' || i.type === 'radio') i.checked = false;
+      else i.value = '';
+    });
+    tbody.querySelectorAll('select').forEach(sel => { sel.selectedIndex = 0; });
+  }
+  const fileInput = document.getElementById('importFile');
+  if (fileInput) fileInput.value = '';
+
+  const rs = document.getElementById('result');
+  if (rs) { rs.classList.add('hidden'); rs.innerText = ''; }
+
+  if (typeof globalInvoiceDescription !== 'undefined') globalInvoiceDescription = '';
+}
+
+// Helper function to get value from either input or select
+function getCellValue(cellElement) {
+  const input = cellElement.querySelector(&#x27;input&#x27;);
+  if (input) {
+    return input.value;
+  }
+  const select = cellElement.querySelector(&#x27;select&#x27;);
+  if (select) {
+    return select.value;
+  }
+  return &#x27;&#x27;; // Return empty string if neither found (shouldn&#x27;t happen with current setup)
+}
+
+// Copy แบบ Pipe (|)
+function copyPipe() {
+  const headerRow = document.querySelector(&#x27;#wht-table thead tr&#x27;);
+  let headerText = &#x27;&#x27;;
+  if (headerRow) {
+    headerText = Array.from(headerRow.querySelectorAll(&#x27;th&#x27;)).map(th =&gt; th.innerText).join(&#x27;|&#x27;);
+  }
+
+  const rows = document.querySelectorAll(&#x27;#tbody-table tr&#x27;);
+  let bodyText = Array.from(rows).map(tr =&gt;
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; getCellValue(td)).join(&#x27;|&#x27;)
+  ).join(&#x27;\n&#x27;);
+
+  let fullText = headerText + (headerText ? &#x27;\n&#x27; : &#x27;&#x27;) + bodyText;
+  copyToClipboard(fullText, &quot;คัดลอกแบบ Pipe (|) เรียบร้อยแล้ว!&quot;);
+}
+
+// Copy แบบ Concat (ไม่มีตัวคั่น)
+function copyConcat() {
+  const headerRow = document.querySelector(&#x27;#wht-table thead tr&#x27;);
+  let headerText = &#x27;&#x27;;
+  if (headerRow) {
+    headerText = Array.from(headerRow.querySelectorAll(&#x27;th&#x27;)).map(th =&gt; th.innerText).join(&#x27;&#x27;);
+  }
+
+  const rows = document.querySelectorAll(&#x27;#tbody-table tr&#x27;);
+  let bodyText = Array.from(rows).map(tr =&gt;
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; getCellValue(td)).join(&#x27;&#x27;)
+  ).join(&#x27;\n&#x27;);
+
+  copyToClipboard(headerText + (headerText ? &#x27;\n&#x27; : &#x27;&#x27;) + bodyText, &quot;คัดลอกแบบ Concat เรียบร้อยแล้ว!&quot;);
+}
+
+// ฟังก์ชันกลางสำหรับ copy
+function copyToClipboard(txt, msg) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt).then(() =&gt; {
+      alert(msg);
+    }).catch(err =&gt; {
+      console.error(&#x27;Could not copy text: &#x27;, err);
+      alert(&#x27;ไม่สามารถคัดลอกได้: &#x27; + err.message);
+    });
+  } else {
+    // Fallback for older browsers
+    let textarea = document.createElement(&quot;textarea&quot;);
+    textarea.value = txt;
+    textarea.style.position = &#x27;fixed&#x27;; // Prevent scrolling to bottom
+    textarea.style.opacity = 0; // Hide the textarea
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand(&quot;copy&quot;);
+      alert(msg);
+    } catch (err) {
+      console.error(&#x27;Could not copy text: &#x27;, err);
+      alert(&#x27;ไม่สามารถคัดลอกได้: &#x27; + err.message);
+    } finally {
+      document.body.removeChild(textarea);
+    }
+  }
+}
+
+
+function exportTxt() {
+  const headerRow = document.querySelector(&#x27;#wht-table thead tr&#x27;);
+  let headerText = &#x27;&#x27;;
+  if (headerRow) {
+    headerText = Array.from(headerRow.querySelectorAll(&#x27;th&#x27;)).map(th =&gt; th.innerText).join(&#x27;&#x27;);
+  }
+
+  const rows = document.querySelectorAll(&#x27;#tbody-table tr&#x27;);
+  let bodyText = Array.from(rows).map(tr =&gt;
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; getCellValue(td)).join(&#x27;&#x27;)
+  ).join(&#x27;\n&#x27;);
+
+  let fullText = headerText + (headerText ? &#x27;\n&#x27; : &#x27;&#x27;) + bodyText;
+
+  // Generate the timestamp for the filename
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, &#x27;0&#x27;);
+  const month = String(now.getMonth() + 1).padStart(2, &#x27;0&#x27;);
+  const year = String(now.getFullYear());
+  const hours = String(now.getHours()).padStart(2, &#x27;0&#x27;);
+  const minutes = String(now.getMinutes()).padStart(2, &#x27;0&#x27;);
+  const seconds = String(now.getSeconds()).padStart(2, &#x27;0&#x27;);
+
+  const timestamp = `${day}${month}${year}_${hours}${minutes}${seconds}`;
+  let filename = `Result_BBL_e-WHT`;
+
+    // Append globalInvoiceDescription if it exists
+    if (globalInvoiceDescription) {
+        // Sanitize the description for use in a filename (remove special chars, replace spaces)
+        const sanitizedDescription = globalInvoiceDescription.replace(/[^a-zA-Z0-9-]/g, &#x27;_&#x27;).replace(/ /g, &#x27;_&#x27;);
+        filename += `_${sanitizedDescription}`;
+    }
+
+  filename += `_${timestamp}.txt`;
+
+  // Create a Blob with the text content
+  const blob = new Blob([fullText], { type: &#x27;text/plain;charset=utf-8&#x27; });
+
+  // Create a temporary URL for the Blob
+  const url = URL.createObjectURL(blob);
+
+  // Create a temporary anchor element
+  const a = document.createElement(&#x27;a&#x27;);
+  a.href = url;
+  a.download = filename;
+
+  // Programmatically click the anchor to trigger the download
+  document.body.appendChild(a);
+  a.click();
+
+  // Clean up: remove the anchor and revoke the URL
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  alert(&#x27;ไฟล์ .txt ถูกส่งออกเรียบร้อยแล้ว!&#x27;);
+}
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;&lt;/html&gt;"></iframe>
+    </div>
+    
+    <div id="wht-tool-2" class="tool-frame" style="display:none;">
+      <iframe title="BBL Transfer / PromptPay" sandbox="allow-scripts allow-downloads allow-forms allow-modals allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_blank&quot;&gt;&lt;/head&gt;&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;th&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;Claim Payment BBL Transfer / PromptPay&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: &#x27;Sarabun&#x27;, Arial, sans-serif; background: #f7f9fa; }
+    .container { padding: 10px 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 14px; }
+    th, td { border: 1px solid #c2c2c2; padding: 5px 6px; text-align: center; min-width: 110px; }
+    th { background: #d3e6fd; color: #222; font-size: 1rem;}
+    input[type=&quot;text&quot;] { width: 100px; padding: 3px 7px; border-radius: 4px; border: 1px solid #bbb;}
+    .fix-cell input { background: #eaffea !important; }
+    .readonly { background: #eaffea !important; color: #888; }
+    .flex { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+    .btn { padding: 5px 16px; background: #7da7e8; border: none; color: #fff; border-radius: 4px; margin: 0 7px 10px 0; cursor: pointer; font-size: 1rem; }
+    .btn:hover { background: #4a81c3;}
+    .hidden { display: none; }
+    #result { margin-top: 18px; font-size: 1.05em; background: #f9f9f9; border: 1px solid #eee; padding: 10px;}
+    .scrollx { overflow-x: auto; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;container&quot;&gt;
+  &lt;h2&gt;🏦 BBL Transfer / PromptPay Export File&lt;/h2&gt;
+  
+  &lt;!-- ✅ ข้อความแนะนำ --&gt;
+  &lt;div style=&quot;background: #fff7d6; border: 1px solid #f2d76c; padding: 10px 14px; border-radius: 6px; color: #333; font-size: 1rem; margin-bottom: 15px;&quot;&gt;
+  📄 กรุณาเลือกไฟล์ Format(.txt) แล้วกดปุ่ม &lt;strong&gt;“Import”&lt;/strong&gt; เพื่อประมวลผล และกดปุ่ม &lt;strong&gt;“Export File”&lt;/strong&gt; เพื่อบันทึกไฟล์ผลลัพธ์
+    &lt;p&gt;📌  เลือกผลการโอนเงิน ที่ช่อง TXN_STATUS (Paid จ่ายสำเร็จ ✅/ Return จ่ายไม่สำเร็จ❌)&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ✅ กลุ่มปุ่ม --&gt;
+  &lt;div class=&quot;flex&quot;&gt;
+    &lt;input type=&quot;file&quot; id=&quot;importFile&quot; accept=&quot;.txt&quot;&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;importTxt()&quot;&gt;📥Import&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;saveTable()&quot;&gt;💾Save&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;clearTable()&quot;&gt;🧹Clear&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;copyPipe()&quot;&gt;📋Copy | (Pipe)&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;copyConcat()&quot;&gt;📋Copy (Concat)&lt;/button&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;exportTxt()&quot;&gt;🗂️Export&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;scrollx&quot;&gt;
+    &lt;table id=&quot;detail-table&quot;&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th&gt;FULL_NAME&lt;/th&gt;
+          &lt;th&gt;CUSTOMER_CODE&lt;/th&gt;
+          &lt;th&gt;CUSTOMER_ID&lt;/th&gt;
+          &lt;th&gt;Currency Code&lt;/th&gt;
+          &lt;th&gt;Total of Customer Amount&lt;/th&gt;
+          &lt;th&gt;Payment Product Code&lt;/th&gt;
+          &lt;th&gt;Total of Product&lt;/th&gt;
+          &lt;th&gt;Product Description&lt;/th&gt;
+          &lt;th&gt;TXN_ID&lt;/th&gt;
+          &lt;th&gt;CURRENCY_CODE1&lt;/th&gt;
+          &lt;th&gt;TXN_STATUS&lt;/th&gt;
+          &lt;th&gt;PROCESSING_DATE&lt;/th&gt;
+          &lt;th&gt;PAYMENT_VALUE_DATE&lt;/th&gt;
+          &lt;th&gt;Instrument Ref.No.&lt;/th&gt;
+          &lt;th&gt;Payable location&lt;/th&gt;
+          &lt;th&gt;Liquidation Date&lt;/th&gt;
+          &lt;th&gt;BANK_BRANCH_CODE&lt;/th&gt;
+          &lt;th&gt;Credit Bank Code&lt;/th&gt;
+          &lt;th&gt;Credit A/C No&lt;/th&gt;
+          &lt;th&gt;Instrument No.&lt;/th&gt;
+          &lt;th&gt;DEBIT_DATE&lt;/th&gt;
+          &lt;th&gt;Short Account No.&lt;/th&gt;
+          &lt;th&gt;Debit Amount&lt;/th&gt;
+          &lt;th&gt;Debit Lcy Amount&lt;/th&gt;
+          &lt;th&gt;Customer Ref. No.&lt;/th&gt;
+          &lt;th&gt;Debit Acc. No.&lt;/th&gt;
+          &lt;th&gt;Payee Code&lt;/th&gt;
+          &lt;th&gt;Payee Name&lt;/th&gt;
+          &lt;th&gt;CF_AGEING_DAYS&lt;/th&gt;
+          &lt;th&gt;CF_CHG_CODE&lt;/th&gt;
+          &lt;th&gt;CF_CHARGE_TO&lt;/th&gt;
+          &lt;th&gt;BATCH_CODE&lt;/th&gt;
+          &lt;th&gt;SUB_BATCH_CODE&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody id=&quot;tbody-table&quot;&gt;
+        &lt;tr&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+		  &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+		  &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;input type=&quot;text&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;scrollx&quot;&gt;
+    &lt;table id=&quot;footer-table&quot;&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th&gt;CS_COUNT&lt;/th&gt;
+          &lt;th&gt;Grand Total&lt;/th&gt;
+          &lt;th&gt;PRECISION1&lt;/th&gt;
+        &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody id=&quot;fbody-table&quot;&gt;
+        &lt;tr&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+          &lt;td class=&quot;fix-cell&quot;&gt;&lt;input type=&quot;text&quot; readonly class=&quot;readonly&quot;&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+
+  &lt;div id=&quot;result&quot; class=&quot;hidden&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+// Define FIELD_CONFIG for the main detail table
+const mainTableFIELD_CONFIG = [
+  // 1: FULL_NAME
+  { type: &quot;fixed&quot;, value: &quot;OCEAN LIFE INSURANCE PUBLIC COMPANY LIMITED&quot; },
+  // 2: CUSTOMER_CODE
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 1 },
+  // 3: CUSTOMER_ID
+  { type: &quot;fixed&quot;, value: &quot;5656&quot; },
+  // 4: Currency Code
+  { type: &quot;fixed&quot;, value: &quot;THB&quot; },
+  // 5: Total of Customer Amount
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 33, decimal: 2 },
+  // 6: Payment Product Code
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 3 },
+  // 7: Total of Product
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 33, decimal: 2 },
+  // 8: Product Description
+  { type: &quot;fixed&quot;, value: &quot;SMART NEXT DAY&quot; },
+  // 9: TXN_ID
+  { type: &quot;fixed&quot;, value: &quot;900254&quot; },
+  // 10: CURRENCY_CODE1
+  { type: &quot;fixed&quot;, value: &quot;THB&quot; },
+  // 11: TXN_STATUS
+  { type: &quot;dropdown&quot;, options: [&quot;Paid&quot;, &quot;Return&quot;], defaultValue: &quot;Paid&quot; },
+  // 12: PROCESSING_DATE
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 5, dateFormat: true },
+  // 13: PAYMENT_VALUE_DATE
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 5, dateFormat: true },
+  // 14: Instrument Ref.No.
+  { // New type for concatenation
+    type: &quot;from_line&quot;, fieldIdx: 8,
+    prefix: &quot;00BOCEANIN1011553/&quot;
+  },
+  // 15: Payable location
+  { type: &quot;fixed&quot;, value: &quot;BANGKOK&quot; },
+  // 16: Liquidation Date
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 5, dateFormat: true },
+  // 17: BANK_BRANCH_CODE
+  { type: &quot;fixed&quot;, value: &quot;0020101&quot; },
+  // 18: Credit Bank Code
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 37 },
+  // 19: Credit A/C No
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 4 , stripPrefix: &quot;I&quot;},
+  // 20: Instrument No.
+  { type: &quot;fixed&quot;, value: &quot;&quot; }, // ตัวอย่าง fix ค่าว่าง
+  // 21: DEBIT_DATE
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 5, dateFormat: true },
+  // 22: Short Account No.
+  { type: &quot;fixed&quot;, value: &quot;123456&quot; },
+  // 23: Debit Amount
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 33, decimal: 2 },
+  // 24: Debit Lcy Amount
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 33, decimal: 2 },
+  // 25: Customer Ref. No.
+  { type: &quot;fixed&quot;, value: &quot;OCEANIN&quot; },
+  // 26: Debit Acc. No.
+  { type: &quot;fixed&quot;, value: &quot;9250025955&quot; },
+  // 27: Payee Code
+  { type: &quot;fixed&quot;, value: &quot;&quot; }, // ตัวอย่าง fix ค่าว่าง
+  // 28: Payee Name
+  { type: &quot;from_line&quot;, startWith: &quot;003~&quot;, fieldIdx: 43 },
+  // 29: CF_AGEING_DAYS
+  { type: &quot;fixed&quot;, value: &quot;4&quot; },
+  // 30: CF_CHG_CODE
+  { type: &quot;fixed&quot;, value: &quot;1&quot; },
+  // 31: CF_CHARGE_TO
+  { type: &quot;fixed&quot;, value: &quot;OUR&quot; },
+  // 32: BATCH_CODE
+  { type: &quot;fixed&quot;, value: &quot;OCEANIN101169&quot; },
+  // 33: SUB_BATCH_CODE
+  { type: &quot;fixed&quot;, value: &quot;&quot; }, // ตัวอย่าง fix ค่าว่าง
 ];
 
-// =========== All functions with _ClaimpayWHT suffix =============
+// Define FIELD_CONFIG for the footer table
+const footerFIELD_CONFIG = [
+  // 1: CS_COUNT &gt;&gt; footer
+  { type: &quot;from_line&quot;, startWith: &quot;100~&quot;, fieldIdx: 1 },
+  // 2: Grand Total &gt;&gt; footer
+  { type: &quot;from_line&quot;, startWith: &quot;100~&quot;, fieldIdx: 2, decimal: 2 },
+  // 3: PRECISION1 &gt;&gt; footer
+  { type: &quot;from_line&quot;, startWith: &quot;100~&quot;, fieldIdx: 1 },
+];
 
-function importTxt_ClaimpayWHT() {
-  const fileInput = document.getElementById('importFile_ClaimpayWHT');
-  if (!fileInput.files[0]) return alert('กรุณาเลือกไฟล์');
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    let text = e.target.result.replace(/\r/g, '');
-    const lines = text.split('\n').filter(x => x.trim() !== "");
 
-    // 1. แยก Header/Detail/Footer
-    const headerLine = lines.find(line => line.startsWith("001~")) || "";
-    const detailLines = lines.filter(line => /^(003|005|009)~/.test(line));
 
-    // 2. Split blocks ตาม 003~
-    let blocks = [];
-    let curr = [];
-    detailLines.forEach(line => {
-      if (line.startsWith('003~') && curr.length) {
-        blocks.push(curr);
-        curr = [];
-      }
-      curr.push(line);
-    });
-    if (curr.length) blocks.push(curr);
+function importTxt() {
+  const fileInput = document.getElementById(&#x27;importFile&#x27;);
+  if (!fileInput.files[0]) return alert(&#x27;กรุณาเลือกไฟล์&#x27;);
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    let text = e.target.result.replace(/\r/g, &#x27;&#x27;);
+    const lines = text.split(&#x27;\n&#x27;).filter(x =&gt; x.trim() !== &quot;&quot;);
 
-    // 3. Map Data
-    const tbody = document.getElementById('tbody-table_ClaimpayWHT');
-    tbody.innerHTML = "";
+    // Separate Header, Detail, and Footer lines
+    const headerLine = lines.find(line =&gt; line.startsWith(&quot;001~&quot;)) || &quot;&quot;; // Not used for data, but good to have
+    const detailLines = lines.filter(line =&gt; line.startsWith(&quot;003~&quot;)); // Filter only 003~ for details
+    const footerLine = lines.find(line =&gt; line.startsWith(&quot;100~&quot;)) || &quot;&quot;; // Find 100~ for footer
 
-    blocks.forEach((block, rowIdx) => {
-      const tr = document.createElement('tr');
-      FIELD_CONFIG_ClaimpayWHT.forEach((conf, idx) => {
-        const td = document.createElement('td');
-        const input = document.createElement('input');
-        input.type = "text";
-        let val = "";
-        if (conf.type === "fixed") {
-          val = conf.value;
-          if (td.classList) td.classList.add("fix-cell");
-          input.classList.add("readonly");
-          input.readOnly = true;
-        } else if (conf.type === "from_line") {
-          let line = null;
-          if (conf.startWith === "001~") {
-            line = headerLine;
-          } else {
-            line = block.find(line => line.startsWith(conf.startWith));
-          }
-          if (line) {
-            const fields = line.split('~');
-            val = fields[conf.fieldIdx] !== undefined ? fields[conf.fieldIdx].trim() : "";
-            if (conf.prefix && !val.startsWith(conf.prefix)) val = conf.prefix + val;
-            if (conf.dateFormat) val = conf.prefix + formatThaiDate_ClaimpayWHT(val);
-            if (conf.decimal && !isNaN(Number(val.replace(conf.prefix, "")))) {
-              let num = Number(val.replace(conf.prefix, ""));
-              if (!conf.noDivide) num = num / 100;
-              val = conf.prefix + num.toFixed(conf.decimal);
-            }
-          }
+    // Capture the Payment Product Code from the first 003~ line
+    if (detailLines.length &gt; 0) {
+        const firstDetailLineFields = detailLines[0].split(&#x27;~&#x27;);
+        if (firstDetailLineFields[3] !== undefined) {
+            globalPaymentProductCode = firstDetailLineFields[3].trim();
+        } else {
+            globalPaymentProductCode = &#x27;&#x27;; // Clear if not found
         }
-        input.value = val;
-        td.appendChild(input);
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
+    } else {
+        globalPaymentProductCode = &#x27;&#x27;; // Clear if no detail lines
+    }
+
+    // Process Detail Table
+    const tbodyDetail = document.getElementById(&#x27;tbody-table&#x27;);
+    tbodyDetail.innerHTML = &quot;&quot;; // Clear existing rows
+
+    detailLines.forEach(line =&gt; { // Iterate through each 003~ line for the detail table
+      const tr = document.createElement(&#x27;tr&#x27;);
+
+      // Populate detail table rows using mainTableFIELD_CONFIG
+      mainTableFIELD_CONFIG.forEach((conf, idx) =&gt; {
+        const td = document.createElement(&#x27;td&#x27;);
+        let val = &quot;&quot;;
+
+        if (conf.type === &quot;dropdown&quot;) {
+          const select = document.createElement(&#x27;select&#x27;);
+          conf.options.forEach(optionText =&gt; {
+            const option = document.createElement(&#x27;option&#x27;);
+            option.value = optionText;
+            option.textContent = optionText;
+            select.appendChild(option);
+          });
+          select.value = conf.defaultValue;
+          td.appendChild(select);
+        } else {
+          const input = document.createElement(&#x27;input&#x27;);
+          input.type = &quot;text&quot;;
+
+          if (conf.type === &quot;fixed&quot;) {
+            val = conf.value;
+            td.classList.add(&quot;fix-cell&quot;);
+            input.classList.add(&quot;readonly&quot;);
+            input.readOnly = true;
+          } else if (conf.type === &quot;from_line&quot;) {
+            if (line) {
+              const detailFields = line.split(&#x27;~&#x27;);
+              val = detailFields[conf.fieldIdx] !== undefined ? detailFields[conf.fieldIdx].trim() : &quot;&quot;;
+
+              // Apply stripPrefix if defined in the config
+              if (conf.stripPrefix &amp;&amp; val.startsWith(conf.stripPrefix)) {
+                val = val.slice(conf.stripPrefix.length);
+              }
+
+              if (conf.prefix &amp;&amp; !val.startsWith(conf.prefix)) val = conf.prefix + val;
+              if (conf.dateFormat) val = formatThaiDate(val);
+              if (conf.decimal &amp;&amp; !isNaN(Number(val.replace(conf.prefix || &quot;&quot;, &quot;&quot;)))) {
+                let num = Number(val.replace(conf.prefix || &quot;&quot;, &quot;&quot;));
+                if (!conf.noDivide) num = num / 100;
+                val = num.toFixed(conf.decimal);
+              }
+            }
+          }
+          input.value = val;
+          td.appendChild(input);
+        }
+        tr.appendChild(td);
+      });
+      tbodyDetail.appendChild(tr);
+    });
+
+    // Process Footer Table (no changes needed here related to the request)
+    const fbodyTable = document.getElementById(&#x27;fbody-table&#x27;);
+    fbodyTable.innerHTML = &quot;&quot;; // Clear existing footer rows
+
+    if (footerLine) {
+      const footerFields = footerLine.split(&#x27;~&#x27;);
+      const trFooter = document.createElement(&#x27;tr&#x27;);
+
+      footerFIELD_CONFIG.forEach((conf, idx) =&gt; {
+        const td = document.createElement(&#x27;td&#x27;);
+        const input = document.createElement(&#x27;input&#x27;);
+        input.type = &quot;text&quot;;
+        input.readOnly = true;
+        td.classList.add(&quot;fix-cell&quot;);
+        input.classList.add(&quot;readonly&quot;);
+
+        let val = &quot;&quot;;
+        if (conf.type === &quot;from_line&quot;) {
+          val = footerFields[conf.fieldIdx] !== undefined ? footerFields[conf.fieldIdx].trim() : &quot;&quot;;
+          if (conf.decimal &amp;&amp; !isNaN(Number(val))) {
+            let num = Number(val);
+            if (!conf.noDivide) num = num / 100;
+            val = num.toFixed(conf.decimal);
+          }
+        }
+        input.value = val;
+        td.appendChild(input);
+        trFooter.appendChild(td);
+      });
+      fbodyTable.appendChild(trFooter);
+    }
+  };
+  reader.readAsText(fileInput.files[0]);
+}
+
+function formatThaiDate(str) {
+  str = str.replace(/^~/, &quot;&quot;);
+  if (str.length !== 8) return str;
+  const day = str.substring(0,2);
+  const month = str.substring(2,4);
+  const year = str.substring(6,8);
+  const monthNames = [
+    &#x27;&#x27;, &#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;May&#x27;, &#x27;Jun&#x27;, &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;
+  ];
+  let mIdx = parseInt(month, 10);
+  if (!mIdx || mIdx &gt; 12) return str;
+  return day + &#x27;-&#x27; + monthNames[mIdx] + &#x27;-&#x27; + year;
+}
+
+function saveTable() {
+  const rows = document.querySelectorAll(&#x27;#tbody-table tr&#x27;);
+  let arr = [];
+  rows.forEach(tr =&gt; {
+    let rowData = [];
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; rowData.push(getCellValue(td)));
+    arr.push(rowData);
+  });
+  document.getElementById(&#x27;result&#x27;).classList.remove(&#x27;hidden&#x27;);
+  document.getElementById(&#x27;result&#x27;).innerText = JSON.stringify(arr, null, 2);
+}
+
+function clearTable() {
+  const tbody = document.getElementById('tbody-table');
+  if (tbody) {
+    tbody.querySelectorAll('input:not([readonly])').forEach(i => {
+      if (i.type === 'checkbox' || i.type === 'radio') i.checked = false;
+      else i.value = '';
     });
-  };
-  reader.readAsText(fileInput.files[0]);
-}
+    tbody.querySelectorAll('select').forEach(sel => { sel.selectedIndex = 0; });
+  }
 
-function formatThaiDate_ClaimpayWHT(str) {
-  str = str.replace(/^~/, "");
-  if (str.length !== 8) return str;
-  const day = str.substring(0,2);
-  const month = str.substring(2,4);
-  const year = str.substring(6,8);
-  const monthNames = [
-    '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ];
-  let mIdx = parseInt(month, 10);
-  if (!mIdx || mIdx > 12) return str;
-  return day + '-' + monthNames[mIdx] + '-' + year;
-}
+  const fbody = document.getElementById('fbody-table');
+  if (fbody) {
+    fbody.querySelectorAll('input').forEach(i => { if (i.type === 'checkbox' || i.type === 'radio') i.checked = false; else i.value = ''; });
+    fbody.querySelectorAll('select').forEach(sel => { sel.selectedIndex = 0; });
+  }
 
+  const fileInput = document.getElementById('importFile');
+  if (fileInput) fileInput.value = '';
 
-function clearTable_ClaimpayWHT() {
-  document.getElementById('tbody-table_ClaimpayWHT').innerHTML = '';
-  document.getElementById('result_ClaimpayWHT').classList.add('hidden');
-  document.getElementById('result_ClaimpayWHT').innerText = '';
-}
+  const rs = document.getElementById('result');
+  if (rs) { rs.classList.add('hidden'); rs.innerText = ''; }
 
-function copyPipe_ClaimpayWHT() {
-  const rows = document.querySelectorAll('#tbody-table_ClaimpayWHT tr');
-  let txt = Array.from(rows).map(tr =>
-    Array.from(tr.querySelectorAll('td input')).map(inp => inp.value).join('|')
-  ).join('\n');
-  copyToClipboard_ClaimpayWHT(txt, "คัดลอกแบบ Pipe (|) เรียบร้อยแล้ว!");
-}
-
-function copyConcat_ClaimpayWHT() {
-  const rows = document.querySelectorAll('#tbody-table_ClaimpayWHT tr');
-  let txt = Array.from(rows).map(tr =>
-    Array.from(tr.querySelectorAll('td input')).map(inp => inp.value).join('')
-  ).join('\n');
-  copyToClipboard_ClaimpayWHT(txt, "คัดลอกแบบ Concat เรียบร้อยแล้ว!");
-}
-
-function copyToClipboard_ClaimpayWHT(txt, msg) {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(txt).then(() => {
-      alert(msg);
-    });
-  } else {
-    let textarea = document.createElement("textarea");
-    textarea.value = txt;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
-    alert(msg);
+  // ถ้ามีตัวแปรโค้ดสินค้าอยู่ ให้เคลียร์ด้วย (ประกาศไว้ก่อนแล้ว/หรืออยู่บน window)
+  if (typeof window !== 'undefined') {
+    if (!('globalPaymentProductCode' in window)) window.globalPaymentProductCode = '';
+    else window.globalPaymentProductCode = '';
   }
 }
-</script>
-   </div>
+
+function getCellValue(cellElement) {
+  const input = cellElement.querySelector(&#x27;input&#x27;);
+  if (input) {
+    return input.value;
+  }
+  const select = cellElement.querySelector(&#x27;select&#x27;);
+  if (select) {
+    return select.value;
+  }
+  return &#x27;&#x27;;
+}
+
+// Copy แบบ Pipe (|)
+function copyPipe() {
+  const headerRow = document.querySelector(&#x27;#detail-table thead tr&#x27;); // Target detail table header
+  let headerText = &#x27;&#x27;;
+  if (headerRow) {
+    headerText = Array.from(headerRow.querySelectorAll(&#x27;th&#x27;)).map(th =&gt; th.innerText).join(&#x27;|&#x27;);
+  }
+
+  const detailRows = document.querySelectorAll(&#x27;#tbody-table tr&#x27;);
+  let bodyText = Array.from(detailRows).map(tr =&gt;
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; getCellValue(td)).join(&#x27;|&#x27;)
+  ).join(&#x27;\n&#x27;);
+
+  const footerHeaderRow = document.querySelector(&#x27;#footer-table thead tr&#x27;); // Get footer table header
+  let footerHeaderText = &#x27;&#x27;;
+  if (footerHeaderRow) {
+    footerHeaderText = Array.from(footerHeaderRow.querySelectorAll(&#x27;th&#x27;)).map(th =&gt; th.innerText).join(&#x27;|&#x27;);
+  }
+  
+  const footerRows = document.querySelectorAll(&#x27;#fbody-table tr&#x27;);
+  let footerText = Array.from(footerRows).map(tr =&gt;
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; getCellValue(td)).join(&#x27;|&#x27;)
+  ).join(&#x27;\n&#x27;);
+
+  let fullText = headerText + (headerText ? &#x27;\n&#x27; : &#x27;&#x27;) + bodyText;
+  if (footerHeaderText) { // Add footer header if it exists
+    fullText += &#x27;\n&#x27; + footerHeaderText;
+  }
+  if (footerText) {
+    fullText += &#x27;\n&#x27; + footerText;
+  }
+  copyToClipboard(fullText, &quot;คัดลอกแบบ Pipe (|) เรียบร้อยแล้ว!&quot;);
+}
+
+// Copy แบบ Concat (ใช้ Tab เป็นตัวคั่น)
+function copyConcat() {
+  const headerRow = document.querySelector(&#x27;#detail-table thead tr&#x27;);
+  let headerText = &#x27;&#x27;;
+  if (headerRow) {
+    headerText = Array.from(headerRow.querySelectorAll(&#x27;th&#x27;)).map(th =&gt; th.innerText).join(&#x27;\t&#x27;); // ใช้ Tab
+  }
+
+  const detailRows = document.querySelectorAll(&#x27;#tbody-table tr&#x27;);
+  let bodyText = Array.from(detailRows).map(tr =&gt;
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; getCellValue(td)).join(&#x27;\t&#x27;) // ใช้ Tab
+  ).join(&#x27;\n&#x27;);
+  
+  const footerHeaderRow = document.querySelector(&#x27;#footer-table thead tr&#x27;); // Get footer table header
+  let footerHeaderText = &#x27;&#x27;;
+  if (footerHeaderRow) {
+    footerHeaderText = Array.from(footerHeaderRow.querySelectorAll(&#x27;th&#x27;)).map(th =&gt; th.innerText).join(&#x27;\t&#x27;); // ใช้ Tab
+  }
+
+  const footerRows = document.querySelectorAll(&#x27;#fbody-table tr&#x27;);
+  let footerText = Array.from(footerRows).map(tr =&gt;
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; getCellValue(td)).join(&#x27;\t&#x27;) // ใช้ Tab
+  ).join(&#x27;\n&#x27;);
+
+  let fullText = headerText + (headerText ? &#x27;\n&#x27; : &#x27;&#x27;) + bodyText;
+  if (footerHeaderText) { // Add footer header if it exists
+    fullText += &#x27;\n&#x27; + footerHeaderText;
+  }
+  if (footerText) {
+    fullText += &#x27;\n&#x27; + footerText;
+  }
+  copyToClipboard(fullText, &quot;คัดลอกแบบ Concat (Tab-separated) เรียบร้อยแล้ว!&quot;);
+}
+
+// ฟังก์ชันกลางสำหรับ copy
+function copyToClipboard(txt, msg) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt).then(() =&gt; {
+      alert(msg);
+    }).catch(err =&gt; {
+      console.error(&#x27;Could not copy text: &#x27;, err);
+      alert(&#x27;ไม่สามารถคัดลอกได้: &#x27; + err.message);
+    });
+  } else {
+    // Fallback for older browsers
+    let textarea = document.createElement(&quot;textarea&quot;);
+    textarea.value = txt;
+    textarea.style.position = &#x27;fixed&#x27;;
+    textarea.style.opacity = 0;
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand(&quot;copy&quot;);
+      alert(msg);
+    } catch (err) {
+      console.error(&#x27;Could not copy text: &#x27;, err);
+      alert(&#x27;ไม่สามารถคัดลอกได้: &#x27; + err.message);
+    } finally {
+      document.body.removeChild(textarea);
+    }
+  }
+}
+
+// Export เป็นไฟล์ .txt (ใช้ Tab เป็นตัวคั่น และรวม footer)
+function exportTxt() {
+  const headerRow = document.querySelector(&#x27;#detail-table thead tr&#x27;);
+  let headerText = &#x27;&#x27;;
+  if (headerRow) {
+    headerText = Array.from(headerRow.querySelectorAll(&#x27;th&#x27;)).map(th =&gt; th.innerText).join(&#x27;\t&#x27;); // ใช้ Tab
+  }
+
+  const detailRows = document.querySelectorAll(&#x27;#tbody-table tr&#x27;);
+  let bodyText = Array.from(detailRows).map(tr =&gt;
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; getCellValue(td)).join(&#x27;\t&#x27;) // ใช้ Tab
+  ).join(&#x27;\n&#x27;);
+  
+  const footerHeaderRow = document.querySelector(&#x27;#footer-table thead tr&#x27;); // Get footer table header
+  let footerHeaderText = &#x27;&#x27;;
+  if (footerHeaderRow) {
+    footerHeaderText = Array.from(footerHeaderRow.querySelectorAll(&#x27;th&#x27;)).map(th =&gt; th.innerText).join(&#x27;\t&#x27;); // ใช้ Tab
+  }
+
+  const footerRows = document.querySelectorAll(&#x27;#fbody-table tr&#x27;);
+  let footerText = Array.from(footerRows).map(tr =&gt;
+    Array.from(tr.querySelectorAll(&#x27;td&#x27;)).map(td =&gt; getCellValue(td)).join(&#x27;\t&#x27;) // ใช้ Tab
+  ).join(&#x27;\n&#x27;);
+
+  let fullText = headerText + (headerText ? &#x27;\n&#x27; : &#x27;&#x27;) + bodyText;
+  if (footerHeaderText) { // Add footer header if it exists
+    fullText += &#x27;\n&#x27; + footerHeaderText;
+  }
+  if (footerText) {
+    fullText += &#x27;\n&#x27; + footerText;
+  }
+
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, &#x27;0&#x27;);
+  const month = String(now.getMonth() + 1).padStart(2, &#x27;0&#x27;);
+  const year = String(now.getFullYear());
+  const hours = String(now.getHours()).padStart(2, &#x27;0&#x27;);
+  const minutes = String(now.getMinutes()).padStart(2, &#x27;0&#x27;);
+  const seconds = String(now.getSeconds()).padStart(2, &#x27;0&#x27;);
+
+  const timestamp = `${day}${month}${year}_${hours}${minutes}${seconds}`;
+  let filename = `Result_BBL`;
+
+    // Append globalPaymentProductCode if it exists
+    const __gppc = (typeof window !== 'undefined' && 'globalPaymentProductCode' in window) ? window.globalPaymentProductCode : ''; 
+    if (__gppc) {
+        // Sanitize the product code for use in a filename (remove special chars, replace spaces)
+        const sanitizedProductCode = __gppc.replace(/[^a-zA-Z0-9-]/g, &#x27;_&#x27;).replace(/ /g, &#x27;_&#x27;);
+        filename += `_${sanitizedProductCode}`;
+    }
+
+  filename += `_${timestamp}.txt`;
+
+  const blob = new Blob([fullText], { type: &#x27;text/plain;charset=utf-8&#x27; });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement(&#x27;a&#x27;);
+  a.href = url;
+  a.download = filename;
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  alert(&#x27;ไฟล์ .txt ถูกส่งออกเรียบร้อยแล้ว!&#x27;);
+}
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;&lt;/html&gt;"></iframe>
     </div>
+    
+    <div id="wht-tool-3" class="tool-frame" style="display:none;">
+      <iframe title="SCB Smart Credit DCP" sandbox="allow-scripts allow-downloads allow-forms allow-modals allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_blank&quot;&gt;&lt;/head&gt;&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;th&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Claim Payment SCB Smart Credit DCP&lt;/title&gt;
+&lt;style&gt;
+  body { 
+    font-family: &#x27;Sarabun&#x27;, Arial, sans-serif; 
+    background: #f7f9fa; 
+  }
+  .container { 
+    padding: 20px; 
+  }
+  .btn { 
+    padding: 5px 16px; 
+    background: #7da7e8; 
+    border: none; 
+    color: #fff; 
+    border-radius: 4px; 
+    margin-right: 10px; 
+    cursor: pointer; 
+    font-size: 1rem; 
+  }
+  .btn:hover { 
+    background: #4a81c3; 
+  }
+  .controls {
+    margin-bottom: 20px;
+  }
+  textarea { 
+    width: 100%; 
+    height: 300px; 
+    white-space: pre; 
+    font-family: monospace; 
+    font-size: 0.95rem;
+    padding: 10px;
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+    background-color: #fff;
+    resize: vertical;
+  }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;container&quot;&gt;
+  &lt;h2&gt;🏛️ SCB Smart Credit DCP Export File&lt;/h2&gt;
+  
+  &lt;!-- ✅ ข้อความแนะนำ --&gt;
+  &lt;div style=&quot;background: #fff7d6; border: 1px solid #f2d76c; padding: 10px 14px; border-radius: 6px; color: #333; font-size: 1rem; margin-bottom: 15px;&quot;&gt;
+  📄 กรุณาเลือกไฟล์ Format(.txt) แล้วกดปุ่ม &lt;strong&gt;“Import”&lt;/strong&gt; เพื่อประมวลผล และกดปุ่ม &lt;strong&gt;“Export File”&lt;/strong&gt; เพื่อบันทึกไฟล์ผลลัพธ์
+    &lt;p&gt;📌  เลือกผลการโอนเงิน ที่ Payment Status (Success(S) จ่ายสำเร็จ ✅/ Fail(F) จ่ายไม่สำเร็จ❌)&lt;/p&gt;
+  &lt;/div&gt;
+  
+  &lt;meta charset=&quot;windows-874&quot;&gt;
+  
+  &lt;!-- ✅ กลุ่มปุ่ม --&gt;
+  &lt;div class=&quot;flex&quot;&gt;
+  &lt;input type=&quot;file&quot; id=&quot;inputFile&quot; accept=&quot;.txt&quot;&gt;
+  &lt;button class=&quot;btn&quot; onclick=&quot;convertFile()&quot;&gt;📥Import&lt;/button&gt;
+  &lt;button class=&quot;btn&quot; onclick=&quot;clearOutput()&quot;&gt;🧹Clear&lt;/button&gt;
+  &lt;button class=&quot;btn&quot; onclick=&quot;copyOutput()&quot;&gt;📋Copy Output&lt;/button&gt;
+  &lt;button class=&quot;btn&quot; onclick=&quot;saveFile()&quot;&gt;🗂️Export&lt;/button&gt;
+  &lt;br&gt;
+  &lt;br&gt;  
+  &lt;div class=&quot;flex&quot;&gt;
+  &lt;label for=&quot;status&quot;&gt;Payment Status:&lt;/label&gt;
+  &lt;select id=&quot;status&quot; style=&quot;padding: 5px; border-radius: 4px;&quot;&gt;
+    &lt;option value=&quot;S&quot; selected&gt;Success (S)&lt;/option&gt;
+    &lt;option value=&quot;F&quot;&gt;Fail  (F)&lt;/option&gt;
+  &lt;/select&gt;
+&lt;/div&gt;
+  &lt;br&gt;
+  &lt;textarea id=&quot;output&quot; readonly&gt;&lt;/textarea&gt;
+ 
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    // Declare a global variable to store fileRef
+    let globalFileRef = &#x27;&#x27;;
+
+    // Function to clear the output textarea
+   function clearOutput() {
+   document.getElementById(&#x27;output&#x27;).value = &#x27;&#x27;;
+   globalFileRef = &#x27;&#x27;; // Clear fileRef when clearing output
+   }
+    // Reads the file content as text with specified encoding
+    function readFileAsText(file, encoding = &#x27;windows-874&#x27;) {
+      return new Promise((resolve, reject) =&gt; {
+        const reader = new FileReader();
+        reader.onload = () =&gt; resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsText(file, encoding);
+      });
+    }
+
+    // Helper function to pad a string (right-aligned by default, or left-aligned with &#x27;0&#x27; for numbers)
+    const pad = (value, length, char = &#x27; &#x27;, rightPad = true) =&gt; {
+      let str = String(value || &#x27;&#x27;); // Ensure value is a string, handle null/undefined
+      if (str.length &gt; length) {
+        return str.substring(0, length);
+      }
+      if (rightPad) {
+        return str.padEnd(length, char);
+      } else {
+        return str.padStart(length, char);
+      }
+    };
+
+    // Helper function to parse fixed-width string segments
+    // IMPORTANT: &#x27;start&#x27; and &#x27;end&#x27; parameters should be 1-based column numbers
+    // This function converts them to 0-based for JavaScript&#x27;s slice method.
+    const parseFixed = (line, start, end) =&gt; {
+      if (!line) return &#x27;&#x27;;
+      // slice(startIndex, endIndex) extracts up to (but not including) endIndex.
+      // So, for 1-based [start, end], it&#x27;s slice(start-1, end).
+      return line.slice(start - 1, end).trim(); // .trim() removes leading/trailing spaces
+    };
+
+    async function convertFile() {
+      const file = document.getElementById(&#x27;inputFile&#x27;).files[0];
+      if (!file) {
+        alert(&#x27;Please select a file first!!!&#x27;);
+        return;
+      }
+
+      const raw = await readFileAsText(file);
+      // Split by newline characters and filter out any empty lines.
+      const lines = raw.split(/\r?\n/).filter(line =&gt; line.trim());
+
+      let output = &#x27;&#x27;;
+
+      // Objects/arrays to store parsed data from the input file
+      let line001Data = {};
+      let line002Data = {};
+      let creditDetails = []; // Stores all 003 records
+      let payeeDetails = {};  // Stores all 004 records, keyed by CreditSequenceNumber for easy lookup
+      let line999Data = {};
+
+      // --- First Pass: Parse all input lines and extract data ---
+      // This loop iterates through each non-empty line of the input file
+      for (const line of lines) {
+        const recordType = line.substring(0, 3); // The first 3 characters define the record type
+
+        if (recordType === &#x27;001&#x27;) {
+          // Parse fields specific to the 001 (Header) record
+          line001Data = {
+            companyId: parseFixed(line, 4, 15),
+            fileRef: parseFixed(line, 16, 47),
+            createdDate: parseFixed(line, 48, 55), // YYYYMMDD
+            createdTime: parseFixed(line, 56, 61), // HHMMSS
+            channelId: parseFixed(line, 62, 64),
+            batchRef: parseFixed(line, 65, 96),
+          };
+          globalFileRef = line001Data.fileRef; // Store fileRef globally
+          console.log(&#x27;Parsed 001:&#x27;, line001Data); // DEBUG: Log parsed 001 data to console
+        } else if (recordType === &#x27;002&#x27;) {
+          // Parse fields specific to the 002 (Batch Header) record
+          line002Data = {
+            productCode: parseFixed(line, 4, 6),
+            valueDate: parseFixed(line, 7, 14), // YYYYMMDD
+            debitAccountNo: parseFixed(line, 15, 39),
+            typeOfDebitAccount: parseFixed(line, 40, 41),
+            debitBranchCode: parseFixed(line, 42, 45),
+            debitCurrency: parseFixed(line, 46, 48),
+            debitAmount: parseFixed(line, 49, 64),
+            internalReference: parseFixed(line, 65, 72),
+            noCredits: parseFixed(line, 73, 78),
+            feeDebitAccount: parseFixed(line, 79, 93),
+            filler: parseFixed(line, 94, 102),
+            mediaClearingCycle: parseFixed(line, 103, 103),
+            accountTypeFee: parseFixed(line, 104, 105),
+          };
+          console.log(&#x27;Parsed 002:&#x27;, line002Data); // DEBUG: Log parsed 002 data to console
+        } else if (recordType === &#x27;003&#x27;) {
+          // Parse fields specific to the 003 (Credit Detail) record
+          const detail = {
+            creditSeqNumber: parseFixed(line, 4, 9),
+            creditAccount: parseFixed(line, 10, 34),
+            creditAmount: parseFixed(line, 35, 50),
+            creditCurrency: parseFixed(line, 51, 53),
+            internalReference003: parseFixed(line, 54, 61),
+            whtPresent: parseFixed(line, 62, 62),
+            invoiceDetailsPresent: parseFixed(line, 63, 63),
+            creditAdviceRequired: parseFixed(line, 64, 64),
+            deliveryMode: parseFixed(line, 65, 65),
+            pickupLocation: parseFixed(line, 66, 69),
+            whtFormType: parseFixed(line, 70, 71),
+            whtTaxRunningNo: parseFixed(line, 72, 85),
+            whtAttachNo: parseFixed(line, 86, 91),
+            noofWhtDetails: parseFixed(line, 92, 93),
+            totalWHTAmount: parseFixed(line, 94, 109),
+            noofInvoiceDetails: parseFixed(line, 110, 115),
+            totalInvoiceAmount: parseFixed(line, 116, 131),
+            whtPayType: parseFixed(line, 132, 132),
+            whtRemark: parseFixed(line, 133, 172),
+            whtDeductDate: parseFixed(line, 173, 180),
+            receivingBankCode: parseFixed(line, 181, 183),
+            receivingBankName: parseFixed(line, 184, 218),
+            receivingBranchCode: parseFixed(line, 219, 222),
+            receivingBranchName: parseFixed(line, 223, 257),
+            whtSignatory: parseFixed(line, 258, 258),
+            beneficiaryNotification: parseFixed(line, 259, 259),
+            customerReferenceNumber: parseFixed(line, 260, 279),
+            chequeReferenceDocumentType: parseFixed(line, 280, 280),
+            paymentTypeCode: parseFixed(line, 281, 283),
+            servicesType: parseFixed(line, 284, 285),
+            remark: parseFixed(line, 286, 335),
+            scbRemark: parseFixed(line, 336, 353),
+            beneficiaryCharge: parseFixed(line, 354, 355)
+          };
+          creditDetails.push(detail);
+          // console.log(&#x27;Parsed 003:&#x27;, detail); // DEBUG: Can be very verbose if many 003 records
+        } else if (recordType === &#x27;004&#x27;) {
+          // Parse fields specific to the 004 (Payee Detail) record
+          const seq = parseFixed(line, 12, 17); // Credit Sequence Number is the key to link with 003 records
+          const payee = {
+            internalReference004: parseFixed(line, 4, 11),
+            creditSequenceNumber: seq,
+            payee1IDCard: parseFixed(line, 18, 32),
+            payee1NameT: parseFixed(line, 33, 132),
+            payee1Address1: parseFixed(line, 133, 202),
+            payee1Address2: parseFixed(line, 203, 272),
+            payee1Address3: parseFixed(line, 273, 342),
+            payee1TaxID: parseFixed(line, 343, 352),
+            payee1NameE: parseFixed(line, 353, 422),
+            payee1FaxNumber: parseFixed(line, 423, 432),
+            payee1MobilePhoneNumber: parseFixed(line, 433, 442),
+            payee1EmailAddress: parseFixed(line, 443, 506),
+            payee2NameT: parseFixed(line, 507, 606),
+            payee2Address1: parseFixed(line, 607, 676),
+            payee2Address2: parseFixed(line, 677, 746),
+            payee2Address3: parseFixed(line, 747, 816)
+          };
+          payeeDetails[seq] = payee;
+		  console.log(`Parsed 004 - Storing key: &#x27;${seq}&#x27;, Payee Name: &#x27;${payee.payee1NameT}&#x27;`);
+		  console.log(&quot;Current payeeDetails object keys:&quot;, Object.keys(payeeDetails));
+
+          // console.log(&#x27;Parsed 004:&#x27;, payee); // DEBUG: Can be verbose
+        } else if (recordType === &#x27;999&#x27;) {
+          // Parse fields specific to the 999 (File Trailer) record
+          line999Data = {
+            totalOfDebits: parseFixed(line, 4, 9),
+            totalOfCredits: parseFixed(line, 10, 15),
+            totalAmountFooter: parseFixed(line, 16, 31),
+          };
+          console.log(&#x27;Parsed 999:&#x27;, line999Data); // DEBUG: Log parsed 999 data to console
+        }
+      }
+
+      // --- Validation Check: Ensure essential header/footer data was successfully parsed ---
+      // If any of these key fields are missing or empty, it indicates a parsing problem.
+      if (!line001Data.createdDate || !line002Data.valueDate || !line999Data.totalOfCredits || !line001Data.fileRef) {
+          alert(&#x27;Error: Data not found&#x27;);
+          document.getElementById(&#x27;output&#x27;).value = &quot;Error: Missing essential header/footer data. Please check the browser&#x27;s console (F12) for detailed parsing logs.&quot;;
+          return;
+      }
+
+      // --- Second Pass: Generate Output Records (500, 510, 599) ---
+
+      // 500 Record: File Header
+      // Based on your example: 50020250721132625C20250721001 CBZ2271 DCP S1 6997 20250721
+      let line500 = &#x27;500&#x27;;                                          // 3 chars: Record Type
+      line500 += pad(line002Data.valueDate, 8);                   // 8 chars: Value Date (YYYYMMDD from 002)
+      line500 += pad(line001Data.createdTime, 6);                 // 6 chars: Created Time (HHMMSS from 001)
+      line500 += pad(line001Data.fileRef, 32);                    // 32 chars: File Reference (from 001). Will be right-padded if shorter.
+      line500 += pad(line001Data.companyId, 12);                  // 12 chars: Company ID (from 001)
+      line500 += pad(line002Data.productCode, 70);                 // 3 chars: Product Code (from 002) (e.g., &#x27;DCP&#x27;)
+      line500 += pad(&#x27;S1&#x27;, 20);                                      // 2 chars: Channel Id
+      line500 += pad(line001Data.batchRef, 35);                   // 35 chars: Batch Reference (from 001)
+      line500 += pad(line002Data.valueDate, 8);                   // 8 chars: Value Date (YYYYMMDD from 002)
+      output += line500 + &#x27;\n&#x27;;
+      console.log(&#x27;Generated 500:&#x27;, line500); // DEBUG: Log the fully constructed 500 record
+      // Note: channelId from 001 parsing is 3 chars, but example shows &#x27;S1&#x27; (2 chars).
+      // If your spec says 2, ensure 001 parsing aligns or pad to 2. Let&#x27;s pad to 2 based on example.
+//      line500 += pad(line001Data.channelId, 2);                   // 2 chars: Channel ID (from 001) (e.g., &#x27;S1&#x27;)
+//      line500 += &#x27; &#x27;;                                               // 1 char: Fixed space
+//      line500 += pad(line001Data.batchRef, 35);                   // 35 chars: Batch Reference (from 001)
+//      line500 += pad(line002Data.valueDate, 8);                   // 8 chars: Value Date (from 002) - Appears duplicated in example format
+//      output += line500 + &#x27;\n&#x27;;
+//      console.log(&#x27;Generated 500:&#x27;, line500); // DEBUG: Log the fully constructed 500 record
+//
+      // 510 Records: Payment Results (Loop through each credit detail found in 003 records)
+      // Example format: 510THB00000001914450009432424719 นางสาวสุนันทา นันทโชติ SIAM COMMERCIAL BANK PUBLIC COMPANY014PASSIONE RAYONG BRANCH 0815202507000005 SAPPROVED OR COMPLETED SUC 0000000191445000 202507000005 000000000000000
+      for (const credit of creditDetails) {
+        // Find the corresponding payee data (from 004 record) using credit sequence number as key
+        const payee = payeeDetails[credit.creditSeqNumber] || {}; // Use empty object if no 004 found for this 003
+
+        let line510 = &#x27;510&#x27;;                                        // 3 chars: Record Type
+        line510 += pad(credit.creditCurrency, 3);                   // 3 chars: Payment Currency (from 003)
+        line510 += pad(credit.creditAmount, 16, &#x27;0&#x27;, false);         // 16 chars: Payment Amount (from 003), left-padded with zeros
+        line510 += pad(credit.creditAccount, 25);                   // 25 chars: Beneficiary Account (from 003)
+        line510 += pad(payee.payee1NameT, 70);                       // 70 chars: Beneficiary Name (from 004)
+        line510 += pad(payee.payee1TaxID, 10);                       // 10 chars: Beneficiary Tax ID (from 004)
+        line510 += pad(credit.receivingBankName, 35);               // 35 chars: Beneficiary Bank Name (from 003)
+        line510 += pad(credit.receivingBankCode, 3);               // 3 chars: Beneficiary Bank Code (from 003)
+        line510 += pad(credit.receivingBranchName, 35);             // 35 chars: Beneficiary Branch Name (from 003)
+        line510 += pad(credit.receivingBranchCode, 4);             // 4 chars: Beneficiary Branch Code (from 003)
+        // Bank Reference: Using CustomerReferenceNumber from 003 as it matches example&#x27;s position
+        line510 += pad(credit.customerReferenceNumber, 16);         // 16 chars: Bank Reference (from 003)
+        const status = document.getElementById(&#x27;status&#x27;).value;
+        line510 += status;  // ใช้ค่าที่เลือกจาก dropdown แทน &#x27;S&#x27;                                           // 1 char: Processing Status (fixed to &#x27;S&#x27; for success)
+        // Processing Remarks: Using the specific string from your example, padded to 124 chars
+        line510 += pad(&#x27;APPROVED OR COMPLETED SUC&#x27;, 124);           // 124 chars: Processing Remarks (fixed string, right-padded)
+        line510 += pad(credit.creditAmount, 16, &#x27;0&#x27;, false);         // 16 chars: Net Payment Amount (from 003), left-padded with zeros
+        line510 += pad(&#x27;&#x27;, 7);                                      // 7 chars: Cheque Number (empty, or parse if available in 003/004)
+        line510 += pad(credit.customerReferenceNumber, 20);         // 20 chars: Customer Reference Number (from 003)
+        line510 += pad(&#x27;&#x27;, 14);                                     // 14 chars: WHT Serial Number (empty)
+        line510 += pad(payee.payee1IDCard, 15);                     // 15 chars: Tax ID / ID Card (from 004)
+        line510 += pad(&#x27;&#x27;, 8);                                      // 8 chars: Cheque Number (empty, appears duplicated in example&#x27;s end)
+        output += line510 + &#x27;\n&#x27;;
+        console.log(&#x27;Generated 510:&#x27;, line510); // DEBUG: Can be verbose if many 510 records
+      }
+
+      // 599 Record: File Trailer
+      // Example format: 59900000001000000001914450000
+      let line599 = &#x27;599&#x27;;                                          // 3 chars: Record Type
+      // Total Transactions: using totalOfCredits from 999, left-padded with zeros to 8 chars
+      line599 += pad(line999Data.totalOfCredits, 8, &#x27;0&#x27;, false);
+      // Total Amount: using totalAmountFooter from 999, left-padded with zeros to 18 chars
+      line599 += pad(line999Data.totalAmountFooter, 17, &#x27;0&#x27;,false);
+	  line599 += pad(&#x27;0&#x27;, 1); 
+      output += line599 + &#x27;\n&#x27;; // Add final newline
+      console.log(&#x27;Generated 599:&#x27;, line599); // DEBUG: Log the fully constructed 599 record
+
+      document.getElementById(&#x27;output&#x27;).value = output;
+    }
+
+    // Function to copy the output to clipboard
+    function copyOutput() {
+      const ta = document.getElementById(&#x27;output&#x27;);
+      ta.select(); // Selects all text in the textarea
+      document.execCommand(&#x27;copy&#x27;); // Copies the selected text to clipboard
+      alert(&#x27;Successful&#x27;); // Notifies the user
+    }
+
+function getFormattedDateTime() {
+  const now = new Date();
+  const pad = (n) =&gt; n.toString().padStart(2, &#x27;0&#x27;);
+
+  const dd = pad(now.getDate());
+  const mm = pad(now.getMonth() + 1); // เดือนเริ่มจาก 0
+  const yyyy = now.getFullYear();
+  const hh = pad(now.getHours());
+  const min = pad(now.getMinutes());
+  const ss = pad(now.getSeconds());
+
+  return `${dd}${mm}${yyyy}_${hh}${min}${ss}`;
+}
+
+// Modified saveFile() function
+function saveFile() {
+  const outputText = document.getElementById(&#x27;output&#x27;).value;
+  const blob = new Blob([outputText], { type: &#x27;text/plain;charset=windows-874&#x27; });
+
+  const a = document.createElement(&#x27;a&#x27;);
+  a.href = URL.createObjectURL(blob);
+
+  // Construct filename including fileRef if available
+  const dateTimeStr = getFormattedDateTime();
+  let fileName = `Result_SCB_DCP`;
+  if (globalFileRef) {
+    fileName += `_${globalFileRef}`;
+  }
+  fileName += `_${dateTimeStr}.txt`;
+  a.download = fileName;
+
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;&lt;/html&gt;"></iframe>
+    </div>
+    
+    <div id="wht-tool-4" class="tool-frame" style="display:none;">
+      <iframe title="SCB Smart Credit ORFT" sandbox="allow-scripts allow-downloads allow-forms allow-modals allow-same-origin" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;base target=&quot;_blank&quot;&gt;&lt;/head&gt;&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;th&quot;&gt;
+&lt;head&gt;
+  &lt;title&gt;Claim Payment SCB Smart Credit ORFT&lt;/title&gt;
+&lt;style&gt;
+  body { 
+    font-family: &#x27;Sarabun&#x27;, Arial, sans-serif; 
+    background: #f7f9fa; 
+  }
+  .container { 
+    padding: 20px; 
+  }
+  .btn { 
+    padding: 5px 16px; 
+    background: #7da7e8; 
+    border: none; 
+    color: #fff; 
+    border-radius: 4px; 
+    margin-right: 10px; 
+    cursor: pointer; 
+    font-size: 1rem; 
+  }
+  .btn:hover { 
+    background: #4a81c3; 
+  }
+  .controls {
+    margin-bottom: 20px;
+  }
+  textarea { 
+    width: 100%; 
+    height: 300px; 
+    white-space: pre; 
+    font-family: monospace; 
+    font-size: 0.95rem;
+    padding: 10px;
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+    background-color: #fff;
+    resize: vertical;
+  }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;container&quot;&gt;
+  &lt;h2&gt;🏛️ SCB Smart Credit ORFT Export File&lt;/h2&gt;
+  
+  &lt;!-- ✅ ข้อความแนะนำ --&gt;
+  &lt;div style=&quot;background: #fff7d6; border: 1px solid #f2d76c; padding: 10px 14px; border-radius: 6px; color: #333; font-size: 1rem; margin-bottom: 15px;&quot;&gt;
+  📄 กรุณาเลือกไฟล์ Format(.txt) แล้วกดปุ่ม &lt;strong&gt;“Import”&lt;/strong&gt; เพื่อประมวลผล และกดปุ่ม &lt;strong&gt;“Export File”&lt;/strong&gt; เพื่อบันทึกไฟล์ผลลัพธ์
+    &lt;p&gt;📌  เลือกผลการโอนเงิน ที่ Payment Status (Success(S) จ่ายสำเร็จ ✅/ Fail(F) จ่ายไม่สำเร็จ❌)&lt;/p&gt;
+  &lt;/div&gt;
+  
+  &lt;meta charset=&quot;windows-874&quot;&gt;
+  
+  &lt;!-- ✅ กลุ่มปุ่ม --&gt;
+  &lt;div class=&quot;flex&quot;&gt;
+  &lt;input type=&quot;file&quot; id=&quot;inputFile&quot; accept=&quot;.txt&quot;&gt;
+  &lt;button class=&quot;btn&quot; onclick=&quot;convertFile()&quot;&gt;📥Import&lt;/button&gt;
+  &lt;button class=&quot;btn&quot; onclick=&quot;clearOutput()&quot;&gt;🧹Clear&lt;/button&gt;
+  &lt;button class=&quot;btn&quot; onclick=&quot;copyOutput()&quot;&gt;📋Copy Output&lt;/button&gt;
+  &lt;button class=&quot;btn&quot; onclick=&quot;saveFile()&quot;&gt;🗂️Export&lt;/button&gt;
+  &lt;br&gt;
+  &lt;br&gt;    
+  &lt;div class=&quot;flex&quot;&gt;
+  &lt;label for=&quot;status&quot;&gt;Payment Status:&lt;/label&gt;
+  &lt;select id=&quot;status&quot; style=&quot;padding: 5px; border-radius: 4px;&quot;&gt;
+    &lt;option value=&quot;S&quot; selected&gt;Success (S)&lt;/option&gt;
+    &lt;option value=&quot;F&quot;&gt;Fail  (F)&lt;/option&gt;
+  &lt;/select&gt;
+&lt;/div&gt;
+  &lt;br&gt;
+  &lt;textarea id=&quot;output&quot; readonly&gt;&lt;/textarea&gt;
+ 
+  &lt;/div&gt;
+
+
+  &lt;script&gt;
+    // Declare a global variable to store fileRef
+    let globalFileRef = &#x27;&#x27;;
+  
+    // Function to clear the output textarea
+   function clearOutput() {
+   document.getElementById(&#x27;output&#x27;).value = &#x27;&#x27;;
+    globalFileRef = &#x27;&#x27;; // Clear fileRef when clearing output
+   }
+    // Reads the file content as text with specified encoding
+    function readFileAsText(file, encoding = &#x27;windows-874&#x27;) {
+      return new Promise((resolve, reject) =&gt; {
+        const reader = new FileReader();
+        reader.onload = () =&gt; resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsText(file, encoding);
+      });
+    }
+
+    // Helper function to pad a string (right-aligned by default, or left-aligned with &#x27;0&#x27; for numbers)
+    const pad = (value, length, char = &#x27; &#x27;, rightPad = true) =&gt; {
+      let str = String(value || &#x27;&#x27;); // Ensure value is a string, handle null/undefined
+      if (str.length &gt; length) {
+        return str.substring(0, length);
+      }
+      if (rightPad) {
+        return str.padEnd(length, char);
+      } else {
+        return str.padStart(length, char);
+      }
+    };
+
+    // Helper function to parse fixed-width string segments
+    // IMPORTANT: &#x27;start&#x27; and &#x27;end&#x27; parameters should be 1-based column numbers
+    // This function converts them to 0-based for JavaScript&#x27;s slice method.
+    const parseFixed = (line, start, end) =&gt; {
+      if (!line) return &#x27;&#x27;;
+      // slice(startIndex, endIndex) extracts up to (but not including) endIndex.
+      // So, for 1-based [start, end], it&#x27;s slice(start-1, end).
+      return line.slice(start - 1, end).trim(); // .trim() removes leading/trailing spaces
+    };
+
+    async function convertFile() {
+      const file = document.getElementById(&#x27;inputFile&#x27;).files[0];
+      if (!file) {
+        alert(&#x27;Please select a file first!!!&#x27;);
+        return;
+      }
+
+      const raw = await readFileAsText(file);
+      // Split by newline characters and filter out any empty lines.
+      const lines = raw.split(/\r?\n/).filter(line =&gt; line.trim());
+
+      let output = &#x27;&#x27;;
+
+      // Objects/arrays to store parsed data from the input file
+      let line001Data = {};
+      let line002Data = {};
+      let creditDetails = []; // Stores all 003 records
+      //let payeeDetails = {};  // Stores all 004 records, keyed by CreditSequenceNumber for easy lookup
+      let line999Data = {};
+
+      // --- First Pass: Parse all input lines and extract data ---
+      // This loop iterates through each non-empty line of the input file
+      for (const line of lines) {
+        const recordType = line.substring(0, 3); // The first 3 characters define the record type
+
+        if (recordType === &#x27;001&#x27;) {
+          // Parse fields specific to the 001 (Header) record
+          line001Data = {
+            companyId: parseFixed(line, 4, 15),
+            fileRef: parseFixed(line, 16, 47),
+            createdDate: parseFixed(line, 48, 55), // YYYYMMDD
+            createdTime: parseFixed(line, 56, 61), // HHMMSS
+            channelId: parseFixed(line, 62, 64),
+          };
+            globalFileRef = line001Data.fileRef; // Store fileRef globally
+          console.log(&#x27;Parsed 001:&#x27;, line001Data); // DEBUG: Log parsed 001 data to console
+        } else if (recordType === &#x27;002&#x27;) {
+          // Parse fields specific to the 002 (Batch Header) record
+          line002Data = {
+            productCode: parseFixed(line, 4, 6),
+            valueDate: parseFixed(line, 7, 14), // YYYYMMDD
+            TaxID: parseFixed(line, 15, 27),			
+            debitAccountNo: parseFixed(line, 28, 52),
+            typeOfDebitAccount: parseFixed(line, 53, 54),
+            debitBranchCode: parseFixed(line, 55, 58),
+            debitCurrency: parseFixed(line, 59, 61),
+            debitAmount: parseFixed(line, 62, 77),
+            internalReference: parseFixed(line, 78,	85),
+            noCredits: parseFixed(line, 86,	91),
+            feeDebitAccount: parseFixed(line, 92, 106),
+            AccountTypeFee: parseFixed(line, 107, 108),
+            DebitBranchCode: parseFixed(line, 109, 112),
+            TransactionRef: parseFixed(line, 113, 144),
+          };
+          console.log(&#x27;Parsed 002:&#x27;, line002Data); // DEBUG: Log parsed 002 data to console
+        } else if (recordType === &#x27;003&#x27;) {
+          // Parse fields specific to the 003 (Credit Detail) record
+          const detail = {
+            creditSeqNumber: parseFixed(line, 4, 9),
+            creditAccount: parseFixed(line, 10, 34),
+			BeneficiaryName: parseFixed(line, 35, 104),
+            creditAmount: parseFixed(line, 105, 120),
+            creditCurrency: parseFixed(line, 121, 123),
+            ReceivingBankName: parseFixed(line, 124, 158),
+            ReceivingBankCode: parseFixed(line, 159, 162),
+            CIDID: parseFixed(line, 163, 175),
+            MobileNo: parseFixed(line, 176,	185),
+            InternalReference: parseFixed(line, 186, 193),
+            TransactionRemark: parseFixed(line, 194, 225),
+            ProxyType: parseFixed(line, 226, 228),
+            Filler: parseFixed(line, 229, 274),
+          };
+          creditDetails.push(detail);
+          // console.log(&#x27;Parsed 003:&#x27;, detail); // DEBUG: Can be very verbose if many 003 records
+        } else if (recordType === &#x27;999&#x27;) {
+          // Parse fields specific to the 999 (File Trailer) record
+          line999Data = {
+            totalOfDebits: parseFixed(line, 4, 9),
+            totalOfCredits: parseFixed(line, 10, 15),
+            totalAmountFooter: parseFixed(line, 16, 31),
+          };
+          console.log(&#x27;Parsed 999:&#x27;, line999Data); // DEBUG: Log parsed 999 data to console
+        }
+      }
+
+      // --- Validation Check: Ensure essential header/footer data was successfully parsed ---
+      // If any of these key fields are missing or empty, it indicates a parsing problem.
+      if (!line001Data.createdDate || !line002Data.valueDate || !line999Data.totalOfCredits || !line001Data.fileRef) {
+          alert(&#x27;Error: Data not found&#x27;);
+          document.getElementById(&#x27;output&#x27;).value = &quot;Error: Missing essential header/footer data. Please check the browser&#x27;s console (F12) for detailed parsing logs.&quot;;
+          return;
+      }
+
+      // --- Second Pass: Generate Output Records (500, 510, 599) ---
+
+      // 500 Record: File Header
+      // Based on your example: 50020250721132625C20250721001 CBZ2271 DCP S1 6997 20250721
+      let line500 = &#x27;500&#x27;;                                          // 3 chars: Record Type
+      line500 += pad(line002Data.valueDate, 8);                   // 8 chars: Value Date (YYYYMMDD from 002)
+      line500 += pad(line001Data.createdTime, 6);                 // 6 chars: Created Time (HHMMSS from 001)
+      line500 += pad(line001Data.fileRef, 32);                    // 32 chars: File Reference (from 001). Will be right-padded if shorter.
+      line500 += pad(line001Data.companyId, 12);                  // 12 chars: Company ID (from 001)
+      line500 += pad(line002Data.productCode, 70);                 // 3 chars: Product Code (from 002) (e.g., &#x27;DCP&#x27;)
+      line500 += pad(&#x27;S1&#x27;, 20);                                      // 2 chars: Channel Id
+      line500 += pad(line002Data.TransactionRef, 35);                   // 35 chars: Batch Reference (from 001)
+      line500 += pad(line002Data.valueDate, 8);                   // 8 chars: Value Date (YYYYMMDD from 002)
+      output += line500 + &#x27;\n&#x27;;
+      console.log(&#x27;Generated 500:&#x27;, line500); // DEBUG: Log the fully constructed 500 record
+      // Note: channelId from 001 parsing is 3 chars, but example shows &#x27;S1&#x27; (2 chars).
+
+    // 510 Records: Payment Results (Loop through each credit detail found in 003 records)
+    const paymentStatus = document.getElementById(&#x27;status&#x27;).value; // Get selected status
+
+    for (const credit of creditDetails) {
+      let line510 = &#x27;510&#x27;;                                     // 3 chars: Record Type
+      line510 += pad(credit.creditCurrency, 3);                // 3 chars: Payment Currency (from 003)
+      line510 += pad(credit.creditAmount, 16, &#x27;0&#x27;, false);      // 16 chars: Payment Amount (from 003), left-padded with zeros
+      line510 += pad(credit.creditAccount, 25);                // 25 chars: Beneficiary Account (from 003)
+      line510 += pad(credit.BeneficiaryName, 70);              // 70 chars: Beneficiary Name (from 003)
+      line510 += pad(credit.BeneficiaryName, 70);              // 70 chars: Beneficiary Name (from 003)
+      line510 += pad(credit.ReceivingBankName, 35);            // 35 chars: Beneficiary Bank Name (from 003)
+      line510 += pad(credit.ReceivingBankCode, 3);             // 3 chars: Beneficiary Bank Code (from 003)
+      line510 += pad(credit.ProxyType, 3);                     // 3 chars: Proxy Type (from 003)
+      line510 += pad(credit.CIDID, 13);                        // 13 chars: CID ID (from 003)
+      line510 += pad(credit.MobileNo, 10);                     // 10 chars: Mobile No (from 003)
+      line510 += pad(credit.TransactionRemark, 32);            // 32 chars: Transaction Remark (from 003)
+      line510 += paymentStatus;                                // 1 char: Processing Status (from dropdown)
+      line510 += pad(&#x27;APPROVED OR COMPLETED SUC&#x27;, 100);         // 100 chars: Processing Remarks (fixed string, right-padded)
+      output += line510 + &#x27;\n&#x27;;
+      console.log(&#x27;Generated 510:&#x27;, line510);
+    }
+
+    // 599 Record: File Trailer
+    let line599 = &#x27;599&#x27;;                                     // 3 chars: Record Type
+    // Total Transactions: using totalOfCredits from 999, left-padded with zeros to 8 chars
+    line599 += pad(line999Data.totalOfCredits, 8, &#x27;0&#x27;, false);
+    // Total Amount: using totalAmountFooter from 999, left-padded with zeros to 16 chars
+    line599 += pad(line999Data.totalAmountFooter, 16, &#x27;0&#x27;,false);
+    output += line599 + &#x27;\n&#x27;; // Add final newline
+    console.log(&#x27;Generated 599:&#x27;, line599);
+
+    document.getElementById(&#x27;output&#x27;).value = output;
+  }
+
+    // Function to copy the output to clipboard
+    function copyOutput() {
+      const ta = document.getElementById(&#x27;output&#x27;);
+      ta.select(); // Selects all text in the textarea
+      document.execCommand(&#x27;copy&#x27;); // Copies the selected text to clipboard
+      alert(&#x27;Successful&#x27;); // Notifies the user
+    }
+
+function getFormattedDateTime() {
+  const now = new Date();
+  const pad = (n) =&gt; n.toString().padStart(2, &#x27;0&#x27;);
+
+  const dd = pad(now.getDate());
+  const mm = pad(now.getMonth() + 1); // เดือนเริ่มจาก 0
+  const yyyy = now.getFullYear();
+  const hh = pad(now.getHours());
+  const min = pad(now.getMinutes());
+  const ss = pad(now.getSeconds());
+
+  return `${dd}${mm}${yyyy}_${hh}${min}${ss}`;
+}
+
+// Modified saveFile() function
+function saveFile() {
+  const outputText = document.getElementById(&#x27;output&#x27;).value;
+  const blob = new Blob([outputText], { type: &#x27;text/plain;charset=windows-874&#x27; });
+
+  const a = document.createElement(&#x27;a&#x27;);
+  a.href = URL.createObjectURL(blob);
+
+  // สร้างชื่อไฟล์พร้อมวันที่-เวลา และ fileRef
+  const dateTimeStr = getFormattedDateTime();
+  let fileName = `Result_SCB_ORFT`;
+  if (globalFileRef) {
+    fileName += `_${globalFileRef}`;
+  }
+  fileName += `_${dateTimeStr}.txt`;
+  a.download = fileName;
+
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;/html&gt;"></iframe>
+    </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <script>
+    const picker = document.getElementById('wht-picker');
+    const openBtn = document.getElementById('wht-open');
+    const resetBtn = document.getElementById('wht-reset');
+    const frames = Array.from(document.querySelectorAll('#claimpay_wht .tool-frame'));
+
+    function resetFrame(frameDiv) {
+      const oldIframe = frameDiv.querySelector('iframe');
+      if (!oldIframe) return;
+      const fresh = oldIframe.cloneNode(true);   // รีโหลด state ภายในทั้งหมด
+      frameDiv.innerHTML = '';
+      frameDiv.appendChild(fresh);
+    }
+
+    function showTool(id, doReset = true) {
+      frames.forEach(div => {
+        const active = (div.id === id);
+        div.style.display = active ? '' : 'none';
+        if (active && doReset) resetFrame(div);
+      });
+    }
+
+    picker.addEventListener('change', e => showTool(e.target.value, true));
+    resetBtn.addEventListener('click', () => {
+      const div = document.getElementById(picker.value);
+      if (div) resetFrame(div);
+    });
+    openBtn.addEventListener('click', () => {
+      const iframe = document.querySelector('#' + picker.value + ' iframe');
+      if (!iframe) return;
+      const html = iframe.srcdoc || '<!doctype html><title>Empty</title>';
+      const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
+      window.open(url, '_blank');
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!picker.value) picker.value = picker.options[0].value;
+      showTool(picker.value, true);
+    });
+  </script>
+</div>
 	
+	
+<div id="SPLife_Gen_TextFile" class="card-content">
+  <div class="card">
+    <h2>📝 Generator Text File - SP-Life</h2>	
+	<div class="picker">
+  <label for="templatePicker"><b>เลือกฟอร์ม:</b></label>
+  
+  <select id="templatePicker" style="width: 320px; height: 36px; padding: 4px 10px; border-radius: 8px; margin-right:.5rem;">
+    <option value="cbsplife" selected>Counter Bank (CBSPLIFE)</option>
+    <option value="ol52">Direct Debit (OL52_MLTA)</option>
+    <option value="ol55">Direct Debit (OL55_MRTA)</option>
+  </select>
+</div>
+
+<!-- ======================= CBSPLIFE ======================= -->
+<section id="app_cbsplife" class="app-section">
+  <h2>📄 Generator Text File - Counter Bank For SP-Life</h2>
+
+<style>
+ /* ปรับขนาด/หน้าตา Text Output */
+  #outputArea_CBSPLIFE{
+    width: 100%;
+    height: clamp(100px, 45vh, 100px); /* สูงขึ้น + responsive */
+    min-height: 80px;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    resize: vertical;      /* ลากยืดได้ในแนวตั้ง */
+    box-sizing: border-box;
+  }
+</style>
+
+  <!-- Header -->
+  <!-- แทนที่บล็อกเดิม -->
+<!-- === Form (2 แถว) === -->
+<div class="sp-form">
+  <div class="frow">
+    <label class="flabel" for="payType_CBSPLIFE">ประเภทการชำระ:</label>
+    <select id="payType_CBSPLIFE" style="width: 150px; height: 30px; padding: 4px 10px; border-radius: 8px; margin-right:.5rem;">
+      <option value="OL11">MRTA = OL11</option>
+      <option value="OL01" selected>MLTA = OL01</option>
+    </select>
+  </div>
+
+  <div class="frow">
+    <label class="flabel" for="txnDate_CBSPLIFE">วันที่ทำรายการ:</label>
+    <input type="date" id="txnDate_CBSPLIFE" style="width: 150px; height: 25px; padding: 4px 10px; border-radius: 8px; margin-right:.5rem;" />
+  </div>
+</div>
+
+<br>
+<div class="hint">
+  * ถ้า Customer Name เป็นภาษาไทย ควรบันทึกเป็น ANSI (TIS-620)
+</div>
+
+
+  <!-- Table -->
+  <table id="detailTable_CBSPLIFE">
+    <thead>
+      <tr>
+        <th>วันที่ทำรายการ <br><span class="tiny">(DDMMYYYY)</span></th>
+        <th>Customer Name</th>
+        <th>Ref.1.<br><span class="tiny">(เลขใบคำขอ)</span></th>
+        <th>Ref.2 <br><span class="tiny">(เลขบัตรประชาชน)</span></th>
+        <th>Branch Code<br><span class="tiny">(รหัสสาขา)</span></th>
+        <th>Amount (THB)<br><span class="tiny">(ระบุยอดเงิน)</span></th>
+        <th>ลบ</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="toolbar">
+    <button onclick="CBSPLIFE.addRow()">➕ เพิ่มแถว</button>
+    <button onclick="CBSPLIFE.clearRows()">🧹 Clear</button>
+    <button onclick="CBSPLIFE.generateText()">📄 Generate</button>
+    <button onclick="CBSPLIFE.copyOutput()">📋 Copy</button>
+    <button onclick="CBSPLIFE.downloadTxt()">💾 Export</button>
+  </div>
+
+  <h3>📦 Text Output</h3>
+  <textarea id="outputArea_CBSPLIFE" readonly></textarea>
+</section>
+
+<!-- ======================= OL52 ======================= -->
+<section id="app_ol52" class="app-section">
+  <h2>📄 Generator Text File - Direct Debit For OL52_MLTA SP-Life (BAAC 034)</h2>
+<style>
+  /* ===== OL52 header layout ===== */
+  #ol52-header{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    column-gap:24px;         /* ระยะห่างระหว่างกลุ่มในบรรทัดเดียวกัน */
+    row-gap:16px;            /* ระยะห่างระหว่างบรรทัด */
+  }
+  #ol52-header .pair{
+    display:flex;
+    align-items:center;
+    gap:12px;                /* ระยะห่างระหว่าง label กับ control */
+  }
+  #ol52-header .pair label{ font-weight:600; }
+
+  /* กลุ่มขวาให้ยืดได้ เพื่อให้ช่อง Account ยาวตามพื้นที่ */
+  #ol52-header .pair.grow{ flex:1 1 520px; }
+
+  /* บรรทัดที่สองให้กินทั้งแถว */
+  #ol52-header .pair.full{ flex:1 0 100%; }
+
+  /* ขนาด control */
+  #ol52-header select,
+  #ol52-header input[type="text"],
+  #ol52-header input[type="date"]{
+    height:36px;
+    padding:4px 10px;
+    border-radius:8px;
+  }
+  #ol52-header #compCode_SPLIFEOL52{ width:250px; }
+  #ol52-header #companyAcc_SPLIFEOL52{ width:180px; max-width:100%; }
+  #ol52-header #txnDate_SPLIFEOL52{ width:160px; }
+
+  /* ย่อหน้าจอเล็ก: ให้ทุกคู่ลงคนละบรรทัดอัตโนมัติ */
+  @media (max-width: 900px){
+    #ol52-header .pair{ flex:1 0 100%; }
+    #ol52-header #companyAcc_SPLIFEOL52{ width:100%; }
+  }
+  
+  /* ปรับขนาด/หน้าตา Text Output */
+  #outputArea_SPLIFEOL52{
+    width: 100%;
+    height: clamp(100px, 45vh, 100px); /* สูงขึ้น + responsive */
+    min-height: 80px;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    resize: vertical;      /* ลากยืดได้ในแนวตั้ง */
+    box-sizing: border-box;
+  }
+</style>
+
+<div id="ol52-header">
+  <!-- แถวที่ 1 ซ้าย -->
+  <div class="pair">
+    <label for="compCode_SPLIFEOL52">Comp.Code:</label>
+    <select id="compCode_SPLIFEOL52">
+      <option value="OL5206">ไทยสมุทรฯ OL5206</option>
+      <option value="MT5206">เมืองไทยฯ MT5206</option>
+      <option value="AK5206">อาคเนย์ฯ AK5206</option>
+      <option value="TH5206">ไทยประกันฯ TH5206</option>
+    </select>
+  </div>
+
+  <!-- แถวที่ 1 ขวา (ยืดได้) -->
+  <div class="pair grow">
+    <label for="companyAcc_SPLIFEOL52">Company Account No.:</label>
+    <input id="companyAcc_SPLIFEOL52" type="text" readonly>
+  </div>
+
+  <!-- แถวที่ 2 -->
+  <div class="pair full">
+    <label for="txnDate_SPLIFEOL52">วันที่ทำรายการ:</label>
+    <input type="date" id="txnDate_SPLIFEOL52">
+  </div>
+</div>
+
+
+  <div class="hint">
+    * ถ้า Account Name เป็นภาษาไทย ควรบันทึกเป็น ANSI (TIS-620)
+  </div>
+
+  <table id="detailTable_SPLIFEOL52">
+    <thead>
+      <tr>
+        <th>Customer Acc No<br><span class="tiny">(เลขที่บัญชีลูกค้า)</span></th>
+        <th>Txn Code<br><span class="tiny">(C/D)</span></th>
+        <th>Amount (THB)<br><span class="tiny">(ระบุยอดเงิน)</span></th>
+        <th>Service Type<br><span class="tiny">("00")</span></th>
+        <th>Status<br><span class="tiny">(สถานะ)</span></th>
+        <th>Ref. no<br><span class="tiny">(เลขที่ใบสรุป)</span></th>
+        <th>ID Card<br><span class="tiny">(เลขบัตรประชาชน)</span></th>
+        <th>Branch Code<br><span class="tiny">(รหัสสาขา)</span></th>
+        <th>Branch Name<br><span class="tiny">(ชื่อสาขา)</span></th>
+        <th>POST DATE (DDMMYY)<br><span class="tiny">(วันเดือนปี)</span></th>
+        <th>Account Name<br><span class="tiny">(ชื่อเจ้าของบัญชี)</span></th>
+        <th>ลบ</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="toolbar">
+    <button onclick="OL52.addRow()">➕ เพิ่มแถว</button>
+    <button onclick="OL52.clearRows()">🧹 Clear</button>
+    <button onclick="OL52.generateText()">📄 Generate</button>
+    <button onclick="OL52.copyOutput()">📋 Copy</button>
+    <button onclick="OL52.downloadTxt()">💾 Export</button>
+  </div>
+
+  
+  
+
+
+  <h3>📦 Text Output</h3>
+  <textarea id="outputArea_SPLIFEOL52" readonly></textarea>
+</section>
+
+<!-- ======================= OL55 ======================= -->
+<section id="app_ol55" class="app-section">
+  <h2>📄 Generator Text File - Direct Debit For OL55_MRTA SP-Life (BAAC 034)</h2>
+
+  <style>
+  /* ===== OL55 header layout ===== */
+  #ol55-header{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    column-gap:24px;      /* ระยะห่างแนวนอนระหว่างกลุ่ม */
+    row-gap:16px;         /* ระยะห่างระหว่างบรรทัด */
+  }
+  #ol55-header .pair{
+    display:flex;
+    align-items:center;
+    gap:12px;             /* ระยะห่างระหว่าง label กับ control */
+  }
+  #ol55-header .pair label{ font-weight:600; }
+
+  /* ให้กลุ่มขวายืดกินพื้นที่ เพื่อให้ช่อง Account ยาว */
+  #ol55-header .grow{ flex:1 1 520px; }
+
+  /* บรรทัดวันที่ให้กินทั้งแถว */
+  #ol55-header .full{ flex:1 0 100%; }
+
+  /* ขนาดคุมโทนเดียวกัน */
+  #ol55-header select,
+  #ol55-header input[type="text"],
+  #ol55-header input[type="date"]{
+    height:36px;
+    padding:4px 10px;
+    border-radius:8px;
+  }
+  #compCode_SPLIFEOL55{ width:250px; }
+  #companyAcc_SPLIFEOL55{ width:180px; max-width:100%; }
+  #txnDate_SPLIFEOL55{ width:160px; }
+
+  /* จอเล็ก: แตกเป็นบรรทัดละกลุ่มอัตโนมัติ */
+  @media (max-width: 900px){
+    #ol55-header .pair{ flex:1 0 100%; }
+    #companyAcc_SPLIFEOL55{ width:100%; }
+  }
+  #outputArea_SPLIFEOL55{
+    width: 100%;
+    height: clamp(100px, 45vh, 100px); /* สูงขึ้น + responsive */
+    min-height: 80px;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    resize: vertical;      /* ลากยืดได้ในแนวตั้ง */
+    box-sizing: border-box;
+  }
+</style>
+
+<div id="ol55-header">
+  <!-- แถวที่ 1 ซ้าย -->
+  <div class="pair">
+    <label for="compCode_SPLIFEOL55">Comp.Code:</label>
+    <select id="compCode_SPLIFEOL55">
+      <option value="OL5506">ไทยสมุทรฯ OL5506</option>
+      <option value="MT5506">เมืองไทยฯ MT5506</option>
+      <option value="AK5506">อาคเนย์ฯ AK5506</option>
+      <option value="TH5506">ไทยประกันฯ TH5506</option>
+    </select>
+  </div>
+
+  <!-- แถวที่ 1 ขวา (ยืดได้) -->
+  <div class="pair grow">
+    <label for="companyAcc_SPLIFEOL55">Company Account No.:</label>
+    <input id="companyAcc_SPLIFEOL55" type="text" readonly>
+  </div>
+
+  <!-- แถวที่ 2 -->
+  <div class="pair full">
+    <label for="txnDate_SPLIFEOL55">วันที่ทำรายการ:</label>
+    <input type="date" id="txnDate_SPLIFEOL55">
+  </div>
+</div>
+
+
+  <div class="hint">
+    * ถ้า Account Name เป็นภาษาไทย ควรบันทึกเป็น ANSI (TIS-620)
+  </div>
+
+  <table id="detailTable_SPLIFEOL55">
+    <thead>
+      <tr>
+        <th>Customer Acc No<br><span class="tiny">(เลขที่บัญชีลูกค้า)</span></th>
+        <th>Txn Code<br><span class="tiny">(C/D)</span></th>
+        <th>Amount (THB)<br><span class="tiny">(ระบุยอดเงิน)</span></th>
+        <th>Service Type<br><span class="tiny">("00")</span></th>
+        <th>Status<br><span class="tiny">(สถานะ)</span></th>
+        <th>Ref. no<br><span class="tiny">(เลขที่ใบสรุป)</span></th>
+        <th>ID Card<br><span class="tiny">(เลขบัตรประชาชน)</span></th>
+        <th>Branch Code<br><span class="tiny">(รหัสสาขา)</span></th>
+        <th>Branch Name<br><span class="tiny">(ชื่อสาขา)</span></th>
+        <th>POST DATE (DDMMYY)<br><span class="tiny">(วันเดือนปี)</span></th>
+        <th>Account Name<br><span class="tiny">(ชื่อเจ้าของบัญชี)</span></th>
+        <th>ลบ</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="toolbar">
+    <button onclick="OL55.addRow()">➕ เพิ่มแถว</button>
+    <button onclick="OL55.clearRows()">🧹 Clear</button>
+    <button onclick="OL55.generateText()">📄 Generate</button>
+    <button onclick="OL55.copyOutput()">📋 Copy</button>
+    <button onclick="OL55.downloadTxt()">💾 Export</button>
+  </div>
+
+  <h3>📦 Text Output</h3>
+  <textarea id="outputArea_SPLIFEOL55" readonly></textarea>
+</section>
+
+<script>
+/* ================= MODULE: CBSPLIFE ================= */
+const CBSPLIFE = (function(){
+  const BANK_CODE = "034";
+  const COMPANY_NAME = "0000000000OCEAN LIFE INSURANCE PUBLIC - ";
+  const HEADER_FILLER_77_88 = "020007745770";
+
+  const padR = (s,len)=> (s??"").toString().padEnd(len," ").slice(0,len);
+  const padL = (s,len,ch="0")=> (s??"").toString().padStart(len,ch).slice(-len);
+  const onlyDigits = s => (s||"").replace(/\D+/g,"");
+  function ddmmyyyy(dateStr){
+    const d = new Date(dateStr);
+    if (isNaN(d)) return "";
+    const dd = String(d.getDate()).padStart(2,"0");
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const yyyy = String(d.getFullYear());
+    return dd+mm+yyyy;
+  }
+  function toCentsN(val, n){
+    const num = parseFloat(String(val).replace(/[^\d.]/g,""));
+    const cents = isNaN(num) ? 0 : Math.round(num*100);
+    return String(cents).padStart(n,"0");
+  }
+
+  function fillPostDate(){
+    const el = document.getElementById("txnDate_CBSPLIFE");
+    if (!el || !el.value) return;
+    const base = ddmmyyyy(el.value);
+    document.querySelectorAll("#detailTable_CBSPLIFE tbody .postdate_CBSPLIFE").forEach(inp => inp.value = base);
+  }
+
+  function addRow(){
+    const tbody = document.querySelector("#detailTable_CBSPLIFE tbody");
+    const tr = document.createElement("tr");
+    const post = ddmmyyyy(document.getElementById("txnDate_CBSPLIFE").value || new Date());
+    tr.innerHTML = `
+      <td><input class="postdate_CBSPLIFE" type="text" maxlength="8" placeholder="DDMMYYYY" value="${post}"/></td>
+      <td><input class="accname_CBSPLIFE" type="text" maxlength="50" placeholder="ชื่อเจ้าของบัญชี" value="QA SPLifeFile"/></td>
+      <td><input class="refno_CBSPLIFE"   type="text" maxlength="10" placeholder="เลขที่ใบสรุป (10)" value="8068000095" /></td>
+      <td><input class="idcard_CBSPLIFE"  type="text" maxlength="13" placeholder="เลขบัตร ปชช. (13)" value="2746506702371"/></td>
+      <td><input class="branchcode_CBSPLIFE" type="text" maxlength="4" placeholder="รหัสสาขา (4)" value="1007"/></td>
+      <td><input class="amount_CBSPLIFE"  type="text" inputmode="decimal" pattern="^\\d+(\\.\\d{0,2})?$" value="500.00"/></td>
+      <td><button onclick="this.closest('tr').remove()">🗑</button></td>
+    `;
+    tbody.appendChild(tr);
+  }
+  function clearRows(){
+    document.querySelector("#detailTable_CBSPLIFE tbody").innerHTML = "";
+    document.getElementById("outputArea_CBSPLIFE").value = "";
+    addRow(); fillPostDate();
+  }
+  function buildHeader(){
+    const seq = "000001";
+    const compName = padR(COMPANY_NAME, 40);
+    const payCode  = document.getElementById("payType_CBSPLIFE").value || "OL11";
+    const post8    = ddmmyyyy(document.getElementById("txnDate_CBSPLIFE").value || new Date());
+    const arr = Array.from({length:195}, ()=>" ");
+    const put = (pos, text, len) => {
+      const s = (text||"").toString().padEnd(len," ").slice(0,len);
+      for (let i=0;i<len;i++) arr[pos-1+i] = s[i];
+    };
+    put(1 , "H", 1);
+    put(2 , seq, 6);
+    put(8 , BANK_CODE, 3);
+    put(11, compName, 40);
+    put(51, padR(payCode,4), 4);
+    put(61, post8, 8);
+    put(77, HEADER_FILLER_77_88, 12);
+    return arr.join("");
+  }
+  function buildTrailer(dCount, totalAmtThb){
+    const drNo6   = String(dCount).padStart(6, "0");
+    const drAmt13 = String(Math.round((totalAmtThb || 0) * 100)).padStart(13,"0");
+    const arr = Array.from({length:132}, () => " ");
+    const put = (pos, text, len) => {
+      const s = (text ?? "").toString().padEnd(len, " ").slice(0, len);
+      for (let i = 0; i < len; i++) arr[pos - 1 + i] = s[i];
+    };
+    put(1 , "T", 1);
+    put(2 , "0000", 4);
+    put(6 , "034", 3);
+    put(9 , "0000000000000000000000000000000", 31);
+    put(40, drAmt13, 13);
+    put(53, drNo6, 6);
+    put(67, " ".repeat(66), 66);
+    return arr.join("");
+  }
+  function buildDetailLine(seqNumber, row){
+    const post8     = padL((row.querySelector(".postdate_CBSPLIFE")?.value || "").replace(/\D+/g,""), 8, "0");
+    const accName50 = padR(row.querySelector(".accname_CBSPLIFE")?.value || "", 50);
+    const refno20   = padR((row.querySelector(".refno_CBSPLIFE")?.value || "").slice(0,20), 20);
+    const id13      = padL(onlyDigits(row.querySelector(".idcard_CBSPLIFE")?.value || ""), 13, "0");
+    const br4       = padL(onlyDigits(row.querySelector(".branchcode_CBSPLIFE")?.value || ""), 4, "0");
+    const amt13     = toCentsN(row.querySelector(".amount_CBSPLIFE")?.value || "0", 13);
+    const arr = Array.from({length: 332}, () => " ");
+    const put = (pos, text, len) => {
+      const s = (text || "").toString().padEnd(len, " ").slice(0, len);
+      for (let i = 0; i < len; i++) arr[pos - 1 + i] = s[i];
+    };
+    put(1 , "D", 1);
+    put(2 , "000002", 6);
+    put(8 , "034", 3);
+    put(11, "0000000000", 10);
+    put(21, post8, 8);
+    put(29, "080851", 6);
+    put(35, accName50, 50);
+    put(85, refno20, 20);
+    put(105, id13, 13);
+    put(145, "0", 1);
+    put(146, br4, 4);
+    put(150, "019CCSH0000000", 15);
+    put(164, amt13, 13);
+    return arr.join("");
+  }
+  function generateText(){
+    const tbody = document.querySelector("#detailTable_CBSPLIFE tbody");
+    const rows = [...tbody.querySelectorAll("tr")];
+    const header = buildHeader();
+    let totalAmount = 0;
+    const details = rows.map((row, idx)=>{
+      const amt = parseFloat(row.querySelector(".amount_CBSPLIFE")?.value || "0") || 0;
+      totalAmount += amt;
+      return buildDetailLine(idx + 2, row);
+    });
+    const trailer = buildTrailer(rows.length, totalAmount);
+    document.getElementById("outputArea_CBSPLIFE").value = [header, ...details, trailer].join("\n");
+  }
+  function copyOutput(){
+    const ta = document.getElementById("outputArea_CBSPLIFE");
+    ta.select(); document.execCommand("copy");
+  }
+  function downloadTxt(){
+    const raw = document.getElementById("outputArea_CBSPLIFE").value;
+    const contentCRLF = raw.replace(/\n/g, "\r\n");
+    const bytes = (function encodeTIS620(str){
+      const out = [];
+      for (const ch of str){
+        const code = ch.codePointAt(0);
+        if (code <= 0x7F) out.push(code);
+        else if (code >= 0x0E01 && code <= 0x0E5B) out.push(code - 0x0E00 + 0xA0);
+        else out.push(0x3F);
+      }
+      return new Uint8Array(out);
+    })(contentCRLF);
+    const payCode = (document.getElementById("payType_CBSPLIFE")?.value || "OL11");
+    const dateDDMMYYYY = ddmmyyyy(document.getElementById("txnDate_CBSPLIFE")?.value || new Date());
+    const filename = `${payCode}_${dateDDMMYYYY}.txt`;
+    const blob = new Blob([bytes], { type: "text/plain;charset=TIS-620" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = filename; a.click();
+    URL.revokeObjectURL(a.href);
+  }
+  function init(){
+    const dt = document.getElementById("txnDate_CBSPLIFE");
+    dt.valueAsDate = new Date();
+    dt.addEventListener("input", fillPostDate);
+    dt.addEventListener("change", fillPostDate);
+    addRow(); fillPostDate();
+  }
+  return {init, addRow, clearRows, generateText, copyOutput, downloadTxt};
+})();
+
+/* ================= MODULE: OL52 ================= */
+const OL52 = (function(){
+  const BANK_CODE = "034";
+  const COMPANY_NAME = "คุ้มครองสินเชื่อระยะยาว";
+  const COMPANY_ACC_BY_CODE = {
+    OL5206: "000820050702",
+    MT5206: "000050015003",
+    AK5206: "010020365885",
+    TH5206: "010582207017",
+  };
+  const padR = (s,len)=> (s??"").toString().padEnd(len," ").slice(0,len);
+  const padL = (s,len,ch="0")=> (s??"").toString().padStart(len,ch).slice(-len);
+  const onlyDigits = s => (s||"").replace(/\D+/g,"");
+  function ddmmyyyy(dateStr){
+    const d = new Date(dateStr);
+    if (isNaN(d)) return "";
+    const dd = String(d.getDate()).padStart(2,"0");
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const yyyy = String(d.getFullYear());
+    return dd+mm+yyyy;
+  }
+  function ddmmyy(dateStr){ const s = ddmmyyyy(dateStr); return s ? (s.slice(0,4) + s.slice(6)) : ""; }
+  function toCentsN(val, n=12){
+    const num = parseFloat(String(val).replace(/[^\d.]/g,""));
+    const cents = isNaN(num) ? 0 : Math.round(num*100);
+    return String(cents).padStart(n,"0");
+  }
+  function ddmmyy_to_BEyymmdd(s){
+    s = (s || "").replace(/\D+/g, "");
+    if (s.length !== 6) return padL(s, 6, "0");
+    const dd = s.slice(0,2), mm = s.slice(2,4), yy = parseInt(s.slice(4,6), 10);
+    const yyBE = ((yy + 43) % 100).toString().padStart(2, "0");
+    return yyBE + mm + dd;
+  }
+  function syncCompanyAccount(){
+    const cc = document.getElementById("compCode_SPLIFEOL52").value;
+    document.getElementById("companyAcc_SPLIFEOL52").value = COMPANY_ACC_BY_CODE[cc] || "";
+  }
+  function fillPostDate(){
+    const el = document.getElementById("txnDate_SPLIFEOL52");
+    if (!el || !el.value) return;
+    const base = ddmmyy(el.value);
+    document.querySelectorAll("#detailTable_SPLIFEOL52 tbody .postdate_SPLIFEOL52").forEach(inp => inp.value = base);
+  }
+  function addRow(){
+    const tbody = document.querySelector("#detailTable_SPLIFEOL52 tbody");
+    const tr = document.createElement("tr");
+    const post = ddmmyy(document.getElementById("txnDate_SPLIFEOL52").value || new Date());
+    tr.innerHTML = `
+      <td><input class="custacc_SPLIFEOL52" type="text" maxlength="12" placeholder="เลขที่บัญชีลูกค้า 12 หลัก" value="020018580370" /></td>
+      <td>
+        <select class="txncode_SPLIFEOL52">
+          <option value="D">D (Debit)</option>
+          <option value="C">C (Credit)</option>
+        </select>
+      </td>
+      <td><input class="amount_SPLIFEOL52" type="text" inputmode="decimal" pattern="^\\d+(\\.\\d{0,2})?$" value="500.00" /></td>
+      <td>
+        <select class="servicetype_SPLIFEOL52">
+          <option value="00" selected>00</option>
+          <option value="01">01</option>
+          <option value="02">02</option>
+        </select>
+      </td>
+      <td>
+        <select class="status_SPLIFEOL52">
+          <option value="0" selected>0 = PAST</option>
+          <option value="9">9 = ORIGINAL (for input)</option>
+          <option value="1">1 = INSUFFICIENT FUND</option>
+          <option value="2">2 = CLOSE/NO FOUND ACCOUNT</option>
+          <option value="3">3 = ACCOUNT BLOCK/OTHER</option>
+          <option value="4">4 = INVALID ACCOUNT NUMBER</option>
+          <option value="5">5 = MUST BE CHECK</option>
+        </select>
+      </td>
+      <td><input class="refno_SPLIFEOL52" type="text" maxlength="12" placeholder="เลขที่ใบสรุปการทำประกันชีวิต" value="100567001511" /></td>
+      <td><input class="idcard_SPLIFEOL52" type="text" maxlength="13" placeholder="เลขบัตร ปชช. (13)" value="2746506702371" /></td>
+      <td><input class="branchcode_SPLIFEOL52" type="text" maxlength="4" placeholder="รหัสสาขา (4)" value="1007"/></td>
+      <td><input class="branchname_SPLIFEOL52" type="text" maxlength="15" placeholder="ชื่อสาขา" value="สาขาเชียงใหม่"/></td>
+      <td><input class="postdate_SPLIFEOL52" type="text" maxlength="6" value="${post}" /></td>
+      <td><input class="accname_SPLIFEOL52" type="text" maxlength="31" placeholder="ชื่อเจ้าของบัญชี" value="QA SPLifeFile" /></td>
+      <td><button onclick="this.closest('tr').remove()">🗑</button></td>
+    `;
+    tbody.appendChild(tr);
+  }
+  function clearRows(){
+    document.querySelector("#detailTable_SPLIFEOL52 tbody").innerHTML = "";
+    document.getElementById("outputArea_SPLIFEOL52").value = "";
+    addRow();  fillPostDate();
+  }
+  function buildHeader(){
+    const seq = "000001";
+    const compCode = document.getElementById("compCode_SPLIFEOL52").value;
+    const compAcc  = padL(document.getElementById("companyAcc_SPLIFEOL52").value||"", 12, "0");
+    const compName = padR(COMPANY_NAME, 25);
+    const postDate6 = ddmmyy(document.getElementById("txnDate_SPLIFEOL52").value || new Date());
+    const raw = "H" + seq + BANK_CODE + compAcc + compName + postDate6 + compCode;
+    return padR(raw, 195);
+  }
+  function buildTrailer(dCount, totalAmtThb){
+    const seq6     = String(dCount + 2).padStart(6, "0");
+    const compAcc  = (document.getElementById("companyAcc_SPLIFEOL52").value || "").toString().padStart(12,"0").slice(-12);
+    const drNo     = String(dCount).padStart(7, "0");
+    const drAmt15  = String(Math.round((totalAmtThb||0)*100)).padStart(15,"0");
+    const crNo     = "0000000";
+    const crAmt15  = "000000000000000";
+    const filler66 = " ".repeat(66);
+    const arr = Array.from({length:132}, ()=>" ");
+    const put = (pos, text, len) => { const s = (text||"").toString().padEnd(len," ").slice(0,len); for (let i=0;i<len;i++) arr[pos-1+i] = s[i]; };
+    put(1 , "T", 1);
+    put(2 , seq6, 6);
+    put(8 , BANK_CODE, 3);
+    put(11, compAcc, 12);
+    put(23, drNo, 7);
+    put(30, drAmt15, 15);
+    put(45, crNo, 7);
+    put(52, crAmt15, 15);
+    put(67, filler66, 66);
+    return arr.join("");
+  }
+  function buildDetailLine(seqNumber, row){
+    const custAcc = padL(onlyDigits(row.querySelector(".custacc_SPLIFEOL52")?.value || ""), 12, "0");
+    const txnCode = (row.querySelector(".txncode_SPLIFEOL52")?.value || "D").slice(0,1);
+    const amtThb  = row.querySelector(".amount_SPLIFEOL52")?.value || "0";
+    const service = padL(row.querySelector(".servicetype_SPLIFEOL52")?.value || "00", 2, "0");
+    const status  = (row.querySelector(".status_SPLIFEOL52")?.value || "0").slice(0,1);
+    const refno   = padR((row.querySelector(".refno_SPLIFEOL52")?.value || "").slice(0,12), 12);
+    const idcard  = padL(onlyDigits(row.querySelector(".idcard_SPLIFEOL52")?.value || ""), 13, "0");
+    const brCode  = padL(onlyDigits(row.querySelector(".branchcode_SPLIFEOL52")?.value || ""), 4, "0");
+    const brName  = padR(row.querySelector(".branchname_SPLIFEOL52")?.value || "", 15);
+    const postUI  = padL(row.querySelector(".postdate_SPLIFEOL52")?.value || "", 6, "0");
+    const postOut = ddmmyy_to_BEyymmdd(postUI);
+    const accName = padR(row.querySelector(".accname_SPLIFEOL52")?.value || "", 31);
+    const seq6 = String(seqNumber).padStart(6,"0");
+    const amt12 = toCentsN(amtThb, 12);
+    const arr = Array.from({length:132}, ()=>" ");
+    const put = (pos, text, len) => { const s = padR(text, len); for (let i=0;i<len;i++) arr[pos-1+i] = s[i] ?? " "; };
+    put(1 , "D", 1);
+    put(2 , seq6, 6);
+    put(8 , BANK_CODE, 3);
+    put(11, custAcc, 12);
+    put(23, txnCode, 1);
+    put(24, amt12, 12);
+    put(36, service, 2);
+    put(38, status, 1);
+    put(39, refno, 12);
+    put(51, idcard, 13);
+    put(64, brCode, 4);
+    put(68, brName, 15);
+    put(83, postOut, 6);
+    put(98, accName, 31);
+    return arr.join("");
+  }
+  function generateText(){
+    const tbody = document.querySelector("#detailTable_SPLIFEOL52 tbody");
+    const rows = [...tbody.querySelectorAll("tr")];
+    const header = buildHeader();
+    let totalAmount = 0;
+    const details = rows.map((row, idx)=>{
+      const amt = parseFloat(row.querySelector(".amount_SPLIFEOL52")?.value || "0") || 0;
+      totalAmount += amt;
+      return buildDetailLine(idx + 2, row);
+    });
+    const trailer = buildTrailer(rows.length, totalAmount);
+    document.getElementById("outputArea_SPLIFEOL52").value = [header, ...details, trailer].join("\n");
+  }
+  function copyOutput(){ const ta = document.getElementById("outputArea_SPLIFEOL52"); ta.select(); document.execCommand("copy"); }
+  function downloadTxt(){
+    const raw = document.getElementById("outputArea_SPLIFEOL52").value;
+    const contentCRLF = raw.replace(/\n/g, "\r\n");
+    const bytes = (function encodeTIS620(str){
+      const out = [];
+      for (const ch of str){
+        const code = ch.codePointAt(0);
+        if (code <= 0x7F){ out.push(code); }
+        else if (code >= 0x0E01 && code <= 0x0E5B){ out.push(code - 0x0E00 + 0xA0); }
+        else { out.push(0x3F); }
+      }
+      return new Uint8Array(out);
+    })(contentCRLF);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([bytes], { type: "text/plain;charset=TIS-620" }));
+    a.download = "OL52_MLTA_ANSI.txt";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+  function init(){
+    document.getElementById("txnDate_SPLIFEOL52").valueAsDate = new Date();
+    document.getElementById("txnDate_SPLIFEOL52").addEventListener("input", fillPostDate);
+    document.getElementById("txnDate_SPLIFEOL52").addEventListener("change", fillPostDate);
+    document.getElementById("compCode_SPLIFEOL52").addEventListener("change", syncCompanyAccount);
+    syncCompanyAccount();
+    addRow(); fillPostDate();
+  }
+  return {init, addRow, clearRows, generateText, copyOutput, downloadTxt};
+})();
+
+/* ================= MODULE: OL55 ================= */
+const OL55 = (function(){
+  const BANK_CODE = "034";
+  const COMPANY_NAME = "คุ้มครองสินเชื่อแบบลดลง";
+  const COMPANY_ACC_BY_CODE = {
+    OL5506: "000820050702",
+    MT5506: "000050015003",
+    AK5506: "010020365885",
+    TH5506: "010582207017",
+  };
+  const padR = (s,len)=> (s??"").toString().padEnd(len," ").slice(0,len);
+  const padL = (s,len,ch="0")=> (s??"").toString().padStart(len,ch).slice(-len);
+  const onlyDigits = s => (s||"").replace(/\D+/g,"");
+  function ddmmyyyy(dateStr){
+    const d = new Date(dateStr);
+    if (isNaN(d)) return "";
+    const dd = String(d.getDate()).padStart(2,"0");
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const yyyy = String(d.getFullYear());
+    return dd+mm+yyyy;
+  }
+  function ddmmyy(dateStr){ const s = ddmmyyyy(dateStr); return s ? (s.slice(0,4) + s.slice(6)) : ""; }
+  function toCentsN(val, n=12){
+    const num = parseFloat(String(val).replace(/[^\d.]/g,""));
+    const cents = isNaN(num) ? 0 : Math.round(num*100);
+    return String(cents).padStart(n,"0");
+  }
+  function ddmmyy_to_BEyymmdd(s){
+    s = (s || "").replace(/\D+/g, "");
+    if (s.length !== 6) return padL(s, 6, "0");
+    const dd = s.slice(0,2), mm = s.slice(2,4), yy = parseInt(s.slice(4,6), 10);
+    const yyBE = ((yy + 43) % 100).toString().padStart(2, "0");
+    return yyBE + mm + dd;
+  }
+  function syncCompanyAccount(){
+    const cc = document.getElementById("compCode_SPLIFEOL55").value;
+    document.getElementById("companyAcc_SPLIFEOL55").value = COMPANY_ACC_BY_CODE[cc] || "";
+  }
+  function fillPostDate(){
+    const el = document.getElementById("txnDate_SPLIFEOL55");
+    if (!el || !el.value) return;
+    const base = ddmmyy(el.value);
+    document.querySelectorAll("#detailTable_SPLIFEOL55 tbody .postdate_SPLIFEOL55").forEach(inp => inp.value = base);
+  }
+  function addRow(){
+    const tbody = document.querySelector("#detailTable_SPLIFEOL55 tbody");
+    const tr = document.createElement("tr");
+    const post = ddmmyy(document.getElementById("txnDate_SPLIFEOL55").value || new Date());
+    tr.innerHTML = `
+      <td><input class="custacc_SPLIFEOL55" type="text" maxlength="12" placeholder="เลขที่บัญชีลูกค้า 12 หลัก" value="020018580370" /></td>
+      <td>
+        <select class="txncode_SPLIFEOL55">
+          <option value="D">D (Debit)</option>
+          <option value="C">C (Credit)</option>
+        </select>
+      </td>
+      <td><input class="amount_SPLIFEOL55" type="text" inputmode="decimal" pattern="^\\d+(\\.\\d{0,2})?$" value="500.00" /></td>
+      <td>
+        <select class="servicetype_SPLIFEOL55">
+          <option value="00" selected>00</option>
+          <option value="01">01</option>
+          <option value="02">02</option>
+        </select>
+      </td>
+      <td>
+        <select class="status_SPLIFEOL55">
+          <option value="0" selected>0 = PAST</option>
+          <option value="9">9 = ORIGINAL (for input)</option>
+          <option value="1">1 = INSUFFICIENT FUND</option>
+          <option value="2">2 = CLOSE/NO FOUND ACCOUNT</option>
+          <option value="3">3 = ACCOUNT BLOCK/OTHER</option>
+          <option value="4">4 = INVALID ACCOUNT NUMBER</option>
+          <option value="5">5 = MUST BE CHECK</option>
+        </select>
+      </td>
+      <td><input class="refno_SPLIFEOL55" type="text" maxlength="14" placeholder="เลขที่ใบสรุปการทำประกันชีวิต" value="10056700151144" /></td>
+      <td><input class="idcard_SPLIFEOL55" type="text" maxlength="13" placeholder="เลขบัตร ปชช. (13)" value="2746506702371" /></td>
+      <td><input class="branchcode_SPLIFEOL55" type="text" maxlength="4" placeholder="รหัสสาขา (4)" value="1007"/></td>
+      <td><input class="branchname_SPLIFEOL55" type="text" maxlength="15" placeholder="ชื่อสาขา" value="สาขาเชียงใหม่"/></td>
+      <td><input class="postdate_SPLIFEOL55" type="text" maxlength="6" value="${post}" /></td>
+      <td><input class="accname_SPLIFEOL55" type="text" maxlength="31" placeholder="ชื่อเจ้าของบัญชี" value="QA SPLifeFile" /></td>
+      <td><button onclick="this.closest('tr').remove()">🗑</button></td>
+    `;
+    tbody.appendChild(tr);
+  }
+  function clearRows(){
+    document.querySelector("#detailTable_SPLIFEOL55 tbody").innerHTML = "";
+    document.getElementById("outputArea_SPLIFEOL55").value = "";
+    addRow();  fillPostDate();
+  }
+  function buildHeader(){
+    const seq = "000001";
+    const compCode = document.getElementById("compCode_SPLIFEOL55").value;
+    const compAcc  = padL(document.getElementById("companyAcc_SPLIFEOL55").value||"", 12, "0");
+    const compName = padR(COMPANY_NAME, 25);
+    const postDate6 = ddmmyy(document.getElementById("txnDate_SPLIFEOL55").value || new Date());
+    const raw = "H" + seq + BANK_CODE + compAcc + compName + postDate6 + compCode;
+    return padR(raw, 195);
+  }
+  function buildTrailer(dCount, totalAmtThb){
+    const seq6     = String(dCount + 2).padStart(6, "0");
+    const compAcc  = (document.getElementById("companyAcc_SPLIFEOL55").value || "").toString().padStart(12,"0").slice(-12);
+    const drNo     = String(dCount).padStart(7, "0");
+    const drAmt15  = String(Math.round((totalAmtThb||0)*100)).padStart(15,"0");
+    const crNo     = "0000000";
+    const crAmt15  = "000000000000000";
+    const filler66 = " ".repeat(66);
+    const arr = Array.from({length:132}, ()=>" ");
+    const put = (pos, text, len) => { const s = (text||"").toString().padEnd(len," ").slice(0,len); for (let i=0;i<len;i++) arr[pos-1+i] = s[i]; };
+    put(1 , "T", 1);
+    put(2 , seq6, 6);
+    put(8 , "034", 3);
+    put(11, compAcc, 12);
+    put(23, drNo, 7);
+    put(30, drAmt15, 15);
+    put(45, crNo, 7);
+    put(52, crAmt15, 15);
+    put(67, filler66, 66);
+    return arr.join("");
+  }
+  function buildDetailLine(seqNumber, row){
+    const custAcc = padL(onlyDigits(row.querySelector(".custacc_SPLIFEOL55")?.value || ""), 12, "0");
+    const txnCode = (row.querySelector(".txncode_SPLIFEOL55")?.value || "D").slice(0,1);
+    const amtThb  = row.querySelector(".amount_SPLIFEOL55")?.value || "0";
+    const service = padL(row.querySelector(".servicetype_SPLIFEOL55")?.value || "00", 2, "0");
+    const status  = (row.querySelector(".status_SPLIFEOL55")?.value || "0").slice(0,1);
+    const refno   = padR((row.querySelector(".refno_SPLIFEOL55")?.value || "").slice(0,14), 14);
+    const idcard  = padL(onlyDigits(row.querySelector(".idcard_SPLIFEOL55")?.value || ""), 13, "0");
+    const brCode  = padL(onlyDigits(row.querySelector(".branchcode_SPLIFEOL55")?.value || ""), 4, "0");
+    const brName  = padR(row.querySelector(".branchname_SPLIFEOL55")?.value || "", 15);
+    const postUI  = padL(row.querySelector(".postdate_SPLIFEOL55")?.value || "", 6, "0");
+    const postOut = ddmmyy_to_BEyymmdd(postUI);
+    const accName = padR(row.querySelector(".accname_SPLIFEOL55")?.value || "", 31);
+    const seq6 = String(seqNumber).padStart(6,"0");
+    const amt12 = toCentsN(amtThb, 12);
+    const arr = Array.from({length:132}, ()=>" ");
+    const put = (pos, text, len) => { const s = padR(text, len); for (let i=0;i<len;i++) arr[pos-1+i] = s[i] ?? " "; };
+    put(1 , "D", 1);
+    put(2 , seq6, 6);
+    put(8 , "034", 3);
+    put(11, custAcc, 12);
+    put(23, txnCode, 1);
+    put(24, amt12, 12);
+    put(36, service, 2);
+    put(38, status, 1);
+    put(39, refno, 14);
+    put(53, idcard, 13);
+    put(66, brCode, 4);
+    put(70, brName, 15);
+    put(83, postOut, 6);
+    put(98, accName, 31);
+    return arr.join("");
+  }
+  function generateText(){
+    const tbody = document.querySelector("#detailTable_SPLIFEOL55 tbody");
+    const rows = [...tbody.querySelectorAll("tr")];
+    const header = buildHeader();
+    let totalAmount = 0;
+    const details = rows.map((row, idx)=>{
+      const amt = parseFloat(row.querySelector(".amount_SPLIFEOL55")?.value || "0") || 0;
+      totalAmount += amt;
+      return buildDetailLine(idx + 2, row);
+    });
+    const trailer = buildTrailer(rows.length, totalAmount);
+    document.getElementById("outputArea_SPLIFEOL55").value = [header, ...details, trailer].join("\n");
+  }
+  function copyOutput(){ const ta = document.getElementById("outputArea_SPLIFEOL55"); ta.select(); document.execCommand("copy"); }
+  function downloadTxt(){
+    const raw = document.getElementById("outputArea_SPLIFEOL55").value;
+    const contentCRLF = raw.replace(/\n/g, "\r\n");
+    const bytes = (function encodeTIS620(str){
+      const out = [];
+      for (const ch of str){
+        const code = ch.codePointAt(0);
+        if (code <= 0x7F){ out.push(code); }
+        else if (code >= 0x0E01 && code <= 0x0E5B){ out.push(code - 0x0E00 + 0xA0); }
+        else { out.push(0x3F); }
+      }
+      return new Uint8Array(out);
+    })(contentCRLF);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([bytes], { type: "text/plain;charset=TIS-620" }));
+    a.download = "OL55_MRTA_ANSI.txt";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+  function init(){
+    document.getElementById("txnDate_SPLIFEOL55").valueAsDate = new Date();
+    document.getElementById("txnDate_SPLIFEOL55").addEventListener("input", fillPostDate);
+    document.getElementById("txnDate_SPLIFEOL55").addEventListener("change", fillPostDate);
+    document.getElementById("compCode_SPLIFEOL55").addEventListener("change", syncCompanyAccount);
+    syncCompanyAccount();
+    addRow(); fillPostDate();
+  }
+  return {init, addRow, clearRows, generateText, copyOutput, downloadTxt};
+})();
+
+/* ====== Section switcher (ประกาศหลังโมดูล เพื่อเลี่ยง TDZ/ReferenceError) ====== */
+(function(){
+  const picker = document.getElementById('templatePicker');
+  const sections = {
+    cbsplife: {el: document.getElementById('app_cbsplife'), init: ()=>CBSPLIFE.init()},
+    ol52    : {el: document.getElementById('app_ol52')   , init: ()=>OL52.init()},
+    ol55    : {el: document.getElementById('app_ol55')   , init: ()=>OL55.init()},
+  };
+  const inited = {cbsplife:false, ol52:false, ol55:false};
+
+  function showSection(key){
+    Object.values(sections).forEach(s => s.el.style.display='none');
+    const s = sections[key];
+    s.el.style.display='block';
+    if(!inited[key]){ s.init(); inited[key]=true; }
+  }
+
+  picker.addEventListener('change', e => showSection(e.target.value));
+  // เริ่มต้นที่ค่าของ dropdown
+  showSection(picker.value);
+})();
+</script>
+</div>
+</div>
+
   <script>
     function switchTab(tabId) {
       document.querySelectorAll('.card-content').forEach(e => e.classList.remove('active'));
@@ -1956,7 +4454,7 @@ function copyToClipboard_ClaimpayWHT(txt, msg) {
       event.target.classList.add('active');
     }
   </script>
-  <div class="noometal-brand">Version Beta 1.0.8 
+  <div class="noometal-brand">Version Beta 1.0.9 
   <br>Power of NooMetal</div>
 </body>
 </html>
