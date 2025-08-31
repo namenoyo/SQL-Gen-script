@@ -210,42 +210,117 @@
   max-width: 100%;
 }
 
-#scrollx_ClaimpayWHT {
-  overflow-x: auto;
-  padding-bottom: 8px;
+
+/* ===== Flush-left เฉพาะหน้า SP-Life ===== */
+
+/* 1) หัก padding ซ้ายของ .main-content (20px) เฉพาะ section นี้ */
+#SPLife_Gen_TextFile{
+  margin-left: -20px;              /* ชิดเมนูซ้าย */
+  width: calc(100% + 20px);        /* เติมความกว้างกลับทางขวา */
+  padding-left: 0 !important;      /* กัน style อื่นมาทับ */
 }
 
-#wht-table_ClaimpayWHT {
-  min-width: 2400px; /* ขยายความกว้างขั้นต่ำของตาราง */
-  border-collapse: collapse;
-  width: 100%;
+/* การ์ดด้านในให้เต็มพื้นที่และไม่เหลือ margin */
+#SPLife_Gen_TextFile .card{
+  margin: 0 !important;
+  border-radius: 0;                 /* แนบสนิทกับขอบซ้าย ดูเป็นแผ่นเดียวกับพื้นหลัง */
 }
 
-#wht-table_ClaimpayWHT th,
-#wht-table_ClaimpayWHT td {
-  font-size: 13px;
-  min-width: 120px;     /* ขยายความกว้างของช่อง */
-  padding: 10px 8px;    /* เพิ่ม padding ให้กว้างขึ้น */
-  text-align: center;
+/* 2) โซนทำงานของ CBSPLIFE (เฉพาะในหน้า SP-Life) */
+#SPLife_Gen_TextFile #app_cbsplife{
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }
 
-#wht-table_ClaimpayWHT input[type="text"] {
-  width: 100%;
-  min-width: 90px;
-  max-width: 180px;  /* ขยายช่อง input */
-  padding: 7px 11px;
-  font-size: 14px;
-  border-radius: 7px;
-  border: 1px solid #b3d2ee;
-  background: #fcfcfc;
-  margin: 2px 0;
+/* ตาราง/ทูลบาร์ใน CBSPLIFE ให้กางเต็มและไม่เหลือระยะซ้าย */
+#SPLife_Gen_TextFile #app_cbsplife #cbsplife-header,
+#SPLife_Gen_TextFile #app_cbsplife .toolbar,
+#SPLife_Gen_TextFile #app_cbsplife #detailTable_CBSPLIFE{
+  margin-left: 0 !important;
+}
+
+/* ป้องกันจอเล็ก: ยกเลิกการหักระยะเมื่อกว้างน้อย (เลี่ยง overflow แนวนอน) */
+@media (max-width: 900px){
+  #SPLife_Gen_TextFile{
+    margin-left: 0;
+    width: 100%;
+  }
+}
+/* ===== Flush-left เฉพาะหน้า Claim Payment WHT ===== */
+#claimpay_wht {
+  margin-left: -20px;             /* หัก padding หลักออก */
+  width: calc(100% + 20px);       /* ขยายคืน */
+  padding-left: 0 !important;
+}
+
+#claimpay_wht .card {
+  margin: 0 !important;
+  border-radius: 0;                /* แนบกับเมนูซ้าย */
+}
+
+#claimpay_wht #app_claimpay_wht {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+#claimpay_wht #app_claimpay_wht .toolbar,
+#claimpay_wht #app_claimpay_wht table,
+#claimpay_wht #app_claimpay_wht .header {
+  margin-left: 0 !important;
+}
+
+/* กัน overflow จอเล็ก */
+@media (max-width: 900px){
+  #claimpay_wht {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+/* ===== Fill width/height เฉพาะหน้า Claim-payment (WHT) ===== */
+#claimpay_wht .card {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  border-radius: 0;
+}
+
+/* wrapper รอบ iframe (เผื่อมีหลายชั้น) */
+#claimpay_wht .iframe-wrap,
+#claimpay_wht .tool-frame,
+#claimpay_wht .viewer,
+#claimpay_wht .content-inner {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
   box-sizing: border-box;
 }
 
-#wht-table_ClaimpayWHT tr:hover td {
-  background: #eaf5fc;
+/* ตัว iframe ให้เต็มความกว้าง และสูงตามหน้าจอ */
+#claimpay_wht iframe,
+#claimpay_wht .tool-iframe {
+  display: block;
+  width: 100% !important;
+  border: 0;
+  /* สูง = ความสูงหน้าจอ - ส่วนหัว/แถบปุ่มโดยประมาณ */
+  height: calc(100vh - 240px) !important;
+  min-height: 520px;                 /* กันเตี้ยเกินไปบนจอเล็ก */
 }
 
+/* เผื่อมี container ฝั่งขวาที่ตั้ง padding-inline */
+#claimpay_wht :is(main, .content, .main-content){
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* กัน overflow แนวนอนบนจอเล็ก */
+@media (max-width: 900px){
+  #claimpay_wht iframe,
+  #claimpay_wht .tool-iframe{
+    height: calc(100vh - 280px) !important;
+    min-height: 420px;
+  }
+}
 
 
   </style>
@@ -383,8 +458,9 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
       </div>
     </div>
 	
+	
 <div id="Chat_Deploy_Chatbox" class="card-content">
-      <div class="card">
+   <div class="card">
         <h3>📦 Auto Jira Deploy </h3><br>
 		<h5>ติดตามข้อความจาก Google Chat : AI_Tester_Monitor_Batch </h5>
          <div id="Chat_Deploy_Messages"
@@ -665,7 +741,7 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
 	
 	
 <div id="mapping" class="card-content">
-      <div class="card">
+    <div class="card">
         <h3>🔧 เลขกธ Transform เป็น  Ref1  </h3>
         <input type="text" id="inputID" placeholder="ตัวอย่าง กธ : 1104860, J7647226, E6350304, PAR10430199, ส1234568">
         <br><button onclick="transform()">แปลงค่า</button>
@@ -732,8 +808,9 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
       </div>
     </div>
 	
+	
 <div id="idcardno" class="card-content">
-      <div class="card">
+     <div class="card">
         <h3>𓁋 Gen : เลขบัตรประชาชน </h3>
 		
   <div class="radio-group">
@@ -847,9 +924,8 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
     </div>
 	
 
-
 <div id="dline" class="card-content">
-<div class="card">
+     <div class="card">
 <h2>📄  Generator Text File - Counter Bank V.1</h2>
 
 <div class="row">
@@ -1035,7 +1111,7 @@ window.onload = () => {
 </div>
 
 <div id="split_text" class="card-content">
-      <div class="card">
+     <div class="card">
         <h2>🔁 ตัดช่องว่าง หรือ เว้นบรรทัด</h2>
 
   <label>🔹 ข้อมูลต้นทาง (Auto Detect):</label>
@@ -1152,7 +1228,7 @@ function copyOutput_5() {
 </div>
 
 <div id="json_gen" class="card-content">
-      <div class="card">
+     <div class="card">
         <h2>📦 Gen : JSON For Test Data</h2>
 		
 		
@@ -1631,65 +1707,13 @@ function copyOutput_5() {
  </div>
  
   
- <div id="claimpay_wht" class="card-content">
-  <style>
-    
-    /* --- FIX: เลิกดันเทียบ viewport และล็อกความกว้าง/ตำแหน่งให้เสถียร --- */
-#claimpay_wht{
-  position: static !important;
-  left: auto !important;
-  width: 100% !important;     /* กว้างเท่าคอนเทนต์แม่ ไม่ล้นขอบ */
-  max-width: none;
-}
-
-/* กล่องหลักในโซนนี้ให้กว้างขึ้นและอยู่กลาง */
-#claimpay_wht .card{
-  max-width: 1280px;          /* ปลอดภัยไม่ชน sidebar ซ้าย */
-  margin: 0 auto;             /* จัดกึ่งกลาง */
-  padding-inline: 10px;       /* กันชนขอบ */
-}
-
-/* ทูลบาร์: จัดเว้นระยะให้เรียบร้อย */
-#claimpay_wht .controls,
-#claimpay_wht .toolbar{
-  display: flex;
-  gap: .75rem;
-  align-items: center;
-  justify-content: space-between;  /* label/เลือกอยู่ซ้าย ปุ่มอยู่ขวา */
-  margin: .25rem 0 .5rem;
-}
-#claimpay_wht select{ min-width: 320px; }
-
-/* iframe ให้เต็มความกว้าง คงที่ ไม่ทำให้เลย์เอาต์เด้ง */
-#claimpay_wht iframe{
-  display: block;
-  width: 100%;
-  height: clamp(760px, 100vh - 220px, 1100px);
-  min-height: 760px;
-  border: 0;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 2px 12px rgba(0,0,0,.06);
-}
-
-/* ป้องกันหน้าเด้งเพราะสกอลบาร์โผล่/หาย */
-html{ scrollbar-gutter: stable; }          /* Chrome/Edge สมัยใหม่รองรับ */
-body{ overflow-y: scroll; }                /* สำรอง: ล็อกให้มีสกอลบาร์เสมอ */
-
-/* nudge ซ้ายเล็กน้อยแบบปลอดภัย */
-:root{ --claimpay-left-nudge: -16px; }   /* ปรับได้ตามใจ: -2 ถึง -16px */
-#claimpay_wht .card{ transform: translateX(var(--claimpay-left-nudge)); }
-
-/* กันหน้าจอแคบแล้วล้นซ้าย */
-@media (max-width: 992px){
-  #claimpay_wht .card{ transform: none; }
-}
-  </style>
-  
+<div id="claimpay_wht" class="card-content">
+  <div class="card">
+   
    <div class="wrap">
-    <div class="card">
-    <h1>🧰 Claim payment Tools (All-in-One)</h1>
-    <p class="desc">รวม 4 เครื่องมือในหน้าเดียว • ใช้ dropdown เลือกเครื่องมือ • แยกกันด้วย iframe </p>
+    
+    <h2>🧰 Claim payment Tools (All-in-One)</h2>
+    <p class="desc">รวม 4 เครื่องมือในหน้าเดียว • ใช้ dropdown เลือกเครื่องมือ • by usa.lo (เจ๊ติ๊ด)</p>
 
     <div class="toolbar" style="display:flex;align-items:center;gap:.5rem;justify-content:flex-start;">
   <label for="wht-picker">เลือกเครื่องมือ:</label>
@@ -3535,7 +3559,8 @@ function saveFile() {
     });
   </script>
 </div>
-	
+</div>
+
 	
 <div id="SPLife_Gen_TextFile" class="card-content">
   <div class="card">
@@ -3550,12 +3575,49 @@ function saveFile() {
   </select>
 </div>
 
-<!-- ======================= CBSPLIFE ======================= -->
+    
+
+<!-- ======================= CBSPLIFE (FIXED) ======================= -->
 <section id="app_cbsplife" class="app-section">
   <h2>📄 Generator Text File - Counter Bank For SP-Life</h2>
 
-<style>
- /* ปรับขนาด/หน้าตา Text Output */
+  <style>
+  /* ===== OL55 header layout ===== */
+  #cbsplife-header{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    column-gap:24px;      /* ระยะห่างแนวนอนระหว่างกลุ่ม */
+    row-gap:16px;         /* ระยะห่างระหว่างบรรทัด */
+  }
+  #cbsplife-header .pair{
+    display:flex;
+    align-items:center;
+    gap:12px;             /* ระยะห่างระหว่าง label กับ control */
+  }
+  #cbsplife-header .pair label{ font-weight:600; }
+
+  /* ให้กลุ่มขวายืดกินพื้นที่ เพื่อให้ช่อง Account ยาว */
+  #cbsplife-header .grow{ flex:1 1 520px; }
+
+  /* บรรทัดวันที่ให้กินทั้งแถว */
+  #cbsplife-header .full{ flex:1 0 100%; }
+
+  /* ขนาดคุมโทนเดียวกัน */
+  #cbsplife-header select,
+  #cbsplife-header input[type="text"],
+  #cbsplife-header input[type="date"]{
+    height:36px;
+    padding:4px 10px;
+    border-radius:8px;
+  }
+ 
+  #txnDate_CBSPLIFE{ width:160px; }
+
+  /* จอเล็ก: แตกเป็นบรรทัดละกลุ่มอัตโนมัติ */
+  @media (max-width: 900px){
+    #cbsplife-header .pair{ flex:1 0 100%; }
+  }
   #outputArea_CBSPLIFE{
     width: 100%;
     height: clamp(100px, 45vh, 100px); /* สูงขึ้น + responsive */
@@ -3570,29 +3632,27 @@ function saveFile() {
   }
 </style>
 
+
   <!-- Header -->
-  <!-- แทนที่บล็อกเดิม -->
-<!-- === Form (2 แถว) === -->
-<div class="sp-form">
-  <div class="frow">
-    <label class="flabel" for="payType_CBSPLIFE">ประเภทการชำระ:</label>
-    <select id="payType_CBSPLIFE" style="width: 150px; height: 30px; padding: 4px 10px; border-radius: 8px; margin-right:.5rem;">
+  <div id="cbsplife-header">
+  <div class="pair">
+    <label for="payType_CBSPLIFE">ประเภทการชำระ:</label>
+    <select id="payType_CBSPLIFE">
       <option value="OL11">MRTA = OL11</option>
       <option value="OL01" selected>MLTA = OL01</option>
     </select>
   </div>
 
-  <div class="frow">
-    <label class="flabel" for="txnDate_CBSPLIFE">วันที่ทำรายการ:</label>
-    <input type="date" id="txnDate_CBSPLIFE" style="width: 150px; height: 25px; padding: 4px 10px; border-radius: 8px; margin-right:.5rem;" />
+  <div class="pair">
+    <label for="txnDate_CBSPLIFE">วันที่ทำรายการ:</label>
+    <input type="date" id="txnDate_CBSPLIFE">
   </div>
 </div>
 
-<br>
-<div class="hint">
-  * ถ้า Customer Name เป็นภาษาไทย ควรบันทึกเป็น ANSI (TIS-620)
-</div>
 
+  <div class="hint">
+    * ถ้า Customer Name เป็นภาษาไทย ควรบันทึกเป็น ANSI (TIS-620)
+  </div>
 
   <!-- Table -->
   <table id="detailTable_CBSPLIFE">
