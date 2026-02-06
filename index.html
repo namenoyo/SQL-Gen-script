@@ -774,109 +774,127 @@ WHERE a.POSTS@ = 'I' AND NOT EXISTS (
     <textarea id="output_1" readonly></textarea>
 
     <script>
-      // ========= CONFIG =========
-      const ALWAYS_SUFFIX = "11105";
+  // ========= CONFIG =========
+  const ALWAYS_SUFFIX = "11105";
 
-      // fix ตามประเภท (ที่มี fix เท่านั้น)
-      // - 51 => "01"
-      // - 52 => "1"
-      const payTypeFixMap = {
-        "51": "01",
-        "52": "1"
-        // ประเภทอื่น ๆ ถ้าอนาคตมี fix เพิ่ม ค่อยใส่ตรงนี้
-      };
+  const payTypeFixMap = {
+    "51": "01",
+	"58": "01",
+	"59": "01",
+	"60": "01",
+	"62": "01",
+	"75": "01",
+	"76": "01",
+	"77": "01",
+    "52": "1"
+  };
 
-      // บางประเภทคุณต้องการ "ไม่ต้องแสดง fix" แม้ว่ามี/ไม่มีในอนาคต
-      // (ตอนนี้ที่ระบุชัดคือ 53)
-      const noFixTypes = new Set(["53"]);
+  const noFixTypes = new Set(["53"]);
 
-      // ต้องการ pad ความยาวของเลข ref1 เฉพาะบางประเภทไหม?
-      // - เพื่อให้ตัวอย่าง 51 ออกมาเป็น 000213456 (9 หลัก)
-      // - ถ้าไม่อยาก pad ให้ใส่ null
-      const ref1PadLengthByType = {
-        "51": 9
-        // "53": null  // ปล่อยตามจริง
-      };
+  const ref1PadLengthByType = {
+    "51": 9
+  };
 
-      // ========= REF1 TRANSFORM LOGIC (ของเดิม) =========
-      const specialPrefixes = ['PA', 'PAR'];
-      const mappingTable = {
-        "000": "0", "033": "PA", "034": "PAR", "003": "ก", "004": "ข", "005": "ฆ",
-        "006": "ด", "007": "ธ", "008": "พ", "009": "ว", "010": "A", "011": "B", "012": "C",
-        "013": "D", "014": "E", "015": "F", "016": "K", "017": "T", "018": "ส", "019": "H",
-        "020": "I", "021": "J", "022": "1", "023": "2", "024": "3", "025": "4", "026": "5",
-        "027": "6", "028": "7", "029": "8", "030": "9", "031": "PAA", "032": "MIC", "288": "UL"
-      };
+  // ========= REF1 TRANSFORM LOGIC (ของเดิม) =========
+  const specialPrefixes = ['PA', 'PAR'];
+  const mappingTable = {
+    "000": "0", "033": "PA", "034": "PAR", "003": "ก", "004": "ข", "005": "ฆ",
+    "006": "ด", "007": "ธ", "008": "พ", "009": "ว", "010": "A", "011": "B", "012": "C",
+    "013": "D", "014": "E", "015": "F", "016": "K", "017": "T", "018": "ส", "019": "H",
+    "020": "I", "021": "J", "022": "1", "023": "2", "024": "3", "025": "4", "026": "5",
+    "027": "6", "028": "7", "029": "8", "030": "9", "031": "PAA", "032": "MIC", "288": "UL"
+  };
 
-      function buildMaps() {
-        const prefixMap = [];
-        const charMap = {};
-        for (const code in mappingTable) {
-          const desc = mappingTable[code];
-          if (specialPrefixes.includes(desc)) {
-            prefixMap.push({ desc, code: code.padStart(3, '0') });
-          } else if (desc.length >= 2) {
-            prefixMap.push({ desc, code: code.padStart(2, '0') });
-          } else {
-            charMap[desc] = code.padStart(2, '0');
-          }
-        }
-        prefixMap.sort((a, b) => b.desc.length - a.desc.length);
-        return { prefixMap, charMap };
+  function buildMaps() {
+    const prefixMap = [];
+    const charMap = {};
+    for (const code in mappingTable) {
+      const desc = mappingTable[code];
+      if (specialPrefixes.includes(desc)) {
+        prefixMap.push({ desc, code: code.padStart(3, '0') });
+      } else if (desc.length >= 2) {
+        prefixMap.push({ desc, code: code.padStart(2, '0') });
+      } else {
+        charMap[desc] = code.padStart(2, '0');
+      }
+    }
+    prefixMap.sort((a, b) => b.desc.length - a.desc.length);
+    return { prefixMap, charMap };
+  }
+
+  function transformRef1(input) {
+    const { prefixMap, charMap } = buildMaps();
+    let transformed = input;
+    let matchedPrefix = null;
+
+    for (const map of prefixMap) {
+      if (input.startsWith(map.desc)) {
+        transformed = map.code + input.slice(map.desc.length);
+        matchedPrefix = map.desc;
+        break;
+      }
+    }
+
+    if (!matchedPrefix) {
+      const firstChar = input.charAt(0);
+      const rest = input.slice(1);
+      const code = charMap[firstChar];
+      if (code) transformed = code + rest;
+    }
+
+    return transformed;
+  }
+
+  // ========= HELPER: parse multi input =========
+  function parseInputList(raw) {
+  return raw
+    // ตัด ' และ " ออกทั้งหมด
+    .replace(/['"]/g, "")
+    // แยกด้วย comma, newline, semicolon, tab, space
+    .split(/[\n,; \t]+/g)
+    // trim แต่ละตัว
+    .map(s => s.trim())
+    // ตัดค่าว่าง
+    .filter(Boolean);
+}
+
+
+  // ========= FINAL TRANSFORM (รองรับหลายรายการ) =========
+  function transform() {
+    const raw = document.getElementById("inputID").value;
+    const payType = document.getElementById("payType").value;
+
+    const list = parseInputList(raw);
+
+    if (!list.length) {
+      document.getElementById("output_1").value = "";
+      return;
+    }
+
+    // เตรียม fix
+    let fix = payTypeFixMap[payType] || "";
+    if (noFixTypes.has(payType)) fix = "";
+
+    const padLen = ref1PadLengthByType[payType];
+
+    const outputs = list.map((input) => {
+      // 1) ref1
+      let ref1 = transformRef1(input);
+
+      // 2) pad เฉพาะบางประเภท + เฉพาะ ref1 ที่เป็นตัวเลขล้วน
+      if (padLen && /^\d+$/.test(ref1)) {
+        ref1 = ref1.padStart(padLen, "0");
       }
 
-      function transformRef1(input) {
-        const { prefixMap, charMap } = buildMaps();
-        let transformed = input;
-        let matchedPrefix = null;
+      // 3) ประกอบ output
+      return `${payType}${fix}${ref1}${ALWAYS_SUFFIX}`;
+    });
 
-        for (const map of prefixMap) {
-          if (input.startsWith(map.desc)) {
-            transformed = map.code + input.slice(map.desc.length);
-            matchedPrefix = map.desc;
-            break;
-          }
-        }
+    // แสดงผลคนละบรรทัด
+    document.getElementById("output_1").value = outputs.join("\n");
+  }
+</script>
 
-        if (!matchedPrefix) {
-          const firstChar = input.charAt(0);
-          const rest = input.slice(1);
-          const code = charMap[firstChar];
-          if (code) transformed = code + rest;
-        }
-
-        return transformed;
-      }
-
-      // ========= FINAL TRANSFORM (ประกอบ Code + fix + ref1 + 11105) =========
-      function transform() {
-        const input = document.getElementById("inputID").value.trim();
-        const payType = document.getElementById("payType").value;
-
-        if (!input) {
-          document.getElementById("output_1").value = "";
-          return;
-        }
-
-        // 1) ได้เลข ref1 ก่อน
-        let ref1 = transformRef1(input);
-
-        // 2) ถ้ามี requirement ให้ pad ความยาว ref1 สำหรับบางประเภท
-        const padLen = ref1PadLengthByType[payType];
-        if (padLen && /^\d+$/.test(ref1)) {
-          ref1 = ref1.padStart(padLen, "0");
-        }
-
-        // 3) เตรียม fix
-        let fix = payTypeFixMap[payType] || "";
-        if (noFixTypes.has(payType)) fix = "";
-
-        // 4) ประกอบ output
-        const output = `${payType}${fix}${ref1}${ALWAYS_SUFFIX}`;
-
-        document.getElementById("output_1").value = output;
-      }
-    </script>
   </div>
 </div>
 
@@ -6098,7 +6116,7 @@ const OL55 = (function(){
       event.target.classList.add('active');
     }
   </script>
-  <div class="noometal-brand">Version Beta 1.1.1 
+  <div class="noometal-brand">Version Beta 1.1.2 
   <br>Power of NooMetal</div>
 </body>
 </html>
